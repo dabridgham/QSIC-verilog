@@ -3,8 +3,6 @@
 // Testbench for the low-level QBUS interface
 //
 // Copyright 2015 Noel Chiappa and David Bridgham
-//
-// 2015-09-18 dab	initial version
 
 `timescale 10 ns / 10 ns
 
@@ -12,40 +10,60 @@ module tb_qbus();
    
    // The raw QBUS signals, they're all open-collector
    wand [21:0] BDAL;
-   wand        BDOUT, BRPLY, BDIN, BSYNC, BIRQ4, BIRQ5, BIRQ6, BIRQ7, BWTBT, BREF,
-	       BINIT, BDCOK, BPOK, BBS7, BIAKI, BDMGI, BDMR, BSACK, BIAKO, BDMGO;
+   wand        BBS7, BWTBT, BSYNC, BDIN, BDOUT, BRPLY, BREF, BIRQ4, BIRQ5, BIRQ6, BIRQ7,
+	       BDMR, BSACK, BINIT, BIAKO, BDMGO, BIAKI, BDMGI, BDCOK, BPOK, BEVNT, BHALT;
    
-   // So the TB can drive the QBUS signals
-   reg [21:0] tbDAL;
-   reg 	      tbDOUT, tbRPLY, tbDIN, tbSYNC, tbIRQ4, tbIRQ5, tbIRQ6, tbIRQ7, tbWTBT, tbREF,
-	      tbINIT, tbDCOK, tbPOK, tbBS7, tbIAKI, tbDMGI, tbDMR, tbSACK, tbIAKO, tbDMGO;
+   // These registers are so the TB can drive the QBUS lines
+   reg [21:0]  tbDAL;
+   reg 	       tbBS7, tbWTBT, tbSYNC, tbDIN, tbDOUT, tbRPLY, tbREF, tbIRQ4, tbIRQ5, tbIRQ6, tbIRQ7,
+	       tbDMR, tbSACK, tbINIT, tbIAKO, tbDMGO, tbIAKI, tbDMGI, tbDCOK, tbPOK, tbEVNT, tbHALT;
    assign
-     { BDAL, BDOUT, BRPLY, BDIN, BSYNC } = { ~tbDAL, ~tbDOUT, ~tbRPLY, ~tbDIN, ~tbSYNC },
-     { BIRQ4, BIRQ5, BIRQ6, BIRQ7, BWTBT } = { ~tbIRQ4, ~tbIRQ5, ~tbIRQ6, ~tbIRQ7, ~tbWTBT },
-     { BREF, BINIT, BDCOK, BPOK, BBS7, BIAKI } = { ~tbREF, ~tbINIT, ~tbDCOK, ~tbPOK, ~tbBS7, ~tbIAKI },
-     { BDMGI, BDMR, BSACK, BIAKO, BDMGO } = { ~tbDMGI, ~tbDMR, ~tbSACK, ~tbIAKO, ~tbDMGO };
+     { BDAL, BBS7, BWTBT, BSYNC } = { ~tbDAL, ~tbBS7, ~tbWTBT, ~tbSYNC },
+     { BDIN, BDOUT, BRPLY, BREF } = { ~tbDIN, ~tbDOUT, ~tbRPLY, ~tbREF },
+     { BIRQ4, BIRQ5, BIRQ6, BIRQ7 } = { ~tbIRQ4, ~tbIRQ5, ~tbIRQ6, ~tbIRQ7 },
+     { BDMR, BSACK, BINIT, BIAKO, BDMGO } = { ~tbDMR, ~tbSACK, ~tbINIT, ~tbIAKO, ~tbDMGO },
+     { BIAKI, BDMGI, BDCOK, BPOK, BEVNT, BHALT } = { ~tbIAKI, ~tbDMGI, ~tbDCOK, ~tbPOK, ~tbEVNT, ~tbHALT };
 
    // The QBUS signals as seen by the FPGA
-   wor 	      DALtx;		// Direction control from the FPGA for the BDAL lines
-   tri [21:0] DAL;		// bidirectional to save FPGA pins
-   wire       RDOUT, RRPLY, RDIN, RSYNC, RIRQ4, RIRQ5, RIRQ6, RIRQ7,
-	      RWTBT, RREF, RINIT, RDCOK, RPOK, RBS7, RIAKI, RDMGI;
-   wor 	      TDOUT, TRPLY, TDIN, TSYNC, TIRQ4, TIRQ5, TIRQ6, TIRQ7,
-	      TWTBT, TREF, TDMR, TSACK, TIAKO, TDMGO;
+   wor 	       DALtx;		// Direction control from the FPGA for the BDAL lines
+   tri [21:0]  DAL;		// bidirectional to save FPGA pins
+   wire        RBS7, RWTBT, RSYNC, RDIN, RDOUT, RRPLY, RREF, RIRQ4, RIRQ5, RIRQ6, RIRQ7,
+    	       RDMR, RSACK,
+    	       RINIT, RIAKI, RDMGI, RDCOK, RPOK,
+    	       REVNT, RHALT;
+   wor 	       TBS7,
+	       TWTBT, TSYNC, TDIN, TDOUT, TRPLY, TREF, TIRQ4, TIRQ5, TIRQ6, TIRQ7, TDMR, TSACK,
+	       TINIT,
+    	       TIAKO, TDMGO;
    // need to have a null driver for each of these 'wor' lines
-   assign { TDOUT, TRPLY, TDIN, TSYNC, TIRQ4, TIRQ5, TIRQ6, TIRQ7, TWTBT, TREF, TDMR, TSACK, TIAKO, TDMGO } = 0;
+   assign DALtx= 0;
+   assign { TBS7, TWTBT, TSYNC, TDIN, TDOUT, TRPLY, TREF, TIRQ4, TIRQ5, TIRQ6, TIRQ7, 
+	    TDMR, TSACK, TINIT, TIAKO, TDMGO } = 0;
 
-   integer count = 0;		// counts up the tests we run.  it's printed out in error
+   integer     count = 0;	// counts up the tests we run.  it's printed out in error
 				// messages and we can look at the signal trace to see
 				// where the problem is.
 
-   // The QBUS Interface
-   qintf qintf(BDAL, BDOUT, BRPLY, BDIN, BSYNC, BIRQ4, BIRQ5, BIRQ6, BIRQ7, BWTBT, BREF,
-	       BINIT, BDCOK, BPOK, BBS7, BIAKI, BDMGI, BDMR, BSACK, BIAKO, BDMGO,
-	       DALtx,
-	       DAL, RDOUT, TDOUT, RRPLY, TRPLY, RDIN, TDIN, RSYNC, TSYNC, RIRQ4, TIRQ4,
-	       RIRQ5, TIRQ5, RIRQ6, TIRQ6, RIRQ7, TIRQ7, RWTBT, TWTBT, RREF, TREF, RINIT, 
-	       RDCOK, RPOK, RBS7, RIAKI, RDMGI, TDMR, TSACK, TIAKO, TDMGO);
+   // Connect to the QBUS through driver chips and level converters
+   qdrv qbus(BDAL, BBS7, BWTBT, BSYNC, BDIN, BDOUT, BRPLY, BREF, BIRQ4, BIRQ5, BIRQ6, BIRQ7,
+	     BDMR, BSACK, BINIT, BIAKO, BDMGO, BIAKI, BDMGI, BDCOK, BPOK,
+`ifdef CPU
+	     BEVNT, BHALT,
+`endif
+	     DALtx, DAL,
+	     RBS7, RWTBT, RSYNC, RDIN, RDOUT, RRPLY, RREF, RIRQ4, RIRQ5, RIRQ6, RIRQ7,
+`ifdef CPU
+    	     RDMR, RSACK,
+`endif
+    	     RINIT, RIAKI, RDMGI, RDCOK, RPOK,
+`ifdef CPU
+    	     REVNT, RHALT, TBS7,
+`endif
+	     TWTBT, TSYNC, TDIN, TDOUT, TRPLY, TREF, TIRQ4, TIRQ5, TIRQ6, TIRQ7, TDMR, TSACK,
+`ifdef CPU
+	     TINIT,
+`endif
+    	     TIAKO, TDMGO);
 
    // a couple registers to poke at
    areg_block #(.addr('o17774), .count(1)) reg1(DALtx, DAL, TRPLY, RDIN, RDOUT, RSYNC, RBS7);
@@ -59,8 +77,8 @@ module tb_qbus();
 
       // bus idle
       #0 tbDAL = 0;
-      { tbDOUT, tbRPLY, tbDIN, tbSYNC, tbIRQ4, tbIRQ5, tbIRQ6, tbIRQ7, tbWTBT, tbREF,
-	tbINIT, tbDCOK, tbPOK, tbBS7, tbIAKI, tbDMGI, tbDMR, tbSACK, tbIAKO, tbDMGO } = 0;
+      { tbBS7, tbWTBT, tbSYNC, tbDIN, tbDOUT, tbRPLY, tbREF, tbIRQ4, tbIRQ5, tbIRQ6, tbIRQ7,
+	tbDMR, tbSACK, tbINIT, tbIAKO, tbDMGO, tbIAKI, tbDMGI, tbDCOK, tbPOK, tbEVNT, tbHALT } = 0;
       
       // read from 17774
       count = count + 1;

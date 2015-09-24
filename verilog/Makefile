@@ -1,11 +1,11 @@
-ICOPTS = -DSIM -WALL -pfileline=1
+ICOPTS = -DSIM -WALL
 SIMOPTS = -N
-INCLUDES = 
-FILES = tb_qbus.v intf.v areg.v areg_block.v
+INCLUDES = qsic.vh
+FILES = tb_qbus.v qdrv.v areg.v areg_block.v
 
 ALL: tb_qbus.check
 
-tb_qbus.check: $(FILES)
+tb_qbus.check: $(INCLUDES) $(FILES)
 	iverilog -tnull $(ICOPTS) $(FILES)
 
 test: test.qbus
@@ -13,7 +13,7 @@ test: test.qbus
 test.qbus: tb_qbus.vvp
 	./tb_qbus.vvp $(SIMOPTS)
 
-tb_qbus.vvp: Makefile $(FILES)
+tb_qbus.vvp: Makefile $(INCLUDES) $(FILES)
 	iverilog $(ICOPTS) -o tb_qbus.vvp $(FILES)
 
 
