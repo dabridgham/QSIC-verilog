@@ -1,7 +1,7 @@
 ICOPTS = -DSIM -WALL
 SIMOPTS = -N
 INCLUDES = qsic.vh
-FILES = tb_qbus.v qdrv.v areg.v areg_block.v
+FILES = tb_qbus.v qdrv.v qsync.v areg.v areg_block.v sreg_block.v
 
 ALL: tb_qbus.check
 

@@ -4,7 +4,7 @@
 //
 // Copyright 2015 Noel Chiappa and David Bridgham
 
-`timescale 10 ns / 10 ns
+`timescale 1 ns / 1 ns
 
 module tb_qbus();
    
@@ -65,11 +65,31 @@ module tb_qbus();
 `endif
     	     TIAKO, TDMGO);
 
-   // a couple registers to poke at
-   areg_block #(.addr('o17774), .count(1)) reg1(DALtx, DAL, TRPLY, RDIN, RDOUT, RSYNC, RBS7);
-   areg_block #(.addr('o17772), .count(1)) reg2(DALtx, DAL, TRPLY, RDIN, RDOUT, RSYNC, RBS7);
+   // The internal I/O bus
+   reg 	       qclk = 0;
+   wire [12:0] iADDR;
+   wire        iBS7, iWRITE;
+   wire [15:0] iWDATA;
+   tri [15:0]  iRDATA;
+   wor 	       iREAD_MATCH, iWRITE_MATCH;
+   assign { iREAD_MATCH, iWRITE_MATCH } = 0;
    
+   // Connect the QBUS to the internal I/O bus
+   qsync qsync(qclk, DALtx, DAL, RBS7, RSYNC, RDIN, RDOUT, TRPLY,
+	       iADDR, iBS7, iREAD_MATCH, iWRITE_MATCH, iWDATA, iWRITE, iRDATA);
 
+   // a couple registers to poke at
+//   areg_block #(.addr('o17774), .count(1)) reg1(DALtx, DAL, TRPLY, RDIN, RDOUT, RSYNC, RBS7);
+//   areg_block #(.addr('o17772), .count(1)) reg2(DALtx, DAL, TRPLY, RDIN, RDOUT, RSYNC, RBS7);
+
+   reg [12:0]  reg1_addr = 'o440;
+   reg [12:0]  reg2_addr = 'o560;
+
+   sreg_block reg1(reg1_addr, qclk, iADDR, iBS7, iREAD_MATCH, iWRITE_MATCH, iWDATA, iWRITE, iRDATA);
+   sreg_block reg2(reg2_addr, qclk, iADDR, iBS7, iREAD_MATCH, iWRITE_MATCH, iWDATA, iWRITE, iRDATA);
+
+   always @(*)
+     #25 qclk <= ~qclk;		// 20 MHz clock (50ns cycle time)
 
    initial begin
       $dumpfile("tb_qbus.lxt");
@@ -80,93 +100,95 @@ module tb_qbus();
       { tbBS7, tbWTBT, tbSYNC, tbDIN, tbDOUT, tbRPLY, tbREF, tbIRQ4, tbIRQ5, tbIRQ6, tbIRQ7,
 	tbDMR, tbSACK, tbINIT, tbIAKO, tbDMGO, tbIAKI, tbDMGI, tbDCOK, tbPOK, tbEVNT, tbHALT } = 0;
       
-      // read from 17774
-      count = count + 1;
-      #20 tbDAL = 'o17777774;  tbBS7 = 1;
-      #15 tbSYNC = 1;
-      #10 tbDAL = 0; tbBS7 = 0; tbDIN = 1;
-      #15 if (!RRPLY)
+      // read from 440
+      #200 count = count + 1;
+      tbDAL = 'o440;  tbBS7 = 1;
+      #150 tbSYNC = 1;
+      #100 tbDAL = 0; tbBS7 = 0; tbDIN = 1;
+      #150 if (!RRPLY)
 	$display("Error NXM (%1d)", count);
       else if (~BDAL != 22'o123456)
 	$display("Error (%1d): %o", count, ~BDAL);
       tbDIN = 0; tbSYNC = 0;
 
-      // read from 17770 (should be NXM).  This is not a proper NXM check.  I should be
+      // read from 400 (should be NXM).  This is not a proper NXM check.  I should be
       // waiting for RPLY and timing out.  And I shouldn't read the data for 150ns after
       // RPLY is asserted either.  The DMA engine will have to do this right.
-      count = count + 1;
-      #20 tbDAL = 'o17777770;  tbBS7 = 1;
-      #15 tbSYNC = 1;
-      #10 tbDAL = 0; tbBS7 = 0; tbDIN = 1;
-      #15 if (RRPLY)
+      #200 count = count + 1;
+      tbDAL = 'o400;  tbBS7 = 1;
+      #150 tbSYNC = 1;
+      #100 tbDAL = 0; tbBS7 = 0; tbDIN = 1;
+      #150 if (RRPLY)
 	$display("Error (%1d): Should have been NXM but wasn't", count);
       tbDIN = 0; tbSYNC = 0;
 
-      // read again from 17774 without setting the high address bits in DAL
-      count = count + 1;
-      #20 tbDAL = 'o17774;  tbBS7 = 1;
-      #15 tbSYNC = 1;
-      #10 tbDAL = 0; tbBS7 = 0; tbDIN = 1;
-      #15 if (~BDAL != 22'o123456)
+      // read from 440 without BS7 (should be NXM).  This is not a proper NXM check.  I should
+      // be waiting for RPLY and timing out.  And I shouldn't read the data for 150ns after RPLY
+      // is asserted either.  The DMA engine will have to do this right.
+      #200 count = count + 1;
+      tbDAL = 'o440;  tbBS7 = 0;
+      #150 tbSYNC = 1;
+      #100 tbDAL = 0; tbBS7 = 0; tbDIN = 1;
+      #150 if (RRPLY)
+	$display("Error (%1d): Should have been NXM but wasn't", count);
+      tbDIN = 0; tbSYNC = 0;
+      
+      // write to 440
+      #200 count = count + 1;
+      tbDAL = 'o440; tbBS7 = 1; tbWTBT = 1; 
+      #150 tbSYNC = 1;
+      #100 tbDAL = 'o054321; tbBS7 = 0; tbWTBT = 0;
+      #100 tbDOUT = 1;
+      #150 tbDOUT = 0;
+      #100 tbDAL = 0; tbSYNC = 0;
+
+      // read new value back from 440
+      #200 count = count + 1;
+      tbDAL = 'o440; tbBS7 = 1; 
+      #150 tbSYNC = 1;
+      #100 tbDAL = 0; tbBS7 = 0;
+      #100 tbDIN = 1;
+      #150 if (~BDAL != 22'o054321)
 	$display("Error (%1d): %o", count, ~BDAL);
       tbDIN = 0; tbSYNC = 0;
 
-      // write to 17774
-      count = count + 1;
-      #20 tbDAL = 'o17777774; tbBS7 = 1; tbWTBT = 1; 
-      #15 tbSYNC = 1;
-      #10 tbDAL = 'o054321; tbBS7 = 0; tbWTBT = 0;
-      #10 tbDOUT = 1;
-      #15 tbDOUT = 0;
-      #10 tbDAL = 0; tbSYNC = 0;
-
-      // read new value back from 17774
-      count = count + 1;
-      #20 tbDAL = 'o17777774; tbBS7 = 1; 
-      #15 tbSYNC = 1;
-      #10 tbDAL = 0; tbBS7 = 0;
-      #10 tbDIN = 1;
-      #15 if (~BDAL != 22'o054321)
+      // read from 560
+      #200 count = count + 1;
+      tbDAL = 'o560; tbBS7 = 1;
+      #150 tbSYNC = 1;
+      #100 tbDAL = 0; tbBS7 = 0;
+      #100 tbDIN = 1;
+      #150 if (~BDAL != 22'o123456)
 	$display("Error (%1d): %o", count, ~BDAL);
       tbDIN = 0; tbSYNC = 0;
 
-      // read from 17772
-      count = count + 1;
-      #20 tbDAL = 'o17777772; tbBS7 = 1;
-      #15 tbSYNC = 1;
-      #10 tbDAL = 0; tbBS7 = 0;
-      #10 tbDIN = 1;
-      #15 if (~BDAL != 22'o123456)
-	$display("Error (%1d): %o", count, ~BDAL);
-      tbDIN = 0; tbSYNC = 0;
-
-      // read-modify-write (DATAIO) to 17772
-      count = count + 1;
-      #20 tbDAL = 'o17777772; tbBS7 = 1;
-      #15 tbSYNC = 1;
-      #10 tbDAL = 0; tbBS7 = 0;
-      #10 tbDIN = 1;
-      #15 if (~BDAL != 22'o123456)
+      // read-modify-write (DATAIO) to 560
+      #200 count = count + 1;
+      tbDAL = 'o560; tbBS7 = 1;
+      #150 tbSYNC = 1;
+      #100 tbDAL = 0; tbBS7 = 0;
+      #100 tbDIN = 1;
+      #150 if (~BDAL != 22'o123456)
 	$display("Error (%1d): %o", count, ~BDAL);
       tbDIN = 0;
       // finished the read, start writing.  supposed to wait at least 200ns after negation
       // of RPLY before asserting DOUT but must assert DAL 100ns before DOUT.
-      #10 tbDAL = 'o54545;
-      #10 tbDOUT = 1;
-      #15 tbDOUT = 0; 
-      #10 tbDAL = 0; tbSYNC = 0;
+      #100 tbDAL = 'o54545;
+      #100 tbDOUT = 1;
+      #150 tbDOUT = 0; 
+      #100 tbDAL = 0; tbSYNC = 0;
 
       // check that write worked
-      count = count + 1;
-      #20 tbDAL = 'o17777772; tbBS7 = 1;
-      #15 tbSYNC = 1;
-      #10 tbDAL = 0; tbBS7 = 0;
-      #10 tbDIN = 1;
-      #15 if (~BDAL != 22'o54545)
+      #200 count = count + 1;
+      tbDAL = 'o560; tbBS7 = 1;
+      #150 tbSYNC = 1;
+      #100 tbDAL = 0; tbBS7 = 0;
+      #100 tbDIN = 1;
+      #150 if (~BDAL != 22'o54545)
 	$display("Error (%1d): %o", count, ~BDAL);
       tbDIN = 0; tbSYNC = 0;
 
-      #20 $finish_and_return(0);
+      #200 $finish_and_return(0);
    end
 
 

@@ -13,26 +13,24 @@ module qsync
   (
    input 	     clk,
    
-   // The QBUS signals coming from the driver circuitry. (I bet I can get rid of a lot of
-   // these)
+   // The QBUS signals coming from the driver circuitry.
    output reg 	     DALtx, // Direction control for the BDAL lines
    inout [21:0]      DAL,
    input 	     RBS7,
-   input 	     RWTBT,
    input 	     RSYNC,
    input 	     RDIN,
    input 	     RDOUT,
    output reg 	     TRPLY,
 
    // The FPGA internal I/O bus
-   output reg [12:0] iADDR, // I/O address
-   output reg 	     iBS7, // address is on the I/O page
-   output reg 	     iWTBT, // operation will be a write
-   input 	     iADDR_MATCH, // some device indicates it has this address
+   output reg [12:0] iADDR,	  // I/O address
+   output reg 	     iBS7,	  // address is on the I/O page
+   input 	     iREAD_MATCH, // some device indicates it has this address for reading
+   input 	     iWRITE_MATCH, // some device indicates it has this address for writing
 
    output reg [15:0] iWDATA,
-   output reg 	     iWRITE,
-   input [15:0]      iRDATA 	 
+   output reg 	     iWRITE,	// strobe to write data from iWDATA into device register
+   input [15:0]      iRDATA	// data coming back from a device register
    );
 
    reg [15:0] 	     read_reg;	// stage data for reads
@@ -43,21 +41,19 @@ module qsync
    always @(posedge RSYNC) begin
       iADDR <= DAL[12:0];
       iBS7 <= RBS7;
-      iWTBT <= RWTBT;
    end
 
    // synchronize SYNC for internal use
-   reg [1:0] sSYNC;
-   always @(posedge clk) sSYNC[0] <= RSYNC;
-   always @(posedge clk) sSYNC[1] <= sSYNC[0];
-   wire      sREAD = sSYNC[1];	// a synchronized version of RSYNC
+   reg [1:0] SYNCra;
+   always @(posedge clk) SYNCra <= { SYNCra[0], RSYNC };
+   wire      sSYNC = SYNCra[1];	// a synchronized version of RSYNC
 
    // Generate the iSTART strobe, also stage read data into the staging register
    reg 	     start_state = 0;
    always @(posedge clk) begin
-      if (sREAD) begin
+      if (sSYNC) begin
 	 if ((start_state == 0) && // only once,
-	     iADDR_MATCH)	   // and some device has the address
+	     iREAD_MATCH)	   // and some device has the address for reading
 	   read_reg <= iRDATA;	   // then move the data into the staging register
 	 start_state <= 1;
       end else
@@ -72,14 +68,14 @@ module qsync
       TRPLY <= 0;
 
       // on reads, drive DAL with the already-staged read data
-      if (RDIN && iADDR_MATCH) begin
+      if (RDIN && iREAD_MATCH) begin
 	 DALtx <= 1;
 	 TDAL <= { 6'b0, read_reg };
 	 TRPLY <= 1;
       end
       // writes just assert RPLY, the data is latched and moved to the sync register
       // elsewhere
-      else if (RDOUT && iADDR_MATCH) begin
+      else if (RDOUT && iWRITE_MATCH) begin
 	 TRPLY <= 1;
       end 
    end
@@ -90,16 +86,15 @@ module qsync
    end
 
    // Synchronize RDOUT to write to internal registers
-   reg [1:0] sDOUT;
-   always @(posedge clk) sDOUT[0] <= RDOUT;
-   always @(posedge clk) sDOUT[1] <= sDOUT[0];
-   wire sWRITE = sDOUT[1];
+   reg [1:0] DOUTra;
+   always @(posedge clk) DOUTra <= { DOUTra[0], RDOUT };
+   wire      sDOUT = DOUTra[1];	// a synchronized version of RDOUT
 
    // Generate the iWRITE strobe
    reg 	write_state = 0;
    always @(posedge clk) begin
       iWRITE <= 0;
-      if (sWRITE) begin
+      if (sDOUT) begin
 	 if (write_state == 0)
 	   iWRITE <= 1;
 	 write_state <= 1;
