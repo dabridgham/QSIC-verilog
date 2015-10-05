@@ -65,6 +65,10 @@ module tb_qbus();
 `endif
     	     TIAKO, TDMGO);
 
+   // Get some memory on the bus
+   sim_mem mem(DALtx, DAL, TRPLY, RDIN, RDOUT, RSYNC, RBS7);
+
+
    // The internal I/O bus
    reg 	       qclk = 0;
    wire [12:0] iADDR;
@@ -84,7 +88,6 @@ module tb_qbus();
 
    reg [12:0]  reg1_addr = 'o440;
    reg [12:0]  reg2_addr = 'o560;
-
    sreg_block reg1(reg1_addr, qclk, iADDR, iBS7, iREAD_MATCH, iWRITE_MATCH, iWDATA, iWRITE, iRDATA);
    sreg_block reg2(reg2_addr, qclk, iADDR, iBS7, iREAD_MATCH, iWRITE_MATCH, iWDATA, iWRITE, iRDATA);
 
@@ -130,7 +133,7 @@ module tb_qbus();
       #150 tbSYNC = 1;
       #100 tbDAL = 0; tbBS7 = 0; tbDIN = 1;
       #150 if (RRPLY)
-	$display("Error (%1d): Should have been NXM but wasn't", count);
+	$display("Error (%1d): Should have been NXM but wasn't: %o", count, ~BDAL);
       tbDIN = 0; tbSYNC = 0;
       
       // write to 440

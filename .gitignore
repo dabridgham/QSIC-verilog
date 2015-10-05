@@ -1,3 +1,7 @@
 *.vvp
 *.lxt
 *.gtkw
+/board-smt/output
+*bak
+*-cache.lib
+*.net
