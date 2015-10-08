@@ -3,5 +3,6 @@
 *.gtkw
 /board-smt/output
 *bak
-*-cache.lib
 *.net
+*.jpg
+*.pdf
