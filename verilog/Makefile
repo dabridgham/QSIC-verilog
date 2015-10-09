@@ -3,8 +3,9 @@ SIMOPTS = -N
 INCLUDES = qsic.vh
 QBUS_FILES = tb_qbus.v qdrv.v qsync.v areg.v areg_block.v sreg_block.v sim_memory.v
 DMA_FILES = tb_dma.v qdrv.v master.v sim_proc.v
+BG_FILES = tb_bg.v bus-grant-mux.v
 
-ALL: tb_qbus.check
+ALL: tb_bg.check
 
 tb_qbus.check: $(INCLUDES) $(QBUS_FILES)
 	iverilog -tnull $(ICOPTS) $(QBUS_FILES)
@@ -12,7 +13,16 @@ tb_qbus.check: $(INCLUDES) $(QBUS_FILES)
 tb_dma.check: $(INCLUDES) $(DMA_FILES)
 	iverilog -tnull $(ICOPTS) $(DMA_FILES)
 
-test: test.dma
+tb_bg.check: $(BG_FILES)
+	iverilog -tnull $(BG_FILES)
+
+test: test.bg
+
+test.bg: test_bg.vvp
+	./tb_bg.vvp $(SIMOPTS)
+
+test_bg.vvp: Makefile $(BG_FILES)
+	iverilog $(ICOPTS) -o tb_bg.vvp $(BG_FILES)
 
 test.qbus: tb_qbus.vvp
 	./tb_qbus.vvp $(SIMOPTS)
