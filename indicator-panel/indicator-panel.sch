@@ -35,10 +35,10 @@ EELAYER END
 $Descr USLedger 17000 11000
 encoding utf-8
 Sheet 1 1
-Title ""
-Date ""
-Rev ""
-Comp ""
+Title "Indicator Panel"
+Date "2015-12-21"
+Rev "1.1"
+Comp "Vintage Computer Engineering"
 Comment1 ""
 Comment2 ""
 Comment3 ""
@@ -1063,31 +1063,25 @@ Wire Wire Line
 Wire Wire Line
 	2000 7500 10250 7500
 Wire Wire Line
-	2000 7600 10250 7600
-Wire Wire Line
-	2000 7700 10250 7700
-Wire Wire Line
-	2000 7800 10250 7800
-Wire Wire Line
 	4500 7500 4500 7300
 Wire Wire Line
 	4500 7300 4950 7300
 Connection ~ 4500 7500
 Wire Wire Line
-	4700 7600 4700 7400
+	4700 7800 4700 7400
 Wire Wire Line
 	4700 7400 4950 7400
-Connection ~ 4700 7600
+Connection ~ 4700 7800
 Wire Wire Line
 	6750 7400 6500 7400
 Wire Wire Line
-	6500 7400 6500 7800
-Connection ~ 6500 7800
+	6500 7400 6500 8000
+Connection ~ 6500 8000
 Wire Wire Line
 	6750 7300 6350 7300
 Wire Wire Line
-	6350 7300 6350 7700
-Connection ~ 6350 7700
+	6350 7300 6350 7900
+Connection ~ 6350 7900
 Wire Wire Line
 	5600 7350 5950 7350
 Wire Wire Line
@@ -1860,8 +1854,14 @@ F 3 "" H 10450 7650 60  0000 C CNN
 	1    10450 7650
 	1    0    0    -1  
 $EndComp
-NoConn ~ 10250 7900
-NoConn ~ 10250 8000
-NoConn ~ 2000 7900
-NoConn ~ 2000 8000
+NoConn ~ 10250 7600
+NoConn ~ 10250 7700
+NoConn ~ 2000 7700
+Wire Wire Line
+	2000 7900 10250 7900
+Wire Wire Line
+	2000 8000 10250 8000
+Wire Wire Line
+	2000 7800 10250 7800
+NoConn ~ 2000 7600
 $EndSCHEMATC
