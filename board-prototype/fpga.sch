@@ -1,0 +1,584 @@
+EESchema Schematic File Version 2
+LIBS:power
+LIBS:device
+LIBS:transistors
+LIBS:conn
+LIBS:linear
+LIBS:regul
+LIBS:74xx
+LIBS:cmos4000
+LIBS:adc-dac
+LIBS:memory
+LIBS:xilinx
+LIBS:microcontrollers
+LIBS:dsp
+LIBS:microchip
+LIBS:analog_switches
+LIBS:motorola
+LIBS:texas
+LIBS:intel
+LIBS:audio
+LIBS:interface
+LIBS:digital-audio
+LIBS:philips
+LIBS:display
+LIBS:cypress
+LIBS:siliconi
+LIBS:opto
+LIBS:atmel
+LIBS:contrib
+LIBS:valves
+LIBS:myLib
+LIBS:proto-cache
+EELAYER 25 0
+EELAYER END
+$Descr USLetter 8500 11000 portrait
+encoding utf-8
+Sheet 4 4
+Title "FPGA Interface"
+Date ""
+Rev ""
+Comp ""
+Comment1 ""
+Comment2 ""
+Comment3 ""
+Comment4 ""
+$EndDescr
+$Comp
+L +5V #PWR0122
+U 1 1 56BE91DF
+P 3400 1400
+F 0 "#PWR0122" H 3400 1250 50  0001 C CNN
+F 1 "+5V" H 3400 1540 50  0000 C CNN
+F 2 "" H 3400 1400 60  0000 C CNN
+F 3 "" H 3400 1400 60  0000 C CNN
+	1    3400 1400
+	0    1    -1   0   
+$EndComp
+$Comp
+L +5V #PWR0123
+U 1 1 56BE91E5
+P 2800 1400
+F 0 "#PWR0123" H 2800 1250 50  0001 C CNN
+F 1 "+5V" H 2800 1540 50  0000 C CNN
+F 2 "" H 2800 1400 60  0000 C CNN
+F 3 "" H 2800 1400 60  0000 C CNN
+	1    2800 1400
+	0    -1   -1   0   
+$EndComp
+$Comp
+L GND #PWR0124
+U 1 1 56BE91EB
+P 2800 1500
+F 0 "#PWR0124" H 2800 1250 50  0001 C CNN
+F 1 "GND" H 2800 1350 50  0000 C CNN
+F 2 "" H 2800 1500 60  0000 C CNN
+F 3 "" H 2800 1500 60  0000 C CNN
+	1    2800 1500
+	0    1    1    0   
+$EndComp
+$Comp
+L GND #PWR0125
+U 1 1 56BE91F1
+P 4350 1500
+F 0 "#PWR0125" H 4350 1250 50  0001 C CNN
+F 1 "GND" H 4350 1350 50  0000 C CNN
+F 2 "" H 4350 1500 60  0000 C CNN
+F 3 "" H 4350 1500 60  0000 C CNN
+	1    4350 1500
+	0    1    1    0   
+$EndComp
+$Comp
+L GND #PWR0126
+U 1 1 56BE91F7
+P 3400 1500
+F 0 "#PWR0126" H 3400 1250 50  0001 C CNN
+F 1 "GND" H 3400 1350 50  0000 C CNN
+F 2 "" H 3400 1500 60  0000 C CNN
+F 3 "" H 3400 1500 60  0000 C CNN
+	1    3400 1500
+	0    -1   1    0   
+$EndComp
+$Comp
+L GND #PWR0127
+U 1 1 56BE91FD
+P 4950 1500
+F 0 "#PWR0127" H 4950 1250 50  0001 C CNN
+F 1 "GND" H 4950 1350 50  0000 C CNN
+F 2 "" H 4950 1500 60  0000 C CNN
+F 3 "" H 4950 1500 60  0000 C CNN
+	1    4950 1500
+	0    -1   1    0   
+$EndComp
+$Comp
+L GND #PWR0128
+U 1 1 56BE9203
+P 3400 2900
+F 0 "#PWR0128" H 3400 2650 50  0001 C CNN
+F 1 "GND" H 3400 2750 50  0000 C CNN
+F 2 "" H 3400 2900 60  0000 C CNN
+F 3 "" H 3400 2900 60  0000 C CNN
+	1    3400 2900
+	0    -1   1    0   
+$EndComp
+$Comp
+L GND #PWR0129
+U 1 1 56BE9209
+P 2800 2900
+F 0 "#PWR0129" H 2800 2650 50  0001 C CNN
+F 1 "GND" H 2800 2750 50  0000 C CNN
+F 2 "" H 2800 2900 60  0000 C CNN
+F 3 "" H 2800 2900 60  0000 C CNN
+	1    2800 2900
+	0    1    1    0   
+$EndComp
+$Comp
+L GND #PWR0130
+U 1 1 56BE920F
+P 4950 3000
+F 0 "#PWR0130" H 4950 2750 50  0001 C CNN
+F 1 "GND" H 4950 2850 50  0000 C CNN
+F 2 "" H 4950 3000 60  0000 C CNN
+F 3 "" H 4950 3000 60  0000 C CNN
+	1    4950 3000
+	0    -1   1    0   
+$EndComp
+$Comp
+L GND #PWR0131
+U 1 1 56BE9215
+P 4350 3000
+F 0 "#PWR0131" H 4350 2750 50  0001 C CNN
+F 1 "GND" H 4350 2850 50  0000 C CNN
+F 2 "" H 4350 3000 60  0000 C CNN
+F 3 "" H 4350 3000 60  0000 C CNN
+	1    4350 3000
+	0    1    1    0   
+$EndComp
+$Comp
+L GND #PWR0132
+U 1 1 56BE921B
+P 3400 4500
+F 0 "#PWR0132" H 3400 4250 50  0001 C CNN
+F 1 "GND" H 3400 4350 50  0000 C CNN
+F 2 "" H 3400 4500 60  0000 C CNN
+F 3 "" H 3400 4500 60  0000 C CNN
+	1    3400 4500
+	0    -1   1    0   
+$EndComp
+$Comp
+L GND #PWR0133
+U 1 1 56BE9221
+P 4950 4500
+F 0 "#PWR0133" H 4950 4250 50  0001 C CNN
+F 1 "GND" H 4950 4350 50  0000 C CNN
+F 2 "" H 4950 4500 60  0000 C CNN
+F 3 "" H 4950 4500 60  0000 C CNN
+	1    4950 4500
+	0    -1   1    0   
+$EndComp
+$Comp
+L GND #PWR0134
+U 1 1 56BE9227
+P 4350 4500
+F 0 "#PWR0134" H 4350 4250 50  0001 C CNN
+F 1 "GND" H 4350 4350 50  0000 C CNN
+F 2 "" H 4350 4500 60  0000 C CNN
+F 3 "" H 4350 4500 60  0000 C CNN
+	1    4350 4500
+	0    1    1    0   
+$EndComp
+$Comp
+L SW_PUSH_SMALL SW401
+U 1 1 56BE922D
+P 5450 1500
+F 0 "SW401" H 5600 1610 30  0000 C CNN
+F 1 "RESET" H 5450 1421 30  0000 C CNN
+F 2 "" H 5450 1500 60  0001 C CNN
+F 3 "" H 5450 1500 60  0000 C CNN
+	1    5450 1500
+	1    0    0    -1  
+$EndComp
+$Comp
+L GND #PWR0135
+U 1 1 56BE9234
+P 5550 1600
+F 0 "#PWR0135" H 5550 1350 50  0001 C CNN
+F 1 "GND" H 5550 1450 50  0000 C CNN
+F 2 "" H 5550 1600 60  0000 C CNN
+F 3 "" H 5550 1600 60  0000 C CNN
+	1    5550 1600
+	-1   0    0    -1  
+$EndComp
+$Comp
+L CONN_ZTEX_AB P1
+U 1 1 56BE923A
+P 3050 2950
+F 0 "P1" H 3150 4600 50  0000 L CNN
+F 1 "AB" H 3050 4600 50  0000 R CNN
+F 2 "Pin_Headers:Pin_Header_Straight_2x32" H 3050 2550 60  0001 C CNN
+F 3 "" H 3050 2550 60  0000 C CNN
+	1    3050 2950
+	1    0    0    -1  
+$EndComp
+$Comp
+L CONN_ZTEX_CD P2
+U 1 1 56BE9241
+P 4600 2950
+F 0 "P2" H 4700 4600 50  0000 L CNN
+F 1 "CD" H 4600 4600 50  0000 R CNN
+F 2 "Pin_Headers:Pin_Header_Straight_2x32" H 4600 2550 60  0001 C CNN
+F 3 "" H 4600 2550 60  0000 C CNN
+	1    4600 2950
+	1    0    0    -1  
+$EndComp
+Text GLabel 3400 1800 2    60   BiDi ~ 0
+ZDAL0
+Text GLabel 3400 1900 2    60   BiDi ~ 0
+ZDAL1
+Text GLabel 2800 2000 0    60   BiDi ~ 0
+ZDAL2
+Text GLabel 3400 2000 2    60   BiDi ~ 0
+ZDAL3
+Text GLabel 2800 2100 0    60   BiDi ~ 0
+ZDAL4
+Text GLabel 3400 2100 2    60   BiDi ~ 0
+ZDAL5
+Text GLabel 2800 2200 0    60   BiDi ~ 0
+ZDAL6
+Text GLabel 2800 2300 0    60   BiDi ~ 0
+ZDAL7
+Text GLabel 2800 2400 0    60   BiDi ~ 0
+ZDAL8
+Text GLabel 2800 2500 0    60   BiDi ~ 0
+ZDAL9
+Text GLabel 2800 2600 0    60   BiDi ~ 0
+ZDAL10
+Text GLabel 3400 2600 2    60   BiDi ~ 0
+ZDAL11
+Text GLabel 2800 2700 0    60   BiDi ~ 0
+ZDAL12
+Text GLabel 3400 2700 2    60   BiDi ~ 0
+ZDAL13
+Text GLabel 2800 3100 0    60   BiDi ~ 0
+ZDAL14
+Text GLabel 3400 3100 2    60   BiDi ~ 0
+ZDAL15
+Text GLabel 2800 3300 0    60   BiDi ~ 0
+ZDAL16
+Text GLabel 3400 3300 2    60   BiDi ~ 0
+ZDAL17
+Text GLabel 2800 3400 0    60   BiDi ~ 0
+ZDAL18
+Text GLabel 3400 3400 2    60   BiDi ~ 0
+ZDAL19
+Text GLabel 2800 3600 0    60   BiDi ~ 0
+ZDAL20
+Text GLabel 3400 3600 2    60   BiDi ~ 0
+ZDAL21
+Text GLabel 2800 3700 0    60   BiDi ~ 0
+ZBS7
+Text GLabel 3400 3700 2    60   BiDi ~ 0
+ZWTBT
+Text GLabel 4950 3600 2    60   Output ~ 0
+TSYNC
+Text GLabel 4950 3700 2    60   Output ~ 0
+TDIN
+Text GLabel 4950 3800 2    60   Output ~ 0
+TDOUT
+Text GLabel 4950 3900 2    60   Output ~ 0
+TRPLY
+Text GLabel 4950 4000 2    60   Output ~ 0
+TREF
+Text GLabel 4950 4100 2    60   Output ~ 0
+TDMR
+Text GLabel 4950 4300 2    60   Output ~ 0
+TDMGO
+Text GLabel 4950 4200 2    60   Output ~ 0
+TIAKO
+Text GLabel 4950 1600 2    60   Output ~ 0
+TSACK
+Text GLabel 4950 1700 2    60   Output ~ 0
+TIRQ4
+Text GLabel 4950 1800 2    60   Output ~ 0
+TIRQ5
+Text GLabel 4950 1900 2    60   Output ~ 0
+TIRQ6
+Text GLabel 4950 2000 2    60   Output ~ 0
+TIRQ7
+Text GLabel 2800 3900 0    60   Output ~ 0
+DALtx
+Text GLabel 2800 4000 0    60   Output ~ 0
+DALst
+Text GLabel 2800 4100 0    60   Output ~ 0
+~DALbe
+Text GLabel 3400 2500 2    60   Input ~ 0
+RSYNC
+Text GLabel 4350 1600 0    60   Input ~ 0
+RDIN
+Text GLabel 4350 1700 0    60   Input ~ 0
+RDOUT
+Text GLabel 4350 1800 0    60   Input ~ 0
+RRPLY
+Text GLabel 4350 1900 0    60   Input ~ 0
+RREF
+Text GLabel 4350 2000 0    60   Input ~ 0
+RDMR
+Text GLabel 4350 2600 0    60   Input ~ 0
+RSACK
+Text GLabel 4350 2100 0    60   Input ~ 0
+RIRQ4
+Text GLabel 4350 2200 0    60   Input ~ 0
+RIRQ5
+Text GLabel 4350 2300 0    60   Input ~ 0
+RIRQ6
+Text GLabel 4350 2400 0    60   Input ~ 0
+RIRQ7
+Text GLabel 4350 3200 0    60   Input ~ 0
+RINIT
+Text GLabel 4350 3700 0    60   Input ~ 0
+RDCOK
+Text GLabel 4350 3600 0    60   Input ~ 0
+RPOK
+Text GLabel 4350 3800 0    60   Input ~ 0
+RDMGI
+Text GLabel 4350 3900 0    60   Input ~ 0
+RIAKI
+NoConn ~ 2800 2800
+NoConn ~ 3400 2800
+NoConn ~ 2800 3000
+NoConn ~ 3400 3000
+NoConn ~ 2800 4400
+NoConn ~ 3400 4400
+NoConn ~ 2800 4500
+NoConn ~ 2800 3200
+NoConn ~ 3400 3200
+NoConn ~ 2800 3500
+NoConn ~ 3400 3500
+NoConn ~ 2800 3800
+NoConn ~ 2800 1900
+NoConn ~ 4950 2100
+NoConn ~ 4950 2200
+NoConn ~ 4350 2500
+NoConn ~ 4950 2700
+NoConn ~ 4350 2800
+NoConn ~ 4350 2900
+NoConn ~ 4950 2900
+NoConn ~ 4350 3100
+NoConn ~ 4950 3100
+NoConn ~ 4950 3200
+NoConn ~ 4950 3300
+NoConn ~ 4950 3400
+NoConn ~ 4950 3500
+NoConn ~ 4350 3500
+NoConn ~ 4350 4400
+NoConn ~ 4950 4400
+Text Notes 3300 1200 0    60   ~ 12
+ZTEX 2.13 FPGA Module Connector
+Wire Wire Line
+	4950 1400 5350 1400
+Wire Notes Line
+	5700 1050 5700 4650
+Wire Notes Line
+	5700 4650 2300 4650
+Wire Notes Line
+	5700 1050 2300 1050
+Wire Notes Line
+	2300 1050 2300 4650
+Text GLabel 4350 4000 0    60   Input ~ 0
+RHALT
+$Comp
+L MAX3488 U112
+U 1 1 56BE948B
+P 4650 8350
+F 0 "U112" H 4950 8650 60  0000 C CNN
+F 1 "MAX3488" H 4600 8650 60  0000 C CNN
+F 2 "Housings_SOIC:SOIC-8_3.9x4.9mm_Pitch1.27mm" H 4700 8600 60  0001 C CNN
+F 3 "" H 4700 8600 60  0000 C CNN
+	1    4650 8350
+	1    0    0    -1  
+$EndComp
+$Comp
+L MAX3488 U111
+U 1 1 56BE9492
+P 4650 7500
+F 0 "U111" H 4950 7800 60  0000 C CNN
+F 1 "MAX3488" H 4600 7800 60  0000 C CNN
+F 2 "Housings_SOIC:SOIC-8_3.9x4.9mm_Pitch1.27mm" H 4700 7750 60  0001 C CNN
+F 3 "" H 4700 7750 60  0000 C CNN
+	1    4650 7500
+	1    0    0    -1  
+$EndComp
+$Comp
+L MAX3488 U110
+U 1 1 56BE9499
+P 4650 6650
+F 0 "U110" H 4950 6950 60  0000 C CNN
+F 1 "MAX3488" H 4600 6950 60  0000 C CNN
+F 2 "Housings_SOIC:SOIC-8_3.9x4.9mm_Pitch1.27mm" H 4700 6900 60  0001 C CNN
+F 3 "" H 4700 6900 60  0000 C CNN
+	1    4650 6650
+	1    0    0    -1  
+$EndComp
+$Comp
+L CONN_02X04 P101
+U 1 1 56BE94A0
+P 6450 6850
+F 0 "P101" H 6450 7100 50  0000 C CNN
+F 1 "Data" H 6450 6600 50  0000 C CNN
+F 2 "Pin_Headers:Pin_Header_Angled_2x04" H 6450 5650 60  0001 C CNN
+F 3 "" H 6450 5650 60  0000 C CNN
+	1    6450 6850
+	1    0    0    -1  
+$EndComp
+$Comp
+L CONN_02X05 P102
+U 1 1 56BE94A7
+P 6500 8100
+F 0 "P102" H 6500 8400 50  0000 C CNN
+F 1 "Power" H 6500 7800 50  0000 C CNN
+F 2 "Pin_Headers:Pin_Header_Angled_2x05" H 6500 6900 60  0001 C CNN
+F 3 "" H 6500 6900 60  0000 C CNN
+	1    6500 8100
+	1    0    0    -1  
+$EndComp
+Text GLabel 4400 6900 0    60   Input ~ 0
+IPclk
+Text GLabel 4400 7750 0    60   Input ~ 0
+IPdata
+Text GLabel 4400 8600 0    60   Input ~ 0
+IPlatch
+Text GLabel 5150 6850 2    60   Output ~ 0
+IPclkP
+Text GLabel 5150 7000 2    60   Output ~ 0
+IPclkN
+Text GLabel 5150 7700 2    60   Output ~ 0
+IPdataP
+Text GLabel 5150 7850 2    60   Output ~ 0
+IPdataN
+Text GLabel 5150 8550 2    60   Output ~ 0
+IPlatchP
+Text GLabel 5150 8700 2    60   Output ~ 0
+IPlatchN
+NoConn ~ 4400 6650
+NoConn ~ 5150 6550
+NoConn ~ 5150 6700
+NoConn ~ 5150 7400
+NoConn ~ 5150 7550
+NoConn ~ 4400 7500
+NoConn ~ 4400 8350
+NoConn ~ 5150 8250
+NoConn ~ 5150 8400
+$Comp
+L +12V #PWR0136
+U 1 1 56BE94C0
+P 6100 7750
+F 0 "#PWR0136" H 6100 7600 50  0001 C CNN
+F 1 "+12V" H 6100 7890 50  0000 C CNN
+F 2 "" H 6100 7750 60  0000 C CNN
+F 3 "" H 6100 7750 60  0000 C CNN
+	1    6100 7750
+	1    0    0    -1  
+$EndComp
+$Comp
+L +12V #PWR0137
+U 1 1 56BE94C6
+P 6900 7750
+F 0 "#PWR0137" H 6900 7600 50  0001 C CNN
+F 1 "+12V" H 6900 7890 50  0000 C CNN
+F 2 "" H 6900 7750 60  0000 C CNN
+F 3 "" H 6900 7750 60  0000 C CNN
+	1    6900 7750
+	1    0    0    -1  
+$EndComp
+$Comp
+L GND #PWR0138
+U 1 1 56BE94CC
+P 6200 8400
+F 0 "#PWR0138" H 6200 8150 50  0001 C CNN
+F 1 "GND" H 6200 8250 50  0001 C CNN
+F 2 "" H 6200 8400 60  0000 C CNN
+F 3 "" H 6200 8400 60  0000 C CNN
+	1    6200 8400
+	-1   0    0    -1  
+$EndComp
+$Comp
+L GND #PWR0139
+U 1 1 56BE94D2
+P 6800 8400
+F 0 "#PWR0139" H 6800 8150 50  0001 C CNN
+F 1 "GND" H 6800 8250 50  0001 C CNN
+F 2 "" H 6800 8400 60  0000 C CNN
+F 3 "" H 6800 8400 60  0000 C CNN
+	1    6800 8400
+	-1   0    0    -1  
+$EndComp
+Text Notes 5450 7350 0    60   ~ 12
+Indicator Panel
+Text GLabel 6200 6800 0    60   Input ~ 0
+IPclkP
+Text GLabel 6700 6900 2    60   Input ~ 0
+IPclkN
+Text GLabel 6200 6700 0    60   Input ~ 0
+IPdataP
+Text GLabel 6700 6700 2    60   Input ~ 0
+IPdataN
+Text GLabel 6200 7000 0    60   Input ~ 0
+IPlatchP
+Text GLabel 6700 7000 2    60   Input ~ 0
+IPlatchN
+NoConn ~ 6200 6900
+NoConn ~ 6700 6800
+Wire Wire Line
+	6100 7750 6100 8300
+Wire Wire Line
+	6100 8300 6250 8300
+Wire Wire Line
+	6250 7900 6100 7900
+Connection ~ 6100 7900
+Wire Wire Line
+	6900 8300 6750 8300
+Wire Wire Line
+	6900 7750 6900 8300
+Wire Wire Line
+	6750 7900 6900 7900
+Connection ~ 6900 7900
+Wire Wire Line
+	6800 8000 6800 8400
+Wire Wire Line
+	6800 8000 6750 8000
+Wire Wire Line
+	6750 8100 6800 8100
+Connection ~ 6800 8100
+Wire Wire Line
+	6750 8200 6800 8200
+Connection ~ 6800 8200
+Wire Wire Line
+	6250 8000 6200 8000
+Wire Wire Line
+	6200 8000 6200 8400
+Wire Wire Line
+	6250 8100 6200 8100
+Connection ~ 6200 8100
+Wire Wire Line
+	6250 8200 6200 8200
+Connection ~ 6200 8200
+Wire Notes Line
+	3950 8900 7350 8900
+Wire Notes Line
+	7350 8900 7350 6150
+Wire Notes Line
+	7350 6150 3950 6150
+Wire Notes Line
+	3950 6150 3950 8900
+$Comp
+L CONN_02X16 P103
+U 1 1 56BF62BD
+P 1950 7000
+F 0 "P103" H 1950 7850 50  0000 C CNN
+F 1 "Logic Analyzer" V 1950 7000 50  0000 C CNN
+F 2 "Socket_Strips:Socket_Strip_Straight_2x16" H 1950 5900 50  0001 C CNN
+F 3 "" H 1950 5900 50  0000 C CNN
+	1    1950 7000
+	1    0    0    -1  
+$EndComp
+$EndSCHEMATC
