@@ -12,6 +12,9 @@ module tb_qbus();
    wand [21:0] BDAL;
    wand        BBS7, BWTBT, BSYNC, BDIN, BDOUT, BRPLY, BREF, BIRQ4, BIRQ5, BIRQ6, BIRQ7,
 	       BDMR, BSACK, BINIT, BIAKO, BDMGO, BIAKI, BDMGI, BDCOK, BPOK, BEVNT, BHALT;
+
+   // easier to watch in GTKWave
+   wire [15:0] BDAL16 = BDAL[15:0];
    
    // These registers are so the TB can drive the QBUS lines
    reg [21:0]  tbDAL;
@@ -25,52 +28,58 @@ module tb_qbus();
      { BIAKI, BDMGI, BDCOK, BPOK, BEVNT, BHALT } = { ~tbIAKI, ~tbDMGI, ~tbDCOK, ~tbPOK, ~tbEVNT, ~tbHALT };
 
    // The QBUS signals as seen by the FPGA
+   wand        DALbe_L;		// Enable trnasmitting on BDAL
    wor 	       DALtx;		// Direction control from the FPGA for the BDAL lines
-   tri [21:0]  DAL;		// bidirectional to save FPGA pins
-   wire        RBS7, RWTBT, RSYNC, RDIN, RDOUT, RRPLY, RREF, RIRQ4, RIRQ5, RIRQ6, RIRQ7,
+   wor 	       DALst;		// Strobe data into the output latches in the Am2908s
+   tri [21:0]  ZDAL;		// bidirectional to save FPGA pins
+   tri 	       ZBS7, ZWTBT;
+   wire        RSYNC, RDIN, RDOUT, RRPLY, RREF, RIRQ4, RIRQ5, RIRQ6, RIRQ7,
     	       RDMR, RSACK,
     	       RINIT, RIAKI, RDMGI, RDCOK, RPOK,
     	       REVNT, RHALT;
-   wor 	       TBS7,
-	       TWTBT, TSYNC, TDIN, TDOUT, TRPLY, TREF, TIRQ4, TIRQ5, TIRQ6, TIRQ7, TDMR, TSACK,
+   wor 	       TSYNC, TDIN, TDOUT, TRPLY, TREF, TIRQ4, TIRQ5, TIRQ6, TIRQ7, TDMR, TSACK,
 	       TINIT,
     	       TIAKO, TDMGO;
    // need to have a null driver for each of these 'wor' lines
+   assign DALbe_L = 1;
    assign DALtx= 0;
-   assign { TBS7, TWTBT, TSYNC, TDIN, TDOUT, TRPLY, TREF, TIRQ4, TIRQ5, TIRQ6, TIRQ7, 
+   assign DALst = 0;
+   assign { TSYNC, TDIN, TDOUT, TRPLY, TREF, TIRQ4, TIRQ5, TIRQ6, TIRQ7, 
 	    TDMR, TSACK, TINIT, TIAKO, TDMGO } = 0;
 
    integer     count = 0;	// counts up the tests we run.  it's printed out in error
 				// messages and we can look at the signal trace to see
 				// where the problem is.
 
+   reg 	       qclk = 0;
+   always @(*)
+     #25 qclk <= ~qclk;		// 20 MHz clock (50ns cycle time)
+
    // Connect to the QBUS through driver chips and level converters
    qdrv qbus(BDAL, BBS7, BWTBT, BSYNC, BDIN, BDOUT, BRPLY, BREF, BIRQ4, BIRQ5, BIRQ6, BIRQ7,
 	     BDMR, BSACK, BINIT, BIAKO, BDMGO, BIAKI, BDMGI, BDCOK, BPOK,
-`ifdef CPU
-	     BEVNT, BHALT,
-`endif
-	     DALtx, DAL,
-	     RBS7, RWTBT, RSYNC, RDIN, RDOUT, RRPLY, RREF, RIRQ4, RIRQ5, RIRQ6, RIRQ7,
-`ifdef CPU
-    	     RDMR, RSACK,
-`endif
+	     DALbe_L, DALtx, DALst, ZDAL, ZBS7, ZWTBT, 
+	     RSYNC, RDIN, RDOUT, RRPLY, RREF, RIRQ4, RIRQ5, RIRQ6, RIRQ7,
     	     RINIT, RIAKI, RDMGI, RDCOK, RPOK,
-`ifdef CPU
-    	     REVNT, RHALT, TBS7,
-`endif
-	     TWTBT, TSYNC, TDIN, TDOUT, TRPLY, TREF, TIRQ4, TIRQ5, TIRQ6, TIRQ7, TDMR, TSACK,
-`ifdef CPU
-	     TINIT,
-`endif
-    	     TIAKO, TDMGO);
+	     TWTBT, TSYNC, TDIN, TDOUT, TRPLY, TREF, TIRQ4, TIRQ5, TIRQ6, TIRQ7, 
+	     TDMR, TSACK, TIAKO, TDMGO);
 
+   // Connect the PMo to the QBUS
+   wire        led_d8, led_d9, led_d10, led_d11, led_c12, led_d12, tp_b30;
+   pmo pmo(qclk, led_d8, led_d9, led_d10, led_d11, led_c12, led_d12, tp_b30,
+	   DALbe_L, DALtx, DALst, ZDAL, ZBS7, ZWTBT,
+	   RSYNC, RDIN, RDOUT, RRPLY, RREF, RIRQ4, RIRQ5, RIRQ6, RIRQ7,
+	   RDMR, RSACK, RINIT, RIAKI, RDMGI, RDCOK, RPOK,
+	   TSYNC, TDIN, TDOUT, TRPLY, TREF, TIRQ4, TIRQ5, TIRQ6, TIRQ7,
+	   TDMR, TSACK, TIAKO, TDMGO);
+   
+
+`ifdef NOTDEF
    // Get some memory on the bus
    sim_mem mem(DALtx, DAL, TRPLY, RDIN, RDOUT, RSYNC, RBS7);
 
 
    // The internal I/O bus
-   reg 	       qclk = 0;
    wire [12:0] iADDR;
    wire        iBS7, iWRITE;
    wire [15:0] iWDATA;
@@ -90,9 +99,7 @@ module tb_qbus();
    reg [12:0]  reg2_addr = 'o560;
    sreg_block reg1(reg1_addr, qclk, iADDR, iBS7, iREAD_MATCH, iWRITE_MATCH, iWDATA, iWRITE, iRDATA);
    sreg_block reg2(reg2_addr, qclk, iADDR, iBS7, iREAD_MATCH, iWRITE_MATCH, iWDATA, iWRITE, iRDATA);
-
-   always @(*)
-     #25 qclk <= ~qclk;		// 20 MHz clock (50ns cycle time)
+`endif
 
    initial begin
       $dumpfile("tb_qbus.lxt");
@@ -102,7 +109,20 @@ module tb_qbus();
       #0 tbDAL = 0;
       { tbBS7, tbWTBT, tbSYNC, tbDIN, tbDOUT, tbRPLY, tbREF, tbIRQ4, tbIRQ5, tbIRQ6, tbIRQ7,
 	tbDMR, tbSACK, tbINIT, tbIAKO, tbDMGO, tbIAKI, tbDMGI, tbDCOK, tbPOK, tbEVNT, tbHALT } = 0;
-      
+
+      // read from 777570
+      #200 count = count + 1;
+      tbDAL = 'o777570; tbBS7 = 1;
+      #150 tbSYNC = 1;
+      #100 tbDAL = 0; tbBS7 = 0; tbDIN = 1;
+      #600 if (!RRPLY)
+	$display("Error NXM (%1d)", count);
+      else if (~BDAL[15:0] != 16'o177777)
+	$display("Error (%1d): %o", count, ~BDAL);
+      tbDIN = 0;
+      #100 tbSYNC = 0;
+
+`ifdef NOTDEF
       // read from 440
       #200 count = count + 1;
       tbDAL = 'o440;  tbBS7 = 1;
@@ -190,9 +210,22 @@ module tb_qbus();
       #150 if (~BDAL != 22'o54545)
 	$display("Error (%1d): %o", count, ~BDAL);
       tbDIN = 0; tbSYNC = 0;
+`endif
 
       #200 $finish_and_return(0);
    end
 
 
 endmodule // tb_qbus
+
+module clk_wiz_0
+  (input clk48,
+   output clk20,
+   input  reset,
+   output locked);
+
+   // just reflect the input to the output and set the input to be 20MHz in the testbench
+   assign clk20 = clk48;
+   assign locked = 1;
+
+endmodule // clk_wiz_0

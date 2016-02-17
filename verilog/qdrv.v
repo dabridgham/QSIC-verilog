@@ -9,7 +9,7 @@
 // This is implemented in hardware on the QSIC board.  It's reflected here in Verilog for
 // the purposes of simulation and testing.
 //
-// The QBUS lines are brought in through driver chips and level converters.  BDAL[0..21], BBS7,
+// The QBUS lines are brought in through driver chips and level converters.  BDAL[21..0], BBS7,
 // and BWTBT all come in through Am2908s and show up as bi-directional lines with a direction
 // control.  They also have an edge triggered latch on output.  All the rest of the bus lines
 // are separated into transmit (T) and receive (R) lines.
@@ -37,10 +37,6 @@ module qdrv
    input 	BDMGI,
    input 	BDCOK,
    input 	BPOK,
-`ifdef CPU
-   input 	BEVNT,
-   input 	BHALT,
-`endif
 
    // The QBUS signals as seen by the FPGA
    input 	DALbe_L, // Enable transmitting on BDAL (active low)
@@ -60,18 +56,11 @@ module qdrv
    output 	RIRQ6,
    output 	RIRQ7,
    output 	RDMR,
-`ifdef CPU
-   output 	RSACK,
-`endif
    output 	RINIT,
    output 	RIAKI,
    output 	RDMGI,
    output 	RDCOK,
    output 	RPOK,
-`ifdef CPU
-   output 	REVNT,
-   output 	RHALT,
-`endif 
 
    input 	TSYNC,
    input 	TDIN,
@@ -84,16 +73,14 @@ module qdrv
    input 	TIRQ7,
    input 	TDMR,
    input 	TSACK,
-`ifdef CPU
-   input 	TINIT,
-`endif
    input 	TIAKO,
    input 	TDMGO
    );
 
-   // The BDAL lines and BBS7 and BWTBT are kept bidirectional to save lines (at the cost of 
-   // direction and enable lines)
-   reg [21:0] 	DAL;	// these are latched in the Am2908
+   // The BDAL lines and BBS7 and BWTBT are kept bidirectional to save lines (at the cost of
+   // direction and enable lines). They're all run through AM2908s so these registers are the
+   // output latches in those Am2908s.
+   reg [21:0] 	DAL;
    reg 		BS7, WTBT;
 
    always @(posedge DALst)
@@ -120,19 +107,12 @@ module qdrv
    assign RIRQ6 = ~BIRQ6;
    assign RIRQ7 = ~BIRQ7;
    assign RDMR = ~BDMR;
-`ifdef CPU
-   assign RSAK = ~BSACK;
-`endif
    assign RINIT = ~BINIT;
    assign RIAKI = ~BIAKI;
    assign RDMGI = ~BDMGI;
    assign RDCOK = ~BDCOK;
    assign RPOK = ~BPOK;
-`ifdef CPU
-   assign REVNT = ~BEVNT;
-   assign RHALT = ~BHALT;
 
-`endif
    assign BSYNC = ~TSYNC;
    assign BDIN = ~TDIN;
    assign BDOUT = ~TDOUT;
@@ -144,9 +124,6 @@ module qdrv
    assign BIRQ7 = ~TIRQ7;
    assign BDMR = ~TDMR;
    assign BSACK = ~TSACK;
-`ifdef CPU
-   assign BINIT = ~TINIT;
-`endif
    assign BIAKO = ~TIAKO;
    assign BDMGO = ~TDMGO;
    

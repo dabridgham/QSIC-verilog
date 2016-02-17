@@ -8,6 +8,8 @@
 
 module rkv11
   (
+   input 	qclk,		// 20MHz
+
    // The QBUS
    output 	DALbe_L, // enable BDAL output onto the bus (active low)
    output 	DALtx, // enable BDAL output through level-shifter
@@ -21,6 +23,10 @@ module rkv11
    input 	RINIT,
    output 	TRPLY,
 
+   input [4:7] 	RIRQ,
+   input 	RIAKI,
+   output [4:7] TIRQ,
+   output 	TIAKO,
 
    // The internal microcontroller bus
    input [15:0] uADDR,
@@ -61,81 +67,81 @@ module rkv11
    //
 
    wire [2:0]  reg_addr;
-   wire        addr_mine, write_cycle, read_cycle;
+   wire        addr_mine, write_cycle, read_cycle, interrupt_cycle, assert_register, assert_vector;
 
    qreg #(.RA_BITS(3))
-   qreg(.io_addr_base(addr_base), .int_vector(int_vec), .int_priority(int_priority),
-	.clk(qclk), 
+   qreg(.io_addr_base(addr_base), .int_priority(int_priority), .clk(qclk), 
     	.DALbe_L(DALbe_L), .DALtx(DALtx), .DALst(DALst), .ZDAL(ZDAL), .ZBS7(ZBS7), .ZWTBT(ZWTBT),
 	.RSYNC(RSYNC), .RDIN(RDIN), .RDOUT(RDOUT), .TRPLY(TRPLY), 
-	.reg_addr(reg_addr), .addr_mine(addr_mine), .write_cycle(write_cycle), .read_cycle(read_cycle));
+ 	.RIRQ(RIRQ), .RIAKI(RIAKI), .TIRQ(TIRQ), .TIAKO(TIAKO),
+	.reg_addr(reg_addr), .addr_mine(addr_mine),
+	.write_cycle(write_cycle), .read_cycle(read_cycle), .interrupt_cycle(interrupt_cycle),
+	.assert_register(assert_register), .assert_vector(assert_vector));
    
    // All the bits in the various device registers
-   // RKDS - Drive Status
-   reg [2:0]   ID;		// Drive ID [15..13]
-   reg 	       DPL;		// Drive Power Low [12]
-   wire        RK05 = 1;	// RK05 [11]
-   reg 	       DRU;		// Drive Unsafe [10]
-   reg 	       SIN;		// Seek Incomplete [9]
-   reg 	       SOK;		// Sector Counter OK [8]
-   reg 	       DRY;		// Drive Ready [7]
-   reg 	       RWS_RDY;		// Read/Write/Seek Ready [6]
-   reg 	       WPS;		// Write Protect Status [5]
-   wire        SCeqSA = (SC == SA); // Sector Counter = Sector Address [4]
-   reg [3:0]   SC;		    // Sector Counter [3..0]
-   // RKER - Error
-   reg 	       DRE;		// Drive Error [15]
-   reg 	       OVR;		// Overrun [14]
-   reg 	       WLO;		// Write Lock Out Violation [13]
-   reg 	       SKE;		// Seek Error [12]
-   reg 	       PGE;		// Programming Error [11]
-   reg 	       NXM;		// Non-Existent Memory [10]
-   reg 	       DLT;		// Data Late [9]
-   reg 	       TE;		// Timing Error [8]
-   reg 	       NXD;		// Non-Existent Disk [7]
-   reg 	       NXC;		// Non-Existent Cylinder [6]
-   reg 	       NXS;		// Non-Existent Sector [5]
+
+   localparam RKDS = 4'b0000;	       // Drive Status
+   reg [2:0] ID;	        // Drive ID [15..13]
+   reg 	     DPL;		// Drive Power Low [12]
+   wire      RK05 = 1;		// RK05 [11]
+   reg 	     DRU;		// Drive Unsafe [10]
+   reg 	     SIN;		// Seek Incomplete [9]
+   reg 	     SOK;		// Sector Counter OK [8]
+   reg 	     DRY;		// Drive Ready [7]
+   reg 	     RWS_RDY;		// Read/Write/Seek Ready [6]
+   reg 	     WPS;		// Write Protect Status [5]
+   wire      SCeqSA = (SC == SA); // Sector Counter = Sector Address [4]
+   reg [3:0] SC;		  // Sector Counter [3..0]
+
+   localparam RKER = 4'b0010;	// Error
+   reg 	     DRE;		// Drive Error [15]
+   reg 	     OVR;		// Overrun [14]
+   reg 	     WLO;		// Write Lock Out Violation [13]
+   reg 	     SKE;		// Seek Error [12]
+   reg 	     PGE;		// Programming Error [11]
+   reg 	     NXM;		// Non-Existent Memory [10]
+   reg 	     DLT;		// Data Late [9]
+   reg 	     TE;		// Timing Error [8]
+   reg 	     NXD;		// Non-Existent Disk [7]
+   reg 	     NXC;		// Non-Existent Cylinder [6]
+   reg 	     NXS;		// Non-Existent Sector [5]
 				// unused [4..2]
-   reg 	       CSE;		// Checksum Error [1]
-   reg 	       WCE;		// Write Check Error [0]
-   // RKCS - Control Status
-   wire        ERROR = HE | CSE | WCE; // Error [15]
-   wire        HE = DRE | OVR | WLO | SKE | PGE | NXM | DLT | TE | NXD | NXC | NXS; // Hard Error [14]
-   reg 	       SCP;		// Search Complete [13]
+   reg 	     CSE;		// Checksum Error [1]
+   reg 	     WCE;		// Write Check Error [0]
+
+   localparam RKCS = 4'b0100;	// Control Status
+   wire      ERROR = HE | CSE | WCE; // Error [15]
+   wire      HE = DRE | OVR | WLO | SKE | PGE | NXM | DLT | TE | NXD | NXC | NXS; // Hard Error [14]
+   reg 	     SCP;		// Search Complete [13]
 				// unused [12]
-   reg 	       INH_BA;		// Inhibit Bus Address Increment [11]
-   reg 	       FMT;		// Format [10]
+   reg 	     INH_BA;		// Inhibit Bus Address Increment [11]
+   reg 	     FMT;		// Format [10]
 				// unused [9]
-   reg 	       SSE;		// Stop on Soft Error [8]
-   reg 	       RDY;		// Control Ready [7]
-   reg 	       IDE;		// Interrupt on Done Enable [6]
+   reg 	     SSE;		// Stop on Soft Error [8]
+   reg 	     RDY;		// Control Ready [7]
+   reg 	     IDE;		// Interrupt on Done Enable [6]
 				// Memory Extension [5..4] (see BAE[1:0])
-   reg [2:0]   FUNC;		// Function [3..1]
-   reg 	       GO;		// Go [0]
-   // RKWC - Word Count
-   reg [15:0]  WC;
-   // RKBA - Current Bus Address
-   reg [15:0]  BA;
-   // RKDA - Disk Address
-   reg [2:0]   DR_SEL;	       // Drive Select
-   reg [7:0]   CYL_ADD;	       // Cylinder Address (0..202)
-   reg 	       SUR;	       // Surface (0 = upper)
-   reg [3:0]   SA;	       // Sector Address (0..11)
-   // RKXA - Extended Bus Address (not in RK11, added for Q22)
-   reg [5:0]   BAE;		// Bus Address Extension
-   // RKDB - Data Buffer
-   reg [15:0]  DB;
-   
-   // RK11 Registers
-   localparam
-     RKDS = 4'b0000,		// Drive Status
-     RKER = 4'b0010,		// Error
-     RKCS = 4'b0100,		// Control Status
-     RKWC = 4'b0110,		// Word Count
-     RKBA = 4'b1000,		// Current Bus Address
-     RKDA = 4'b1010,		// Disk Address
-     RKXA = 4'b1100,		// Extended Bus Address
-     RKDB = 4'b1110;		// Data Buffer
+   reg [2:0] FUNC;		// Function [3..1]
+   reg 	     GO;		// Go [0]
+
+   localparam RKWC = 4'b0110;	// Word Count
+   reg [15:0] WC;
+
+   localparam RKBA = 4'b1000;	// Current Bus Address
+   reg [15:0] BA;
+
+   localparam RKDA = 4'b1010;	// Disk Address
+   reg [2:0]  DR_SEL;		// Drive Select
+   reg [7:0]  CYL_ADD;		// Cylinder Address (0..202)
+   reg 	      SUR;		// Surface (0 = upper)
+   reg [3:0]  SA;		// Sector Address (0..11)
+
+   localparam RKXA = 4'b1100;	// Extended Bus Address
+   reg [5:0]  BAE;		// Bus Address Extension
+
+   localparam RKDB = 4'b1110;	// Data Buffer
+   reg [15:0] DB;
+
 
    // read registers
    reg [15:0] 	     data_out;
@@ -143,8 +149,10 @@ module rkv11
    always @(*) begin
       data_out = 16'bZ;
 
-      if (addr_mine && read_cycle)
-	// gate the data out as soon as we match in case it's a read
+      if (assert_vector)
+	data_out = int_vec;
+      
+      else if (assert_register)
 	case (reg_addr)
 	  RKDS:
 	    data_out = { ID, DPL, RK05, DRU, SIN, SOK, DRY, RWS_RDY, WPS, SCeqSA, SC };
@@ -165,7 +173,8 @@ module rkv11
 	      // update their device driver anyway.
 	      data_out = { 12'b0, BAE };
 	    else
-	      // this was a maintenance register on the RK11-C.  that's not emulated.
+	      // this was a maintenance register on the RK11-C.  on the RK11-D it just
+	      // returned 0.
 	      data_out = 0;
 	  RKDB:
 	    data_out = DB;

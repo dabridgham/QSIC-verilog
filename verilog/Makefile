@@ -1,11 +1,11 @@
 ICOPTS = -DSIM -WALL
 SIMOPTS = -N
 INCLUDES = qsic.vh
-QBUS_FILES = tb_qbus.v qdrv.v qsync.v areg.v areg_block.v sreg_block.v sim_memory.v
+QBUS_FILES = tb_qbus.v qdrv.v qsic-pmo.v
 DMA_FILES = tb_dma.v qdrv.v master.v sim_proc.v
 BG_FILES = tb_bg.v bus-grant-mux.v
 
-ALL: tb_bg.check
+ALL: tb_qbus.check
 
 tb_qbus.check: $(INCLUDES) $(QBUS_FILES)
 	iverilog -tnull $(ICOPTS) $(QBUS_FILES)
@@ -19,7 +19,7 @@ tb_bg.check: $(BG_FILES)
 rkv11.check: rkv11.v disk-uc.v qreg.v $(INCLUDES)
 	iverilog -tnull rkv11.v disk-uc.v qreg.v $(INCLUDES)
 
-test: test.bg
+test: test.qbus
 
 test.bg: test_bg.vvp
 	./tb_bg.vvp $(SIMOPTS)
