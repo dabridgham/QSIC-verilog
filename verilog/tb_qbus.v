@@ -60,8 +60,8 @@ module tb_qbus();
 	     BDMR, BSACK, BINIT, BIAKO, BDMGO, BIAKI, BDMGI, BDCOK, BPOK,
 	     DALbe_L, DALtx, DALst, ZDAL, ZBS7, ZWTBT, 
 	     RSYNC, RDIN, RDOUT, RRPLY, RREF, RIRQ4, RIRQ5, RIRQ6, RIRQ7,
-    	     RINIT, RIAKI, RDMGI, RDCOK, RPOK,
-	     TWTBT, TSYNC, TDIN, TDOUT, TRPLY, TREF, TIRQ4, TIRQ5, TIRQ6, TIRQ7, 
+    	     RDMR, RINIT, RIAKI, RDMGI, RDCOK, RPOK,
+	     TSYNC, TDIN, TDOUT, TRPLY, TREF, TIRQ4, TIRQ5, TIRQ6, TIRQ7, 
 	     TDMR, TSACK, TIAKO, TDMGO);
 
    // Connect the PMo to the QBUS
@@ -109,6 +109,10 @@ module tb_qbus();
       #0 tbDAL = 0;
       { tbBS7, tbWTBT, tbSYNC, tbDIN, tbDOUT, tbRPLY, tbREF, tbIRQ4, tbIRQ5, tbIRQ6, tbIRQ7,
 	tbDMR, tbSACK, tbINIT, tbIAKO, tbDMGO, tbIAKI, tbDMGI, tbDCOK, tbPOK, tbEVNT, tbHALT } = 0;
+
+      #100 tbINIT = 1;
+      #200 tbINIT = 0;
+      
 
       // read from 777570
       #200 count = count + 1;

@@ -1,0 +1,6 @@
+ o Test that DMA cycles catch NXM
+ o Implement DMA to I/O space (BS7)
+ o Build a good testbech for exhaustively testing bus-arbitration and interrupt cycles.
+ o Figure out the right thing for Q18 or Q16 configurations.
+ o Consider moving RDIN to a clock input.
+ 

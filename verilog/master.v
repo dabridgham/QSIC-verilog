@@ -87,7 +87,10 @@ module master
    
    always @(RINIT, posedge clk) begin
       if (RINIT) begin
-	 RSYNCsr <= 0; RRPLYsr <= 0; RDMGIsr <= 0; TDMGOsr <= 0;
+	 RSYNCsr <= 0;
+	 RRPLYsr <= 0; 
+	 RDMGIsr <= 0; 
+	 TDMGOsr <= 0;
       end else begin
 	 RSYNCsr <= { RSYNCsr[1], RSYNC };
 	 RRPLYsr <= { RRPLYsr[1], RRPLY };
