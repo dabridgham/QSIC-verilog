@@ -311,7 +311,7 @@ module rkv11
 	      ram_disk[rd_addr] <= RDL;
 	    else if (dma_write)
 	      DB <= ram_disk[rd_addr];
-	    WC <= WC - 1;
+	    WC <= WC + 1;
 	    if (!INH_BA)
 	      RK_BAR <= RK_BAR + 1;
 	    saddr <= saddr_next;

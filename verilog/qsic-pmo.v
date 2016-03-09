@@ -284,7 +284,7 @@ module pmo
    // Wire up LEDs for testing
    //
 
-   assign tp_b30 = rk_assert_vector;
+   assign tp_b30 = TSACK;
    assign led_3_4 = 0;
    assign led_3_6 = 0;
    assign led_3_8 = TSYNC;
