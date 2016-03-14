@@ -2,5 +2,7 @@
  o Implement DMA to I/O space (BS7)
  o Build a good testbech for exhaustively testing bus-arbitration and interrupt cycles.
  o Figure out the right thing for Q18 or Q16 configurations.
- o Consider moving RDIN to a clock input.
+ o Consider moving RDIN and RDMGI to clock inputs.
+ o Implement 4 transfers per bus acquisition.
+ o Implement block mode DMA.
  

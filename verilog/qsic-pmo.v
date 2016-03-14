@@ -119,12 +119,18 @@ module pmo
    // Connect various devices
    //
 
+   // synchronize RDMGI for the bus-grant chain
+   reg [0:1] RDMGIsr;
+   always @(posedge clk20) RDMGIsr <= { RDMGIsr[1], RDMGI };
+   wire      sRDMGI = RDMGIsr[0];
+
+
    wire [15:0] RDL = ZDAL[15:0]; // Receive Data Lines
    reg [21:0]  TDAL;		 // Transmit Data/Address Lines
 
    reg 	       assert_vector = 0;
 
-// `define SW_REG 1
+`define SW_REG 1
 `define RKV11 1
 
 `ifdef SW_REG
@@ -145,7 +151,7 @@ module pmo
    wire [21:0] rk_tal;
 
    qmaster2908 
-     rk_master(clk20, RSYNC, RRPLY, RDMR, RSACK, RINIT, RDMGI, RREF,
+     rk_master(clk20, RSYNC, RRPLY, RDMR, RSACK, RINIT, RDMGI, sRDMGI, RREF,
 	       TSYNC, rk_wtbt, TDIN, TDOUT, TDMR, TSACK, TDMGO,
 	       rk_dma_read, rk_dma_write, rk_assert_addr, rk_assert_data,
 	       rk_bus_master, rk_dma_complete, rk_DALst, rk_DALbe, rk_nxm);

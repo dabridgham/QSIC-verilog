@@ -55,6 +55,11 @@ test.qint: tb-qint.vvp
 	./tb-qint.vvp $(SIMOPTS)
 
 
+tb-sd.vvp: Makefile sd.v
+	iverilog $(ICOPTS) -o tb-sd.vvp sd.v
+test.sd: tb-sd.vvp
+	./tb-sd.vvp $(SIMOPTS)
+
 
 test.dma: tb_dma.vvp
 	./tb_qbus.vvp $(SIMOPTS)

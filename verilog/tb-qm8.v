@@ -10,13 +10,13 @@
 module tb_qm8();
    
    // QBUS signals
-   reg RSYNC, RRPLY, RDMR, RSACK, RINIT, RDMGI;
-   wire TSYNC, TDIN, TDOUT, TDMR, TSACK,  TDMGO;
+   reg RSYNC, RRPLY, RDMR, RSACK, RINIT, RDMGI, RREF;
+   wire TSYNC, TWTBT, TDIN, TDOUT, TDMR, TSACK,  TDMGO;
    
 
    // internal controls
    reg 	dma_read, dma_write;
-   wire assert_addr, assert_data, latch_read_data, write_pulse, DALst, DALbe_L, nxm;
+   wire assert_addr, assert_data, bus_master, dma_complete, DALst, DALbe, nxm;
 
    reg 	       qclk = 1;
    always @(*)
@@ -52,44 +52,49 @@ module tb_qm8();
 
 	 if (read_request)
 	   dma_read <= 1;
-	 else if (latch_read_data)
+	 else if (dma_complete)
 	   dma_read <= 0;
       end
    end
 
+   // synchronize RDMGI
+   reg [0:1] RDMGIsr;
+   always @(posedge qclk) RDMGIsr <= { RDMGIsr[1], RDMGI };
+   wire      sRDMGI = RDMGIsr[0];
+
 
    qmaster2908 qm
-     (qclk, RSYNC, RRPLY, RDMR, RSACK, RINIT, RDMGI,
-      TSYNC, TDIN, TDOUT, TDMR, TSACK, TDMGO,
-      dma_read, dma_write, assert_addr, assert_data, 
-      latch_read_data, write_pulse, DALst, DALbe_L, nxm);   
+     (qclk, RSYNC, RRPLY, RDMR, RSACK, RINIT, RDMGI, sRDMGI, RREF,
+      TSYNC, TWTBT, TDIN, TDOUT, TDMR, TSACK, TDMGO,
+      dma_read, dma_write, assert_addr, assert_data,
+      bus_master, dma_complete, DALst, DALbe, nxm);   
 
    initial begin
       $dumpfile("tb-qm8.lxt");
       $dumpvars(0, tb_qm8);
 
       // bus idle, no requests
-      #0 { RSYNC, RRPLY, RDMR, RSACK, RINIT, RDMGI } = 0;
+      #0 { RSYNC, RRPLY, RDMR, RSACK, RINIT, RDMGI, RREF} = 0;
 
       #100 RINIT <= 1;
       #100 RINIT <= 0;
       
       #100 write_request <= 1;
       #100 write_request <= 0;
-      while (!TSACK)
+
+      while (!TSYNC)
 	#1 write_request <= 0;
-      while (TSACK)
+      while (TSYNC)
 	#1 write_request <= 0;
 
       #100 read_request <= 1;
       #100 read_request <= 0;
-      while (!TSACK)
+      while (!TSYNC)
 	#1 read_request <= 0;
-      while (TSACK)
+      while (TSYNC)
 	#1 read_request <= 0;
-      
 
-      #500 $finish_and_return(0);
+      #1200 $finish_and_return(0);
    end
 
 endmodule // tb_qm8

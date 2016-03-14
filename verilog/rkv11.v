@@ -142,7 +142,7 @@ module rkv11
 
    localparam 
 //     CYLINDERS = 203,
-     CYLINDERS = 2,		// reduced for the RAM disk !!!
+     CYLINDERS = 10,		// reduced for the RAM disk !!!
      SURFACES = 2,
      SECTORS = 12;
    // Convert cylinder/surface/sector into linear block address
@@ -153,7 +153,7 @@ module rkv11
    reg 	       next_surface;
    reg [7:0]   next_cylinder;
    always @(*) begin
-      if (SA + 1 == SECTORS) begin
+      if ((SA + 1) == SECTORS) begin
 	 next_sector = 0;
 	 if (SUR == 1) begin
 	    next_surface = 0;
@@ -162,8 +162,11 @@ module rkv11
 	    next_surface = 1;
 	    next_cylinder = CYL_ADD;
 	 end
-      end else
-	next_sector = SA + 1;
+      end else begin
+	 next_sector = SA + 1;
+	 next_surface = SUR;
+	 next_cylinder = CYL_ADD;
+      end
    end // always @ begin
    // Detect Overrun
    wire overrun = (SA >= SECTORS) || (CYL_ADD >= CYLINDERS);
@@ -180,7 +183,8 @@ module rkv11
      WRITE_LOCK = 3'b111;
 
    // internal initialization signal
-   wire init = RINIT || (GO && (FUNC == CONTROL_RESET));
+//   wire init = RINIT || (GO && (FUNC == CONTROL_RESET));
+   wire init = (GO && (FUNC == CONTROL_RESET));	// !!! for testing
 
    // simulate the sectors flying by on the disk.  we only have a single sector counter,
    // not one for each disk.  it seems sufficient.
@@ -251,7 +255,7 @@ module rkv11
 	     else
 	       // this was a maintenance register on the RK11-C.  on the RK11-D it just
 	       // returned 0.
-	       TDL = interrupt_request; // testing !!!
+	       TDL = 0;
 	   RKDB:
 	     TDL = DB;
 	 endcase // case (RAL[3:0])
@@ -309,6 +313,7 @@ module rkv11
 	 if (dma_complete) begin
 	    if (dma_read)
 	      ram_disk[rd_addr] <= RDL;
+//	      ram_disk[rd_addr] <= RDL & ~16'o1; // !!! testing, bash the word
 	    else if (dma_write)
 	      DB <= ram_disk[rd_addr];
 	    WC <= WC + 1;
