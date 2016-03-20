@@ -5,4 +5,5 @@
  o Consider moving RDIN and RDMGI to clock inputs.
  o Implement 4 transfers per bus acquisition.
  o Implement block mode DMA.
+ o Restore RINIT reset to the RK11
  

@@ -55,10 +55,18 @@ test.qint: tb-qint.vvp
 	./tb-qint.vvp $(SIMOPTS)
 
 
-tb-sd.vvp: Makefile sd.v
-	iverilog $(ICOPTS) -o tb-sd.vvp sd.v
-test.sd: tb-sd.vvp
-	./tb-sd.vvp $(SIMOPTS)
+tb-sd-crc.vvp: Makefile sd-crc.v
+	iverilog -DTB_CRC $(ICOPTS) -o tb-sd-crc.vvp sd-crc.v
+test.sd-crc: tb-sd-crc.vvp
+	./tb-sd-crc.vvp $(SIMOPTS)
+
+
+sd-cmd.check: Makefile sd-cmd.v sd-crc.v
+	iverilog -tnull -DTB_CMD $(ICOPTS) sd-cmd.v sd-crc.v
+tb-sd-cmd.vvp: Makefile sd-cmd.v sd-crc.v
+	iverilog -DTB_CMD $(ICOPTS) -o tb-sd-crc.vvp sd-cmd.v sd-crc.v
+test.sd-cmd: tb-sd-cmd.vvp
+	./tb-sd-cmd.vvp $(SIMOPTS)
 
 
 test.dma: tb_dma.vvp

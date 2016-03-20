@@ -118,7 +118,8 @@ module rkv11
    reg 	     GO = 1;		// Go [0]
 
    localparam RKWC = 3'b011;	// Word Count
-   reg [15:0] WC;
+   reg [15:0] WC;		// WC is the 2s complement of the number of words to transfer,
+   wire [15:0] WC_next = WC + 1; // so increment until 0
 
    localparam RKBA = 3'b100;	// Current Bus Address
 //   reg [15:0] BA;
@@ -313,18 +314,24 @@ module rkv11
 	 if (dma_complete) begin
 	    if (dma_read)
 	      ram_disk[rd_addr] <= RDL;
-//	      ram_disk[rd_addr] <= RDL & ~16'o1; // !!! testing, bash the word
 	    else if (dma_write)
 	      DB <= ram_disk[rd_addr];
-	    WC <= WC + 1;
 	    if (!INH_BA)
 	      RK_BAR <= RK_BAR + 1;
 	    saddr <= saddr_next;
 	    if (saddr_carry)
 	      { CYL_ADD, SUR, SA } <= { next_cylinder, next_surface, next_sector };
+	    WC <= WC_next;
+	    if (WC_next == 0) begin
+	       RDY <= 1;
+	       dma_read <= 0;
+	       dma_write <= 0;
+	       if (IDE)
+		 interrupt_request <= 1;
+	    end
 	 end
 
-	 if ((WC == 0) || dma_nxm) begin
+	 if (dma_nxm) begin
 	    RDY <= 1;
 	    dma_read <= 0;
 	    dma_write <= 0;
