@@ -1,7 +1,9 @@
-ICOPTS = -DSIM -WALL
+ICOPTS = -DSIM -Wall -Wno-implicit-dimensions
+#ICOPTS = -DSIM -Wall
+#ICOPTS = -DSIM
 SIMOPTS = -N
 INCLUDES = qsic.vh
-QBUS_FILES = tb_qbus.v qdrv.v qsic-pmo.v switch-register.v rkv11.v qmaster2908.v qinterrupt.v
+QBUS_FILES = tb_qbus.v qdrv.v qsic-pmo.v switch-register.v rkv11.v qmaster2908.v qinterrupt.v indicator.v
 DMA_FILES = tb_dma.v qdrv.v master.v sim_proc.v
 BG_FILES = tb_bg.v bus-grant-mux.v
 
@@ -17,7 +19,7 @@ tb_bg.check: $(BG_FILES)
 	iverilog -tnull $(BG_FILES)
 
 rkv11.check: rkv11.v disk-uc.v qreg.v $(INCLUDES)
-	iverilog -tnull rkv11.v disk-uc.v qreg.v $(INCLUDES)
+	iverilog -tnull $(ICOPTS) rkv11.v disk-uc.v $(INCLUDES)
 
 test: test.qbus
 
@@ -32,7 +34,6 @@ test.qbus: tb_qbus.vvp
 
 tb_qbus.vvp: Makefile $(INCLUDES) $(QBUS_FILES)
 	iverilog $(ICOPTS) -o tb_qbus.vvp $(QBUS_FILES)
-
 
 
 tb-qm8.check: tb-qm8.v qmaster2908.v
@@ -74,6 +75,11 @@ test.dma: tb_dma.vvp
 
 tb_dma.vvp: Makefile $(INCLUDES) $(DMA_FILES)
 	iverilog $(ICOPTS) -o tb_qbus.vvp $(DMA_FILES)
+
+test.sd: sd.vvp
+	./sd.vvp $(SIMOPTS)
+sd.vvp: Makefile sd.v
+	iverilog $(ICOPTS) -o sd.vvp sd.v
 
 
 .SUFFIXES: .v .check
