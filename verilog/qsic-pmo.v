@@ -6,6 +6,8 @@
 //
 // Copyright 2016 Noel Chiappa and David Bridgham
 
+`timescale 1 ns / 1 ns
+
 `include "qsic.vh"
 
 module pmo
@@ -16,12 +18,17 @@ module pmo
    // for general use.  these need switches 5 and 6 turned on to enable the LEDs.
    output 	led_3_2, // D8
    output 	led_3_4, // D9
-   output 	led_3_6, // D10
-   output 	led_3_8, // D11
+//   output 	led_3_6, // D10
+//   output 	led_3_8, // D11
    output 	led_3_9, // C12
-   output 	led_3_10, // D12
+//   output 	led_3_10, // D12
    output 	tp_b30, // testpoint B30 (FPGA pin A11)
    
+   // Interface to indicator panels
+   output 	ip_clk,
+   output 	ip_latch,
+   output 	ip_out,
+
    // The QBUS signals as seen by the FPGA
    output 	DALbe_L, // Enable transmitting on BDAL (active low)
    output 	DALtx, // set level-shifters to output and disable input from Am2908s
@@ -68,12 +75,11 @@ module pmo
    assign reset = 0;
    clk_wiz_0 clk(clk48, clk20, reset, locked);
 
-
    // The direction of the bi-directional lines are controlled with DALtx
    // -- moved to below
    assign ZDAL = DALtx ? TDAL : 22'bZ;
    assign ZBS7 = DALtx ? 0 : 1'bZ;
-   assign ZWTBT = DALtx ? rk_wtbt: 1'bZ;
+   assign ZWTBT = DALtx ? rk_wtbt : 1'bZ;
 
    // all the QBUS signals that I'm not driving (yet)
 //   assign DALbe_L = 1;
@@ -113,6 +119,77 @@ module pmo
    reg 	       uCLK;
    wire        uWAIT; // wired-OR !!!
    wire [7:0]  uINTERRUPT;
+
+
+
+   //
+   // Convert to synchronous to do register operations
+   //
+  
+   // synchronize addr_match, extra bits here for sequencing the Am2908s
+   reg [1:0]   addr_match_ra = 0;
+   always @(posedge clk20) addr_match_ra <= { addr_match_ra[0], addr_match };
+   wire        saddr_match = addr_match_ra[1];
+
+   // synchronize assert_vector
+   reg [3:0]   assert_vector_ra = 0;
+   always @(posedge clk20) assert_vector_ra <= { assert_vector_ra[2:0], assert_vector };
+   wire        sassert_vector = assert_vector_ra[1];
+
+   // synchronize RDOUT
+   reg [2:0]   RDOUTra = 0;
+   always @(posedge clk20) RDOUTra <= { RDOUTra[1:0], RDOUT };
+   wire        sRDOUT = RDOUTra[1];
+   wire        sRDOUTpulse = RDOUTra[2:1] == 2'b01;
+   
+   // synchronize RDIN
+   reg [3:0]   RDINra = 0;
+   always @(posedge clk20) RDINra <= { RDINra[2:0], RDIN };
+   wire        sRDIN = RDINra[1];
+   wire        sRDINpulse = RDINra[2:1] == 2'b01;
+
+   // implement reads or writes to registers
+   reg 	       rwDALbe = 0;	// local control of these signals
+   reg 	       rwDALst = 0;
+   reg 	       rwDALtx = 0;
+   always @(posedge clk20) begin
+      // bus is idle by default
+      TRPLY <= 0;
+      rwDALst <= 0;
+      rwDALbe <= 0;
+      rwDALtx <= 0;
+      
+      if (saddr_match) begin	// if we're in a slave cycle for me
+	 if (sRDIN) begin
+	    rwDALtx <= 1;
+
+	    // this is running off RDINra[3] to delay it by an extra clock cycle to let the
+	    // signals in the ribbon cable settle down a bit.  when we get rid of the ribbon
+	    // cable, I'm assuming we can drop back to RDINra[2].
+	    if (RDINra[3]) begin
+	       // This may look like it's asserting TRPLY too soon but the QBUS spec allows up
+	       // to 125ns from asserting TRPLY until the data on the bus must be valid, so we
+	       // could probably assert it even earlier
+	       TRPLY <= 1;
+	       rwDALbe <= 1;
+	       rwDALst <= 1;
+	    end
+	 end else if (sRDOUT) begin
+	    TRPLY <= 1;
+	 end
+      end else if (sassert_vector) begin // if we're reading an interrupt vector
+	 rwDALtx <= 1;			 // start the data towards the Am2908s
+
+	 // like above with RDIN, wait until assert_vector_ra[3] to give time for the signals in
+	 // the ribbon cable to settle down
+	 if (assert_vector_ra[3]) begin
+	    TRPLY <= 1;		// should be able to assert TRPLY sooner than this !!!
+	    rwDALbe <= 1;
+	    rwDALst <= 1;
+	 end
+      end
+   end // always @ (posedge clk20)
+
 
 
    //
@@ -219,83 +296,8 @@ module pmo
 
 
    //
-   // Convert to synchronous to do register operations
-   //
-  
-   // synchronize addr_match, extra bits here for sequencing the Am2908s
-   reg [1:0]   addr_match_ra = 0;
-   always @(posedge clk20) addr_match_ra <= { addr_match_ra[0], addr_match };
-   wire        saddr_match = addr_match_ra[1];
-
-   // synchronize assert_vector
-   reg [3:0]   assert_vector_ra = 0;
-   always @(posedge clk20) assert_vector_ra <= { assert_vector_ra[2:0], assert_vector };
-   wire        sassert_vector = assert_vector_ra[1];
-
-   // synchronize RDOUT
-   reg [2:0]   RDOUTra = 0;
-   always @(posedge clk20) RDOUTra <= { RDOUTra[1:0], RDOUT };
-   wire        sRDOUT = RDOUTra[1];
-   wire        sRDOUTpulse = RDOUTra[2:1] == 2'b01;
-   
-   // synchronize RDIN
-   reg [3:0]   RDINra = 0;
-   always @(posedge clk20) RDINra <= { RDINra[2:0], RDIN };
-   wire        sRDIN = RDINra[1];
-   wire        sRDINpulse = RDINra[2:1] == 2'b01;
-
-   // implement reads or writes to registers
-   reg 	       rwDALbe = 0;	// local control of these signals
-   reg 	       rwDALst = 0;
-   reg 	       rwDALtx = 0;
-   always @(posedge clk20) begin
-      // bus is idle by default
-      TRPLY <= 0;
-      rwDALst <= 0;
-      rwDALbe <= 0;
-      rwDALtx <= 0;
-      
-      if (saddr_match) begin	// if we're in a slave cycle for me
-	 if (sRDIN) begin
-	    rwDALtx <= 1;
-
-	    // this is running off RDINra[3] to delay it by an extra clock cycle to let the
-	    // signals in the ribbon cable settle down a bit.  when we get rid of the ribbon
-	    // cable, I'm assuming we can drop back to RDINra[2].
-	    if (RDINra[3]) begin
-	       // This may look like it's asserting TRPLY too soon but the QBUS spec allows up
-	       // to 125ns from asserting TRPLY until the data on the bus must be valid, so we
-	       // could probably assert it even earlier
-	       TRPLY <= 1;
-	       rwDALbe <= 1;
-	       rwDALst <= 1;
-	    end
-	 end else if (sRDOUT) begin
-	    TRPLY <= 1;
-	 end
-      end else if (sassert_vector) begin // if we're reading an interrupt vector
-	 rwDALtx <= 1;			 // start the data towards the Am2908s
-
-	 // like above with RDIN, wait until assert_vector_ra[3] to give time for the signals in
-	 // the ribbon cable to settle down
-	 if (assert_vector_ra[3]) begin
-	    TRPLY <= 1;		// should be able to assert TRPLY sooner than this !!!
-	    rwDALbe <= 1;
-	    rwDALst <= 1;
-	 end
-      end
-   end // always @ (posedge clk20)
-
-   //
    // Wire up LEDs for testing
    //
-
-   assign tp_b30 = TSACK;
-   assign led_3_4 = 0;
-   assign led_3_6 = 0;
-   assign led_3_8 = TSYNC;
-   assign led_3_9 = TSACK;
-   assign led_3_10 = TDMR;
 
    // blink some LEDs so we can see it's doing something
 
@@ -305,5 +307,43 @@ module pmo
      count = count + 1;
         
    assign led_3_2 = count[21];
+   assign led_3_4 = 0;
+//   assign led_3_6 = 0;
+//   assign led_3_8 = TSYNC;
+   assign led_3_9 = TSACK;
+//   assign led_3_10 = TDMR;
+
+   assign tp_b30 = ip_latch;
+
+
+   //
+   // Hook up an indicator panel
+   //
+
+   // first get an approx 100kHz clock
+   wire 	clk100k = count[7];
+
+   // panel driver
+   assign ip_latch = ~(ip_count == 0);
+   assign ip_clk = ~clk100k;
+   wire 	panel_out;
+   assign ip_out = ~panel_out;
+   
+   reg [7:0] 	ip_count = 0 ;
+   always @(posedge clk100k) begin
+      if (RINIT || (ip_count == 143))
+	ip_count <= 0;
+      else
+	ip_count <= ip_count + 1;
+   end
+   
+   indicator
+     qsic_ip(clk100k, (ip_count == 0), panel_out,
+	     { read_cycle, bs7_reg, addr_reg, 7'b0, 1'b1, 1'b1, rk_dma_read, rk_dma_write, 1'b0 },
+	     { 1'b0, DALtx, ZDAL, 12'b0 },
+	     { ZWTBT, ZBS7, RSYNC, RDIN, RDOUT, RRPLY, RREF, 1'b0, RIAKI, RIRQ7, RIRQ6, RIRQ5, RIRQ4,
+	       1'b0, RSACK, RDMGI, RDMR, 1'b0, RINIT, 1'b0, RDCOK, RPOK, 14'b0 },
+	     { DALtx & ZWTBT, DALtx & ZBS7, TSYNC, TDIN, TDOUT, TRPLY, TREF, 1'b0,
+	       TIAKO, TIRQ7, TIRQ6, TIRQ5, TIRQ4, 1'b0, TSACK, TDMGO, TDMR, 1'b0, 18'b0 });
 
 endmodule // pmo
