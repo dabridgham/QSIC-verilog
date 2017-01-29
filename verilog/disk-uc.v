@@ -4,6 +4,8 @@
 //
 // Copyright 2015 Noel Chiappa and David Bridgham
 
+`timescale 1 ns / 1 ns
+
 `include "qsic.vh"
 
 module disk_uc

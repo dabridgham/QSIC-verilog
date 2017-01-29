@@ -3,11 +3,13 @@
 // Indicator Panel - wires up a bunch of signals to a bitsteam for sending to an indicator
 // panel.
 //
-// Copyright 2015 Noel Chiappa and David Bridgham
+// Copyright 2016 Noel Chiappa and David Bridgham
+
+`timescale 1 ns / 1 ns
 
 module indicator
   (
-   input 	clk,		// about 50kHz to 100kHz
+   input 	clk,		// 100kHz - 250kHz
    input 	latch,
    output 	out,
    input [35:0] d0,		// the four lines of display

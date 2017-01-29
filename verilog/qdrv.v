@@ -4,6 +4,8 @@
 //
 // Copyright 2015 Noel Chiappa and David Bridgham
 
+`timescale 1 ns / 1 ns
+
 `include "qsic.vh"
 
 // This is implemented in hardware on the QSIC board.  It's reflected here in Verilog for

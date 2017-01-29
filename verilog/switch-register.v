@@ -4,6 +4,7 @@
 //
 // Copyright 2016 Noel Chiappa and David Bridgham
 
+`timescale 1 ns / 1 ns
 
 module switch_register
   (
