@@ -6,6 +6,7 @@
 //
 // Copyright 2016 Noel Chiappa and David Bridgham
 
+`timescale 1 ns / 1 ns
 
 module qmaster2908
   (
@@ -77,23 +78,24 @@ module qmaster2908
    integer state_index;
    integer state_index_next;
 `endif
-   reg [0:11] state;
-   reg [0:11] state_next;
+   reg [0:12] state;
+   reg [0:12] state_next;
    localparam
      IDLE = 0,			// idle
      ADDR_SETUP = 1,		// acquired the bus, send address
      ADDR_HOLD = 2,		// hold the address, then start read or write
 
-     WRITE_SETUP = 3,		// put the data on the bus
-     WRITE = 4,			// begin write cycle
-     WRITE_WAIT = 5,		// wait for reply
-     WRITE_HOLD = 6,		// hold the write data
-     WRITE_FINISH = 7,		// finish up the write cycle and release the bus
+     WRITE_START = 3,		// start the data moving to the Am2908s
+     WRITE_SETUP = 4,		// put the data on the bus
+     WRITE = 5,			// begin write cycle
+     WRITE_WAIT = 6,		// wait for reply
+     WRITE_HOLD = 7,		// hold the write data
+     WRITE_FINISH = 8,		// finish up the write cycle and release the bus
      
-     READ = 8,			// start a read cycle
-     READ_WAIT = 9,		// wait for reply
-     READ_FINISH = 10,		// hold time on read data
-     READ_RPLY_CLEAR = 11;	// wait for reply to clear, then release the bus
+     READ = 9,			// start a read cycle
+     READ_WAIT = 10,		// wait for reply
+     READ_FINISH = 11,		// hold time on read data
+     READ_RPLY_CLEAR = 12;	// wait for reply to clear, then release the bus
    
    task set_state;
       input integer s;
@@ -181,36 +183,42 @@ module qmaster2908
 		 set_state(IDLE);
 	    end
 
-	   state[ADDR_SETUP]:
-	     if (timeout) begin
-		DALst_set = 1;	    // strobe the address into the AM2908s
-		DALbe_set = 1;	    // and put it on the bus
-		timeout_next = 2;   // wait 150ns before asserting SYNC.  with waiting for RSYNC
-				    // and RRPLY to be synchronized plus the setup time for
-				    // clocking the Am2908s, this is ample to make for the 250ns
-				    // minimum before asserting SYNC.
-		set_state(ADDR_HOLD);
-	     end else
-	       set_state(ADDR_SETUP);
-		
-	   state[ADDR_HOLD]:
-	     if (timeout) begin
-		DALst_clear = 1;
-		assert_addr_clear = 1; // this is just the addressing to the Am2908s, the address is
-				// still on the bus
-		TWTBT_clear = 1;  // if we set it, clear now
-		TSYNC_set = 1;	// our address has been on the bus for 150ns and it's at least
-				// 250ns since RSYNC and RRPLY were cleared
-		timeout_next = 1; // wait 100ns more before removing address from bus 
-		if (dma_write) begin
-		   timeout_next = 1;	// !!! extra time for the ribbon cable
-		   assert_data_set = 1; // start the data towards the Am2908s
-		   set_state(WRITE_SETUP);
-		end else begin
-		   set_state(READ);
-		end
-	     end else	
+	  state[ADDR_SETUP]:
+	    if (timeout) begin
+	       DALst_set = 1;	 // strobe the address into the AM2908s
+	       DALbe_set = 1;	 // and put it on the bus
+	       timeout_next = 2; // wait 150ns before asserting SYNC.  with waiting for RSYNC
+				 // and RRPLY to be synchronized plus the setup time for
+				 // clocking the Am2908s, this is ample to make for the 250ns
+				 // minimum before asserting SYNC.
 	       set_state(ADDR_HOLD);
+	    end else
+	      set_state(ADDR_SETUP);
+		
+	  state[ADDR_HOLD]:
+	    if (timeout) begin
+	       DALst_clear = 1;
+	       assert_addr_clear = 1; // this is just the addressing to the Am2908s, the address
+				      // is still on the bus
+	       TWTBT_clear = 1;  // if we set it, clear now
+	       TSYNC_set = 1;	// our address has been on the bus for 150ns and it's at least
+				// 250ns since RSYNC and RRPLY were cleared
+	       timeout_next = 1; // wait 100ns more before removing address from bus 
+	       if (dma_write) begin
+		  timeout_next = 0; // the time will be spent skipping through WRITE_START to WRITE_SETUP
+		  set_state(WRITE_START);
+	       end else begin
+		  set_state(READ);
+	       end
+	    end else	
+	      set_state(ADDR_HOLD);
+
+	  state [WRITE_START]:
+	    begin
+	       timeout_next = 1;    // !!! extra time for the ribbon cable
+	       assert_data_set = 1; // start the data towards the Am2908s
+	       set_state(WRITE_SETUP);
+	    end
 
 	   state[WRITE_SETUP]:
 	     if (timeout) begin
