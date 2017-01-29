@@ -2,7 +2,9 @@
 //
 // An implementation of the RKV11 (extended for Q22).
 //
-// Copyright 2015, 2016 Noel Chiappa and David Bridgham
+// Copyright 2015 - 2017 Noel Chiappa and David Bridgham
+
+`timescale 1 ns / 1 ns
 
 `include "qsic.vh"
 
@@ -37,6 +39,7 @@ module rkv11
    output 	     uWAIT, // wired-OR
    output [7:0]      uINTERRUPT
    );
+
 
    //
    // Connect up to the uC bus
@@ -226,9 +229,10 @@ module rkv11
 			(RAL[12:4] == addr_base[12:4])); // my address
    
    // data line mux
+   wire [15:0] rd_data = ram_disk[rd_addr]; // lookup in the RAM disk
    always @(*) begin
       if (dma_bus_master) begin
-	 TDL = ram_disk[rd_addr];
+	 TDL = rd_data;
 
       end else if (assert_vector) begin
 	 TDL = { 7'b0, int_vec };
@@ -254,8 +258,8 @@ module rkv11
 	       // update their device driver anyway.
 	       TDL = { 10'b0, RK_BAR[21:16] };
 	     else
-	       // this was a maintenance register on the RK11-C.  on the RK11-D it just
-	       // returned 0.
+	       // this was a maintenance register on the RK11-C; don't know what it did and
+	       // we're not trying to emulate it.  on the RK11-D it just returned 0.
 	       TDL = 0;
 	   RKDB:
 	     TDL = DB;
