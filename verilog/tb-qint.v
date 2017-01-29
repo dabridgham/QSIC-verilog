@@ -13,7 +13,7 @@ module tb_qint();
    // QBUS signals
    reg RINIT, RDIN, RIAKI;
    reg [4:7] RIRQ;
-   wire      TIAO;
+   wire      TIAKO;
    wire [4:7] TIRQ;
 
    // internal controls
