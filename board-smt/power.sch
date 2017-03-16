@@ -1,0 +1,524 @@
+EESchema Schematic File Version 2
+LIBS:power
+LIBS:device
+LIBS:transistors
+LIBS:conn
+LIBS:linear
+LIBS:regul
+LIBS:74xx
+LIBS:cmos4000
+LIBS:adc-dac
+LIBS:memory
+LIBS:xilinx
+LIBS:microcontrollers
+LIBS:dsp
+LIBS:microchip
+LIBS:analog_switches
+LIBS:motorola
+LIBS:texas
+LIBS:intel
+LIBS:audio
+LIBS:interface
+LIBS:digital-audio
+LIBS:philips
+LIBS:display
+LIBS:cypress
+LIBS:siliconi
+LIBS:opto
+LIBS:atmel
+LIBS:contrib
+LIBS:valves
+LIBS:myLib
+LIBS:qsic-cache
+EELAYER 25 0
+EELAYER END
+$Descr A 11000 8500
+encoding utf-8
+Sheet 3 6
+Title "Power"
+Date "2017-03-12"
+Rev "0.1"
+Comp "Vintage Computer Engineering"
+Comment1 "Voltages just copied from the ZTEX 2.13"
+Comment2 ""
+Comment3 ""
+Comment4 ""
+$EndDescr
+$Comp
+L +1V0 #PWR096
+U 1 1 58C3C038
+P 4800 5500
+F 0 "#PWR096" H 4800 5350 50  0001 C CNN
+F 1 "+1V0" H 4950 5550 50  0000 C CNN
+F 2 "" H 4800 5500 50  0000 C CNN
+F 3 "" H 4800 5500 50  0000 C CNN
+	1    4800 5500
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	4800 7100 4700 7100
+Wire Wire Line
+	4800 5500 4800 7100
+Wire Wire Line
+	4700 5600 4800 5600
+Connection ~ 4800 5600
+Wire Wire Line
+	4700 5700 4800 5700
+Connection ~ 4800 5700
+Wire Wire Line
+	4700 5800 4800 5800
+Connection ~ 4800 5800
+Wire Wire Line
+	4700 5900 4800 5900
+Connection ~ 4800 5900
+Wire Wire Line
+	4700 6000 4800 6000
+Connection ~ 4800 6000
+Wire Wire Line
+	4700 6100 4800 6100
+Connection ~ 4800 6100
+Wire Wire Line
+	4700 6200 4800 6200
+Connection ~ 4800 6200
+Wire Wire Line
+	4700 6300 4800 6300
+Connection ~ 4800 6300
+Wire Wire Line
+	4700 6400 4800 6400
+Connection ~ 4800 6400
+Wire Wire Line
+	4700 6500 4800 6500
+Connection ~ 4800 6500
+Wire Wire Line
+	4700 6600 4800 6600
+Connection ~ 4800 6600
+Wire Wire Line
+	4700 6700 4800 6700
+Connection ~ 4800 6700
+Wire Wire Line
+	4700 6800 4800 6800
+Connection ~ 4800 6800
+Wire Wire Line
+	4700 6900 4800 6900
+Connection ~ 4800 6900
+Wire Wire Line
+	4700 7000 4800 7000
+Connection ~ 4800 7000
+$Comp
+L +1V8 #PWR097
+U 1 1 58C3C442
+P 4800 7250
+F 0 "#PWR097" H 4800 7100 50  0001 C CNN
+F 1 "+1V8" H 4950 7300 50  0000 C CNN
+F 2 "" H 4800 7250 50  0000 C CNN
+F 3 "" H 4800 7250 50  0000 C CNN
+	1    4800 7250
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	4800 7600 4700 7600
+Wire Wire Line
+	4800 7250 4800 7600
+Wire Wire Line
+	4700 7300 4800 7300
+Connection ~ 4800 7300
+Wire Wire Line
+	4700 7400 4800 7400
+Connection ~ 4800 7400
+Wire Wire Line
+	4700 7500 4800 7500
+Connection ~ 4800 7500
+$Comp
+L +3V3 #PWR098
+U 1 1 58C3C58B
+P 3200 4550
+F 0 "#PWR098" H 3200 4400 50  0001 C CNN
+F 1 "+3V3" H 3350 4600 50  0000 C CNN
+F 2 "" H 3200 4550 50  0000 C CNN
+F 3 "" H 3200 4550 50  0000 C CNN
+	1    3200 4550
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	3200 5300 3100 5300
+Wire Wire Line
+	3200 4550 3200 6900
+Wire Wire Line
+	3100 4600 3200 4600
+Connection ~ 3200 4600
+Wire Wire Line
+	3100 4800 3200 4800
+Connection ~ 3200 4800
+Wire Wire Line
+	3100 4900 3200 4900
+Connection ~ 3200 4900
+Wire Wire Line
+	3100 5000 3200 5000
+Connection ~ 3200 5000
+Wire Wire Line
+	3100 5100 3200 5100
+Connection ~ 3200 5100
+Wire Wire Line
+	3100 5200 3200 5200
+Connection ~ 3200 5200
+Wire Wire Line
+	3200 6900 3100 6900
+Connection ~ 3200 5300
+Wire Wire Line
+	3100 5500 3200 5500
+Connection ~ 3200 5500
+Wire Wire Line
+	3100 5600 3200 5600
+Connection ~ 3200 5600
+Wire Wire Line
+	3100 5700 3200 5700
+Connection ~ 3200 5700
+Wire Wire Line
+	3100 5800 3200 5800
+Connection ~ 3200 5800
+Wire Wire Line
+	3100 5900 3200 5900
+Connection ~ 3200 5900
+Wire Wire Line
+	3100 6000 3200 6000
+Connection ~ 3200 6000
+Wire Wire Line
+	3100 6200 3200 6200
+Connection ~ 3200 6200
+Wire Wire Line
+	3100 6400 3200 6400
+Connection ~ 3200 6400
+Wire Wire Line
+	3100 6500 3200 6500
+Connection ~ 3200 6500
+Wire Wire Line
+	3100 6600 3200 6600
+Connection ~ 3200 6600
+Wire Wire Line
+	3100 6700 3200 6700
+Connection ~ 3200 6700
+Wire Wire Line
+	3100 6800 3200 6800
+Connection ~ 3200 6800
+$Comp
+L +1V5 #PWR099
+U 1 1 58C3CAD9
+P 3200 7050
+F 0 "#PWR099" H 3200 6900 50  0001 C CNN
+F 1 "+1V5" H 3350 7100 50  0000 C CNN
+F 2 "" H 3200 7050 50  0000 C CNN
+F 3 "" H 3200 7050 50  0000 C CNN
+	1    3200 7050
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	3200 7600 3100 7600
+Wire Wire Line
+	3200 7050 3200 7600
+Wire Wire Line
+	3100 7500 3200 7500
+Connection ~ 3200 7500
+Wire Wire Line
+	3100 7400 3200 7400
+Connection ~ 3200 7400
+Wire Wire Line
+	3100 7300 3200 7300
+Connection ~ 3200 7300
+Wire Wire Line
+	3100 7200 3200 7200
+Connection ~ 3200 7200
+Wire Wire Line
+	3100 7100 3200 7100
+Connection ~ 3200 7100
+$Comp
+L GND #PWR0100
+U 1 1 58C3CEA4
+P 1750 7650
+F 0 "#PWR0100" H 1750 7400 50  0001 C CNN
+F 1 "GND" H 1750 7500 50  0000 C CNN
+F 2 "" H 1750 7650 50  0000 C CNN
+F 3 "" H 1750 7650 50  0000 C CNN
+	1    1750 7650
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	1650 3000 1750 3000
+Wire Wire Line
+	1750 3000 1750 7650
+Wire Wire Line
+	1650 7600 1750 7600
+Connection ~ 1750 7600
+Wire Wire Line
+	1650 7500 1750 7500
+Connection ~ 1750 7500
+Wire Wire Line
+	1650 7400 1750 7400
+Connection ~ 1750 7400
+Wire Wire Line
+	1650 7300 1750 7300
+Connection ~ 1750 7300
+Wire Wire Line
+	1650 7200 1750 7200
+Connection ~ 1750 7200
+Wire Wire Line
+	1650 7100 1750 7100
+Connection ~ 1750 7100
+Wire Wire Line
+	1650 7000 1750 7000
+Connection ~ 1750 7000
+Wire Wire Line
+	1650 6900 1750 6900
+Connection ~ 1750 6900
+Wire Wire Line
+	1650 6800 1750 6800
+Connection ~ 1750 6800
+Wire Wire Line
+	1650 6700 1750 6700
+Connection ~ 1750 6700
+Wire Wire Line
+	1650 6600 1750 6600
+Connection ~ 1750 6600
+Wire Wire Line
+	1650 6500 1750 6500
+Connection ~ 1750 6500
+Wire Wire Line
+	1650 6400 1750 6400
+Connection ~ 1750 6400
+Wire Wire Line
+	1650 6300 1750 6300
+Connection ~ 1750 6300
+Wire Wire Line
+	1650 6200 1750 6200
+Connection ~ 1750 6200
+Wire Wire Line
+	1650 6100 1750 6100
+Connection ~ 1750 6100
+Wire Wire Line
+	1650 6000 1750 6000
+Connection ~ 1750 6000
+Wire Wire Line
+	1650 5900 1750 5900
+Connection ~ 1750 5900
+Wire Wire Line
+	1650 5800 1750 5800
+Connection ~ 1750 5800
+Wire Wire Line
+	1650 5700 1750 5700
+Connection ~ 1750 5700
+Wire Wire Line
+	1650 5600 1750 5600
+Connection ~ 1750 5600
+Wire Wire Line
+	1650 5500 1750 5500
+Connection ~ 1750 5500
+Wire Wire Line
+	1650 5400 1750 5400
+Connection ~ 1750 5400
+Wire Wire Line
+	1650 5300 1750 5300
+Connection ~ 1750 5300
+Wire Wire Line
+	1650 5200 1750 5200
+Connection ~ 1750 5200
+Wire Wire Line
+	1650 5100 1750 5100
+Connection ~ 1750 5100
+Wire Wire Line
+	1650 5000 1750 5000
+Connection ~ 1750 5000
+Wire Wire Line
+	1650 4900 1750 4900
+Connection ~ 1750 4900
+Wire Wire Line
+	1650 4800 1750 4800
+Connection ~ 1750 4800
+Wire Wire Line
+	1650 4700 1750 4700
+Connection ~ 1750 4700
+Wire Wire Line
+	1650 4600 1750 4600
+Connection ~ 1750 4600
+Wire Wire Line
+	1650 4500 1750 4500
+Connection ~ 1750 4500
+Wire Wire Line
+	1650 4400 1750 4400
+Connection ~ 1750 4400
+Wire Wire Line
+	1650 4300 1750 4300
+Connection ~ 1750 4300
+Wire Wire Line
+	1650 4200 1750 4200
+Connection ~ 1750 4200
+Wire Wire Line
+	1650 4100 1750 4100
+Connection ~ 1750 4100
+Wire Wire Line
+	1650 4000 1750 4000
+Connection ~ 1750 4000
+Wire Wire Line
+	1650 3900 1750 3900
+Connection ~ 1750 3900
+Wire Wire Line
+	1650 3800 1750 3800
+Connection ~ 1750 3800
+Wire Wire Line
+	1650 3700 1750 3700
+Connection ~ 1750 3700
+Wire Wire Line
+	1650 3600 1750 3600
+Connection ~ 1750 3600
+Wire Wire Line
+	1650 3500 1750 3500
+Connection ~ 1750 3500
+Wire Wire Line
+	1650 3400 1750 3400
+Connection ~ 1750 3400
+Wire Wire Line
+	1650 3300 1750 3300
+Connection ~ 1750 3300
+Wire Wire Line
+	1650 3200 1750 3200
+Connection ~ 1750 3200
+Wire Wire Line
+	1650 3100 1750 3100
+Connection ~ 1750 3100
+$Comp
+L XC7A75T-CSG324 U401
+U 1 1 58C48354
+P 850 3000
+F 0 "U401" H 1050 3200 60  0000 C CNN
+F 1 "XC7A75T-CSG324" V 950 2500 60  0000 C CNN
+F 2 "myMods.pretty:CSG324" V 1550 2700 60  0001 C CNN
+F 3 "" V 1550 2700 60  0001 C CNN
+	1    850  3000
+	1    0    0    -1  
+$EndComp
+$Comp
+L XC7A75T-CSG324 U401
+U 2 1 58C483A8
+P 3700 5600
+F 0 "U401" H 3900 5800 60  0000 C CNN
+F 1 "XC7A75T-CSG324" V 3800 5100 60  0000 C CNN
+F 2 "myMods.pretty:CSG324" V 4400 5300 60  0001 C CNN
+F 3 "" V 4400 5300 60  0001 C CNN
+	2    3700 5600
+	1    0    0    -1  
+$EndComp
+$Comp
+L XC7A75T-CSG324 U401
+U 3 1 58C48929
+P 2100 4600
+F 0 "U401" H 2300 4800 60  0000 C CNN
+F 1 "XC7A75T-CSG324" V 2200 4100 60  0000 C CNN
+F 2 "myMods.pretty:CSG324" V 2800 4300 60  0001 C CNN
+F 3 "" V 2800 4300 60  0001 C CNN
+	3    2100 4600
+	1    0    0    -1  
+$EndComp
+$Comp
+L XC7A75T-CSG324 U401
+U 6 1 58C48AE5
+P 7900 5100
+F 0 "U401" H 8100 5300 60  0000 C CNN
+F 1 "XC7A75T-CSG324" V 8000 4600 60  0000 C CNN
+F 2 "myMods.pretty:CSG324" V 8600 4800 60  0001 C CNN
+F 3 "" V 8600 4800 60  0001 C CNN
+	6    7900 5100
+	1    0    0    -1  
+$EndComp
+$Comp
+L XC7A75T-CSG324 U401
+U 9 1 58C73D0A
+P 10000 1100
+F 0 "U401" H 10200 1300 60  0000 C CNN
+F 1 "XC7A75T-CSG324" V 10100 600 60  0000 C CNN
+F 2 "myMods.pretty:CSG324" V 10750 550 60  0001 C CNN
+F 3 "" V 10750 550 60  0001 C CNN
+	9    10000 1100
+	-1   0    0    -1  
+$EndComp
+$Comp
+L +1V8 #PWR0101
+U 1 1 58C73EF5
+P 9100 2900
+F 0 "#PWR0101" H 9100 2750 50  0001 C CNN
+F 1 "+1V8" V 9100 3150 50  0000 C CNN
+F 2 "" H 9100 2900 50  0000 C CNN
+F 3 "" H 9100 2900 50  0000 C CNN
+	1    9100 2900
+	0    -1   -1   0   
+$EndComp
+$Comp
+L GND #PWR0102
+U 1 1 58C73F58
+P 9100 4050
+F 0 "#PWR0102" H 9100 3800 50  0001 C CNN
+F 1 "GND" H 9100 3900 50  0001 C CNN
+F 2 "" H 9100 4050 50  0000 C CNN
+F 3 "" H 9100 4050 50  0000 C CNN
+	1    9100 4050
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	9100 3700 9100 4050
+Wire Wire Line
+	9100 3700 9200 3700
+Wire Wire Line
+	9200 3800 9100 3800
+Connection ~ 9100 3800
+Wire Wire Line
+	9200 4000 9100 4000
+Connection ~ 9100 4000
+Wire Wire Line
+	9100 2900 9200 2900
+$Comp
+L +3V3 #PWR0103
+U 1 1 58C742E7
+P 8700 1200
+F 0 "#PWR0103" H 8700 1050 50  0001 C CNN
+F 1 "+3V3" H 8700 1340 50  0000 C CNN
+F 2 "" H 8700 1200 50  0000 C CNN
+F 3 "" H 8700 1200 50  0000 C CNN
+	1    8700 1200
+	1    0    0    -1  
+$EndComp
+$Comp
+L LED_Small_ALT D301
+U 1 1 58C7430F
+P 8700 1600
+F 0 "D301" H 8650 1725 50  0000 L CNN
+F 1 "LED_Small_ALT" H 8525 1500 50  0000 L CNN
+F 2 "LEDs:LED-0603" V 8700 1600 50  0001 C CNN
+F 3 "" V 8700 1600 50  0000 C CNN
+	1    8700 1600
+	0    -1   -1   0   
+$EndComp
+$Comp
+L R R361
+U 1 1 58C74362
+P 8700 2050
+F 0 "R361" V 8780 2050 50  0000 C CNN
+F 1 "240" V 8700 2050 50  0000 C CNN
+F 2 "Resistors_SMD:R_0603" V 8630 2050 50  0001 C CNN
+F 3 "" H 8700 2050 50  0000 C CNN
+	1    8700 2050
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	8700 1200 8700 1500
+Wire Wire Line
+	8700 1700 8700 1900
+Wire Wire Line
+	8300 2400 9200 2400
+Wire Wire Line
+	8700 2200 8700 2400
+Connection ~ 8700 2400
+Wire Wire Line
+	9200 1300 8700 1300
+Connection ~ 8700 1300
+NoConn ~ 9200 3500
+NoConn ~ 9200 3400
+NoConn ~ 9200 3200
+NoConn ~ 9200 3100
+$EndSCHEMATC
