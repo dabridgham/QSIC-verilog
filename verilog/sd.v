@@ -113,19 +113,24 @@ module SD_spi
    // control which clock goes to the SD card
    reg 		clear_fpp, set_fpp;
    reg 		fpp = 0;
-   always @(posedge sd_clk)
+   always @(negedge clk)
      if (clear_fpp)
        fpp <= 0;
      else if (set_fpp)
        fpp <= 1;
    assign sd_clk = fpp ? clk : clk400k;
 
+   // generate a byte clock from the sd_clk
+   reg [2:0] 	byte_clk_ra = 0;
+   wire 	byte_clk = byte_clk_ra[2];
+   always @(negedge sd_clk) byte_clk_ra <= byte_clk_ra + 1;
+
    // card detect - if sd_cd (aka sd_dat[3]) is low and we're not pulling it down (sd_cs), then
    // there must be a card there.  synchronize this signal since a card might get plugged in at
    // any time.
    wire 	card_detect_raw = sd_cd && !sd_cs;
    reg [1:0] 	cdra;
-   always @(posedge clk) cdra[1:0] = { cdra[0], card_detect_raw };
+   always @(posedge sd_clk) cdra[1:0] = { cdra[0], card_detect_raw };
    wire 	card_detect = cdra[1];
 
    // countdown timer - from clear to cd_timout is about 200ms with a 20MHz clock (when using
@@ -151,13 +156,13 @@ module SD_spi
        high_capacity <= 1;
 
    // data output shift register
-   reg [46:0] 	cmd_output;	// the start bit is added here (should do the end bit too?)
+   reg [45:0] 	cmd_output;	// the start bit is added here (should do the end bit too?)
    reg [47:0] 	output_sr;
    reg 		cmd_set, data_set;
    assign sd_di = output_sr[47];
    always @(negedge sd_clk)	// negedge for SPI mode 0
      if (cmd_set)
-       output_sr <= { 1'b1, cmd_output };
+       output_sr <= { 2'b01, cmd_output };
      else
        output_sr <= { output_sr[46:0], 1'b1 };
 
@@ -166,8 +171,7 @@ module SD_spi
    reg [7:0] 	r1;
    reg 		get_r1, get_busy, get_r2, get_r3, cmd_response;
    reg [1:0] 	response_type;
-   reg [5:0] 	resp_arg_ctr;
-   wire 	mod8 = (resp_arg_ctr[2:0] == 0);
+   reg [2:0] 	resp_arg_ctr;
    localparam
      R1 = 0,			// single byte
      R1b = 1,			// single byte but may be followed by busy
@@ -176,12 +180,13 @@ module SD_spi
      R7 = 3;
    wire 	in_idle_state = r1[0];
    wire 	card_ccs = input_sr[30]; // 0 = Standard Capacity, 1 = HC or XC
-   assign sd_cs = ~cmd_response;	 // while we're running a command, assert CS
+   assign sd_cs = ~cmd_response;	 // while we're sending a command and waiting for the
+					 // response, assert CS
    always @(posedge sd_clk) 
      if (cmd_response == 0)
        input_sr <= { input_sr[30:0], sd_do };
-   always @(posedge sd_clk) resp_arg_ctr <= get_r1 ? 0 : resp_arg_ctr + 1;
-   always @(negedge sd_clk)
+   always @(posedge byte_clk) resp_arg_ctr <= get_r1 ? 0 : resp_arg_ctr + 1;
+   always @(posedge byte_clk)
      if (reset) begin
 	get_r1 <= 0;
 	get_r2 <= 0;
@@ -197,7 +202,7 @@ module SD_spi
 	      cmd_response <= 0;
 	      r1 <= 0;
 	   end
-	 get_r1 && mod8:
+	 get_r1:
 	   if (input_sr[7] == 0) begin // look for the start bit
 	      get_r1 <= 0;
 	      r1 <= input_sr[7:0];
@@ -209,18 +214,20 @@ module SD_spi
 		get_busy <= 1;
 	      else if (response_type == R2)
 		get_r2 <= 1;
-	      else if (response_type == R3) // or R7
+	      else		// response_type == R3 or R7
 		get_r3 <= 1;
 	   end
-	 get_busy && mod8:
-	   if (input_sr[7] == 1)	// the SD card will hold data low to indicate busy
-	     cmd_response <= 0;
-	 get_r2 && resp_arg_ctr[1]:
+	 get_busy:
+	   if (input_sr[7] == 1) begin	// the SD card will hold data low to indicate busy
+	      cmd_response <= 1;
+	      get_busy <= 0;
+	   end
+	 get_r2 && (resp_arg_ctr == 1):
 	   begin
 	      get_r2 <= 0;
 	      cmd_response <= 1;
 	   end
-	 get_r3 && resp_arg_ctr[5]:
+	 get_r3 && (resp_arg_ctr == 4):
 	   begin
 	      get_r3 <= 0;
 	      cmd_response <= 1;
@@ -265,7 +272,7 @@ module SD_spi
    always @(*) begin
       state_next = 0;
       cd_timer_clear = 0;
-      cmd_output = 47'bX;
+      cmd_output = 46'bX;
       set_fpp = 0;
       clear_high_capacity = 0;
       set_high_capacity = 0;
@@ -281,18 +288,18 @@ module SD_spi
 	  state[INIT]:
 	    begin
 	       clear_fpp = 1;
+	       cd_timer_clear = 1;
 	       // hang out here looking for a card to appear
-	       if (card_detect) begin
-		  cd_timer_clear = 1;
-		  set_state(DALLY);
-	       end else
+	       if (card_detect)
+		 set_state(DALLY);
+	       else
 		 set_state(INIT);
 	    end
 	  state[DALLY]:
 	    // wait for the dally time
 	    if (cd_timeout) begin
 	       // CMD0 - GO_IDLE_STATE
-	       cmd_output = { 7'd0, 32'h0, 8'h95 };
+	       cmd_output = { 6'd0, 32'h0, 8'h95 };
 	       cmd_set = 1;
 	       set_state(SEND_RESET);
 	    end else
@@ -304,7 +311,7 @@ module SD_spi
 		 set_state(SEND_RESET);
 	       else begin
 		  // CMD8 - SEND_IF_COND 2.7-3.6V
-		  cmd_output = { 7'd8, 32'h00000100, 8'h01 }; // need to figure CRC !!!
+		  cmd_output = { 6'd8, 32'h00000100, 8'h01 }; // need to figure CRC !!!
 		  cmd_set = 1;
 		  set_state(SEND_IF_COND);
 	       end
@@ -319,7 +326,7 @@ module SD_spi
 		  // check voltage range !!!
 
 		  // CMD58 - READ_OCR
-		  cmd_output = { 7'd58, 32'h00, 8'h01 }; // need to figure CRC !!!
+		  cmd_output = { 6'd58, 32'h00, 8'h01 }; // need to figure CRC !!!
 		  cmd_set = 1;
 		  set_state(READ_OCR);
 	       end // else: !if(!cmd_response)
@@ -334,7 +341,7 @@ module SD_spi
 		  // check voltage range (again?) !!!
 
 		  // CMD55 - APP_CMD
-		  cmd_output = { 7'd55, 32'h00, 8'h01 }; // need to figure CRC !!!
+		  cmd_output = { 6'd55, 32'h00, 8'h01 }; // need to figure CRC !!!
 		  cmd_set = 1;
 		  set_state(APP_CMD_1);
 	       end // else: !if(!cmd_response)
@@ -346,7 +353,7 @@ module SD_spi
 		 set_state(APP_CMD_1);
 	       else begin
 		  // ACMD41 - SD_SEND_OP_COND - HCS = 0 (!!! set to 1 once I support HCS)
-		  cmd_output = { 7'd41, 32'h00, 8'h01 }; // need to figure CRC !!!
+		  cmd_output = { 6'd41, 32'h00, 8'h01 }; // need to figure CRC !!!
 		  cmd_set = 1;
 		  set_state(SEND_OP_COND);
 	       end
@@ -360,12 +367,12 @@ module SD_spi
 		  // loop, sending the ACMD41 repeatedly, until the card is no longer in idle state
 		  if (in_idle_state) begin
 		     // CMD55 - APP_CMD
-		     cmd_output = { 7'd55, 32'h00, 8'h01 }; // need to figure CRC !!!
+		     cmd_output = { 6'd55, 32'h00, 8'h01 }; // need to figure CRC !!!
 		     cmd_set = 1;
 		     set_state(APP_CMD_1);
 		  end else begin
 		     // CMD58 - READ_OCR - looking for CCS (Card Capacity Status)
-		     cmd_output = { 7'd58, 32'h00, 8'h01 }; // need to figure CRC !!!
+		     cmd_output = { 6'd58, 32'h00, 8'h01 }; // need to figure CRC !!!
 		     cmd_set = 1;
 		     set_state(READ_CCS);
 		  end // else: !if(in_idle_state)
@@ -395,7 +402,7 @@ module SD_spi
    end
    
    // synchronous part of the state machine
-   always @(posedge sd_clk) begin
+   always @(posedge byte_clk) begin
 `ifdef SIM
       state_index <= state_index_next;
 `endif
@@ -419,8 +426,62 @@ module SD_card
    );
 
    wire        sd_di = cmd;
-   wire        sd_do = dat[0];
    wire        sd_cs = dat[3];
+   wire        sd_do;
+   assign dat[0] = sd_do;
+
+   reg [47:0]  input_sr;
+   integer     bit_count;
+   wire        byte_mark = (bit_count % 8) == 0;
+   always @(posedge clk) input_sr <= sd_cs ? {48{1'b1}} : { input_sr[46:0], sd_di };
+   always @(posedge clk) bit_count <= sd_cs ? 0 : bit_count + 1;
+
+   reg 	       cs_n;		// CS delayed to view on negedge clk
+   always @(posedge clk) cs_n <= sd_cs;
+
+   reg [47:0]  output_sr;
+   assign sd_do = output_sr[47];
+
+   localparam
+     IDLE = 0,
+     READ_CMD = 1,
+     SEND_RESP = 2;
+   reg [0:3]  state = 0;
+   
+   always @(negedge clk)
+     begin
+	// this may be overridden below
+	output_sr <= { output_sr[46:0], 1'b1 };
+	state <= 0;
+
+	if (cs_n == 1) begin	// cs is active low
+	   output_sr <= {48{1'b1}};
+	   state[IDLE] <= 1;
+        end else if (byte_mark == 1)
+	  case (1'b1)
+	    state[IDLE]:
+	      state[READ_CMD] <= 1;
+
+	    state[READ_CMD]:
+	      if (input_sr[47] == 1) // if no start bit
+		state[READ_CMD] <= 1;
+	      else		// we have a command
+		begin
+		   state[SEND_RESP] <= 1;
+		   case (input_sr[45:40])
+		     0:		// reset
+		       output_sr <= 48'h04_ff_ff_ff_ff_ff; // illegal command
+		     default:
+		       output_sr <= 8'h04; // illegal command
+		   endcase // case (input_sr[45:40])
+		end // else: !if(input_sr[47] == 1)
+
+	    state[SEND_RESP]:
+	      state[IDLE] <= 1;
+	  endcase // case (1'b1)
+	else
+	  state <= state;
+     end // always @ (posedge clk)
 
 endmodule // SD_card
 
@@ -434,23 +495,23 @@ module SD_test();
    // wire up the SD controller
    reg reset, read_cmd, write_cmd, data_done;
    wire ready_cmd, data_ready;
-   reg [31:0] block_address;
+   reg [31:0]  block_address;
    wire [15:0] data;
    wire sd_clk, sd_cs, sd_di, sd_do, sd_nc1, sd_nc2;
    wire ip_cd, ip_v1, ip_v2, ip_SC, ip_HC, ip_err;
-   assign (weak1, weak0) sd_cs = 0; // host has a 270k pull-down
-   assign (strong1, weak0) sd_do = 1;  // host has a 50k pull-up
-   assign (strong1, weak0) sd_nc1 = 1; // "
-   assign (strong1, weak0) sd_nc2 = 1; // "
+   assign (weak1, weak0) sd_cs = 0;  // host has a 270k pull-down
+   assign (pull1, weak0) sd_do = 1;  // host has a 50k pull-up
+   assign (pull1, weak0) sd_nc1 = 1; // "
+   assign (pull1, weak0) sd_nc2 = 1; // "
    reg 	sd_cd = 0;
-   assign (strong1, weak0) sd_cs = sd_cd; // 270k pull-down, card has a 50k pull-up
+   assign (pull1, weak0) sd_cs = sd_cd; // 270k pull-down, card has a 50k pull-up
    
    SD_spi sd(clk, reset, ready_cmd, read_cmd, write_cmd, block_address, data_ready, data_done, data,
 	     sd_clk, sd_di, { sd_cs, sd_nc2, sd_nc1, sd_do },
 	     ip_cd, ip_v1, ip_v2, ip_SC, ip_HC, ip_err);
    
    // wire in the SD card
-   SD_card card(clk, sd_di, { sd_cs, sd_nc2, sd_nc1, sd_do });
+   SD_card card(sd_clk, sd_di, { sd_cs, sd_nc2, sd_nc1, sd_do });
 
 
    initial begin
