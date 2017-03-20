@@ -78,8 +78,11 @@ tb_dma.vvp: Makefile $(INCLUDES) $(DMA_FILES)
 
 test.sd: sd.vvp
 	./sd.vvp $(SIMOPTS)
-sd.vvp: Makefile sd.v
+sd.vvp: Makefile sd.v sd.hex
 	iverilog $(ICOPTS) -o sd.vvp sd.v
+
+sd.hex: sd.asm
+	uas sd.asm sd.hex sd.lst
 
 
 .SUFFIXES: .v .check
