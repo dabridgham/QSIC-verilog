@@ -2035,13 +2035,13 @@ Text Label 9800 7400 0    60   ~ 0
 SD_CLK
 Text Label 9800 7500 0    60   ~ 0
 SD_DI
-Text Label 9800 8000 0    60   ~ 0
+Text Label 9200 7500 2    60   ~ 0
 SD_DO
 Text Label 9800 8100 0    60   ~ 0
 SD_NC1
 Text Label 9800 8200 0    60   ~ 0
 SD_NC2
-Text Label 9800 8300 0    60   ~ 0
+Text Label 9200 7400 2    60   ~ 0
 ~CS~/CD
 $Comp
 L Led_Small D?
