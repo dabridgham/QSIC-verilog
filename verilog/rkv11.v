@@ -146,7 +146,7 @@ module rkv11
 
    localparam 
 //     CYLINDERS = 203,
-     CYLINDERS = 10,		// reduced for the RAM disk !!!
+     CYLINDERS = 2,		// reduced for the RAM disk !!!
      SURFACES = 2,
      SECTORS = 12;
    // Convert cylinder/surface/sector into linear block address
@@ -212,8 +212,9 @@ module rkv11
    // internal RAM disk (have to shrink the number of CYLINDERS depending on how much block RAM
    // is available inside the FPGA)
    localparam DISK_WORDS = 256 * SECTORS * SURFACES * CYLINDERS;
-   reg [15:0] ram_disk[0:DISK_WORDS-1];	 // the RAM disk
-   reg [7:0]  saddr;			 // word count within a sector
+   //synthesis attribute ram_style of ram_disk is block
+   reg [15:0] ram_disk[0:DISK_WORDS-1];    // the RAM disk
+   reg [7:0]  saddr;			   // word count within a sector
    wire [7:0] saddr_next;
    wire       saddr_carry;
    assign { saddr_carry, saddr_next } = saddr + 1;
@@ -233,6 +234,7 @@ module rkv11
    always @(*) begin
       if (dma_bus_master) begin
 	 TDL = rd_data;
+//	 TDL = DB;		// Not tested!!! just trying to get ram_disk to use block RAM
 
       end else if (assert_vector) begin
 	 TDL = { 7'b0, int_vec };
@@ -320,12 +322,15 @@ module rkv11
 	      ram_disk[rd_addr] <= RDL;
 	    else if (dma_write)
 	      DB <= ram_disk[rd_addr];
+
 	    if (!INH_BA)
 	      RK_BAR <= RK_BAR + 1;
 	    saddr <= saddr_next;
+
 	    if (saddr_carry)
 	      { CYL_ADD, SUR, SA } <= { next_cylinder, next_surface, next_sector };
 	    WC <= WC_next;
+
 	    if (WC_next == 0) begin
 	       RDY <= 1;
 	       dma_read <= 0;
