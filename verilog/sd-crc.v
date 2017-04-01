@@ -4,6 +4,8 @@
 //
 // Copyright 2016 Noel Chiappa and David Bridgham
 
+`timescale 1 ns / 1 ns
+
 // CRC7 = x^7 + x^3 + 1
 module crc7
   (
