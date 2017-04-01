@@ -77,11 +77,11 @@ module SD_spi
    inout 	     sd_cmd,
    inout [3:0] 	     sd_dat,
    // Indicator Panel signals
-   output reg 	     ip_cd, // card detected
-   output reg 	     ip_v1, // Ver1.x
-   output reg 	     ip_v2, // Ver2.0 or higher
-   output reg 	     ip_SC, // Standard Capacity
-   output reg 	     ip_HC, // High Capacity or Extended Capacity
+   output 	     ip_cd, // card detected
+   output 	     ip_v1, // Ver1.x
+   output 	     ip_v2, // Ver2.0 or higher
+   output 	     ip_SC, // Standard Capacity
+   output 	     ip_HC, // High Capacity or Extended Capacity
    output reg [7:0]  ip_err // saw an error
    );
    
@@ -100,8 +100,8 @@ module SD_spi
    // The micro-instruction and breakout
    reg [23:0] 	uinst;
    wire 	crc_reset = uinst[23];	  // reset both crc chains
-   wire 	crc7 = uinst[22];	  // enable the crc7 calc
-   wire 	crc16 = uinst[21];	  // enable the crc16 calc
+   wire 	crc7_enable = uinst[22];  // enable the crc7 calc
+   wire 	crc16_enable = uinst[21]; // enable the crc16 calc
    wire 	set_bits = uinst[20];	  // set bits from literal
    wire 	clr_bits = uinst[19];	  // clear bits from literal
    wire 	set_error = uinst[18];	  // set the error code from literal
@@ -175,10 +175,11 @@ module SD_spi
    // card detect - if sd_cd (aka sd_dat[3]) is low and we're not pulling it down (sd_cs), then
    // there must be a card there.  synchronize this signal since a card might get plugged in at
    // any time.
-   wire 	card_detect_raw = sd_cd && !sd_cs;
+   wire 	card_detect_raw = sd_cd || sd_cs;
    reg [1:0] 	cdra;
    always @(negedge sd_clk) cdra[1:0] = { cdra[0], card_detect_raw };
    wire 	card_detect = cdra[1];
+   assign ip_cd = card_detect;	// send the card detect to the indicator panel
 
    // countdown timer - from clear to cd_timout is about 200ms with a 20MHz clock (when using
    // the slower clock F_OD).  could probably shorten that considerably.
@@ -186,14 +187,15 @@ module SD_spi
    always @(negedge sd_clk)
      cd_timer <= (clr_bits & literal_timeout) ? 0 : cd_timer+1;
 `ifdef SIM
-   // don't wait nearly so long when simulating
-   wire 	cd_timeout = cd_timer[6];
+   wire 	cd_timeout = cd_timer[6];   // shorten timeout when simulating
 `else
    wire 	cd_timeout = cd_timer[17];
 `endif
    
    // keep track of whether the card is standard or high capacity
    reg 		high_capacity = 0;
+   assign ip_SC = ~high_capacity;
+   assign ip_HC = high_capacity;
    always @(negedge sd_clk)
      if (clr_bits & literal_high_capacity)
        high_capacity <= 0;
@@ -202,6 +204,8 @@ module SD_spi
 
    // keep track of whether the card is version 1 or 2
    reg 		version_2 = 0;
+   assign ip_v1 = ~version_2;
+   assign ip_v2 = version_2;
    always @(negedge sd_clk)
      if (clr_bits & literal_version_2)
        version_2 <= 0;
@@ -227,6 +231,15 @@ module SD_spi
      if (set_error)
        ip_err <= literal;
 
+   wire 	crc7_reset = crc_reset;
+   wire 	crc16_reset = crc_reset;
+   wire 	crc7_di = sd_di;
+   wire 	crc16_di = sd_di;
+   wire [6:0] 	crc7_do;
+   wire [15:0] 	crc16_do;
+   crc7 sd_crc7(sd_clk, crc7_reset, crc7_enable, crc7_di, crc7_do);
+   crc16 sd_crc16(sd_clk, crc16_reset, crc16_enable, crc16_di, crc16_do);
+
    // Older SD cards used byte addressing which limited the size to 2GB (why wasn't it 4GB?).
    // In HC and XC cards they went to block addressing, pushing that limit up to 2TB.  The disk
    // controllers generate block addresses so convert here if using an SD card.
@@ -241,9 +254,9 @@ module SD_spi
        TX_IMM: tx_sr <= literal;
        TX_DATA_LOW: tx_sr <= write_data[7:0];
        TX_DATA_HIGH: tx_sr <= write_data[15:8];
-       TX_CRC7: tx_sr <= 0;	    // !! Not yet implemented
-       TX_CRC16_LOW: tx_sr <= 0;    // !! Not yet implemented
-       TX_CRC16_HIGH: tx_sr <= 0;   // !! Not yet implemented
+       TX_CRC7: tx_sr <= { crc7_do, 1'b1 };
+       TX_CRC16_LOW: tx_sr <= crc16_do[7:0];
+       TX_CRC16_HIGH: tx_sr <= crc16_do[15:8];
        TX_ADDR_0: tx_sr <= disk_address[7:0];
        TX_ADDR_1: tx_sr <= disk_address[15:8];
        TX_ADDR_2: tx_sr <= disk_address[23:16];
@@ -272,8 +285,8 @@ module SD_spi
 	 // this one is a little strange.  rx_sr is already being copied to rx_reg on the byte
 	 // strobe.  To do a compare, we save the literal here for branching later.
 	 literal_reg <= literal;
-       RX_DATA_LOW: read_data[7:0] <= rx_sr;
-       RX_DATA_HIGH: read_data[15:8] <= rx_sr;
+       RX_DATA_LOW: read_data[7:0] <= rx_reg;
+       RX_DATA_HIGH: read_data[15:8] <= rx_reg;
      endcase // case (rx_dest)
 
    // compare rx_reg with literal_reg
