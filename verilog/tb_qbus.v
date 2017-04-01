@@ -67,13 +67,16 @@ module tb_qbus();
    // Connect the PMo to the QBUS
    wire        led_d8, led_d9, led_d10, led_d11, led_c12, led_d12, tp_b30;
    wire        ip_clk, ip_latch, ip_data;
+   wire        sd0_sdclk, sd0_sdcmd;
+   wire [3:0]  sd0_sddat;
    pmo pmo(qclk, led_d8, led_d9, led_c12, tp_b30,
 	   ip_clk, ip_latch, ip_data,
 	   DALbe_L, DALtx, DALst, ZDAL, ZBS7, ZWTBT,
 	   RSYNC, RDIN, RDOUT, RRPLY, RREF, RIRQ4, RIRQ5, RIRQ6, RIRQ7,
 	   RDMR, RSACK, RINIT, RIAKI, RDMGI, RDCOK, RPOK,
 	   TSYNC, TDIN, TDOUT, TRPLY, TREF, TIRQ4, TIRQ5, TIRQ6, TIRQ7,
-	   TDMR, TSACK, TIAKO, TDMGO);
+	   TDMR, TSACK, TIAKO, TDMGO,
+	   sd0_sdclk, sd0_sdcmd, sd0_sddat);
    
 
 `ifdef NOTDEF

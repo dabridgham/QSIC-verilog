@@ -9,7 +9,7 @@
 //            Xilinx website. It has some minor modifications.
 //=========================================
 
-`timescale 1ns/1ps
+`timescale 1ns/1ns
 
 module aFifo
   #(parameter    DATA_WIDTH    = 8,
@@ -58,10 +58,8 @@ module aFifo
     //Addreses (Gray counters) logic:
     GrayCounter GrayCounter_pWr
        (.GrayCount_out(pNextWordToWrite),
-       
         .Enable_in(NextWriteAddressEn),
         .Clear_in(Clear_in),
-        
         .Clk(WClk)
        );
        

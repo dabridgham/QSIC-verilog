@@ -4,7 +4,7 @@
 // module.  The prototype board uses Am2908s for bus transceiver for all the Data/Address lines
 // so there's a level of buffering there that needs to be considered.
 //
-// Copyright 2016 Noel Chiappa and David Bridgham
+// Copyright 2016-2017 Noel Chiappa and David Bridgham
 
 `timescale 1 ns / 1 ns
 
@@ -66,7 +66,11 @@ module pmo
    output 	TDMR,
    output 	TSACK,
    output 	TIAKO,
-   output 	TDMGO
+   output 	TDMGO,
+
+   output 	sd0_sdclk,	// J18
+   output 	sd0_sdcmd,	// J17
+   inout [3:0] 	sd0_sddat	// K16 F16 H16 K15
    );
 
    // Turn the 48MHz clock into a 20MHz clock that will be used as the general QBUS clock
@@ -296,6 +300,22 @@ module pmo
 
 
    //
+   // Interface an SD Card
+   //
+
+   wire sd0_read = 0, sd0_write = 0;
+   wire [31:0] sd0_addr = 0;
+   wire [15:0] sd0_write_data = 0;
+   wire        sd0_ready, sd0_cd, sd0_v1, sd0_v2, sd0_SC, sd0_HC;
+   wire [7:0]  sd0_err;
+   wire [15:0] sd0_read_data;
+   SD_spi SD0(clk20, RINIT, sd0_ready, sd0_read, sd0_write, sd0_addr, sd0_write_data, sd0_read_data,
+	      sd0_sdclk, sd0_sdcmd, sd0_sddat,
+	      sd0_cd, sd0_v1, sd0_v2, sd0_SC, sd0_HC, sd0_err);
+   
+
+
+   //
    // Wire up LEDs for testing
    //
 
@@ -339,11 +359,13 @@ module pmo
    
    indicator
      qsic_ip(clk100k, (ip_count == 0), panel_out,
-	     { read_cycle, bs7_reg, addr_reg, 7'b0, 1'b1, 1'b1, rk_dma_read, rk_dma_write, 1'b0 },
+	     { read_cycle, bs7_reg, addr_reg, 
+	       1'b0, sd0_cd, sd0_v1, sd0_v2, sd0_SC, sd0_HC, sd0_ready, 1'b1, 1'b1, rk_dma_read, rk_dma_write, sd0_sddat[3] },
 	     { 1'b0, DALtx, ZDAL, 12'b0 },
 	     { ZWTBT, ZBS7, RSYNC, RDIN, RDOUT, RRPLY, RREF, 1'b0, RIAKI, RIRQ7, RIRQ6, RIRQ5, RIRQ4,
-	       1'b0, RSACK, RDMGI, RDMR, 1'b0, RINIT, 1'b0, RDCOK, RPOK, 14'b0 },
+	       1'b0, RSACK, RDMGI, RDMR, 1'b0, RINIT, 1'b0, RDCOK, RPOK, sd0_read_data[7:0], 6'b0 },
 	     { DALtx & ZWTBT, DALtx & ZBS7, TSYNC, TDIN, TDOUT, TRPLY, TREF, 1'b0,
-	       TIAKO, TIRQ7, TIRQ6, TIRQ5, TIRQ4, 1'b0, TSACK, TDMGO, TDMR, 1'b0, 18'b0 });
+	       TIAKO, TIRQ7, TIRQ6, TIRQ5, TIRQ4, 1'b0, TSACK, TDMGO, TDMR, 1'b0, 
+	       4'b0, sd0_err, 6'b0 });
 
 endmodule // pmo
