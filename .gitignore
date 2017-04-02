@@ -2,8 +2,11 @@
 *.lxt
 *.gtkw
 /board-smt/output
+/indicator-panel/output
 *bak
 *.net
 *.jpg
 *.png
 *.pdf
+/verilog/sd.hex
+/verilog/sd.lst
