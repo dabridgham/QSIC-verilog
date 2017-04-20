@@ -692,7 +692,7 @@ Wire Wire Line
 Wire Wire Line
 	6200 5150 6200 5100
 Text Notes 5350 5900 0    60   ~ 0
-Need to split the 1.5V bus into two\nhalves with separate regulators.
+Need to split the 1.5V reference bus\ninto two halves with separate regulators.
 Wire Wire Line
 	2650 1200 2650 1250
 Wire Wire Line
