@@ -1,0 +1,411 @@
+= On Bus Arbitration on the Unibus and QBUS
+David Bridgham <dab@froghouse.org>
+April 2017
+
+== Introduction
+
+While working on implementing a QBUS device on an FPGA we reached a point of writing the
+Verilog code for the bus arbitration.  In one particular place in the code we could see,
+plain as day, that there was a race condition.  This triggered a vague memory from years
+ago of being told about how there was a design flaw in the Unibus that could, on rare
+occasion, lead to a bus-arbitration failure, and that this was discovered and fixed in the
+QBUS design.
+
+So here was the problem we had heard about all those years ago, clear in the Verilog code,
+and that lead to an effort to understand the problem and find a workable solution.  This
+paper is our attempt to document the results for the benefit of anyone who follows.  As
+far as we know, this knowledge was passed word-of-mouth within the DEC community and has
+not been written down until now.
+
+== Bus Arbitration
+
+We assume the reader has some knowledge of the Unibus and QBUS but may not know in detail
+how bus arbitration works on these two buses.  For those details, refer to DEC's
+http://www.bitsavers.org/pdf/dec/pdp11/handbooks/PDP11_BusHandbook1979.pdf[PDP-11 Bus
+Handbook].
+footnote:[http://www.bitsavers.org/pdf/dec/pdp11/handbooks/PDP11_BusHandbook1979.pdf]
+It covers both the Unibus and QBUS and we will refer to timing diagrams by
+page number in that reference.
+
+For anyone actually working with these buses, it's worth your time to refer to multiple
+sources for the bus description.  DEC's specs are pretty good but they learned things over
+time and occasionally had editing errors.  Another take on the Unibus is found in
+http://www.bitsavers.org/pdf/dec/unibus/UnibusSpec1979.pdf[PDP-11 Unibus Design
+Description]
+footnote:[http://www.bitsavers.org/pdf/dec/unibus/UnibusSpec1979.pdf]
+and a later description of the QBUS (which has some details about block mode
+transfers that I haven't seen elsewhere) is found in Appendix F of the
+http://www.bitsavers.org/pdf/dec/vax/680/EK-KA680-TM-001_KA680_TechMan.pdf[KA680 CPU
+Module Technical Manual].
+footnote:[http://www.bitsavers.org/pdf/dec/vax/680/EK-KA680-TM-001_KA680_TechMan.pdf]
+
+=== General Description
+
+A computer bus connects a processor (sometimes multiple processors) and peripheral devices
+together and allows data transfers between the various components.  As a general rule, one
+and only one device may be in control of the bus at any time.  Usually this would be the
+processor, reading and writing to memory and I/O devices as it executes instructions, but
+from time to time it is useful to hand off this bus-master role to other devices in the
+system, either so they can access memory directly (DMA) or so they can interrupt the
+processor and give it an interrupt vector.
+
+The mechanism whereby the processor hands over control of the bus to exactly one device is
+called bus arbitration.  Computer designers have invented a variety of means of doing this
+arbitration but a generic description of how DEC does it on the Unibus and QBUS follows.
+
+A device requesting the bus asserts a common open-collector signal (wired OR) to the
+processor.  When the processor sees this and is ready, the bus arbitration circuitry in
+the processor asserts a bus grant line that is daisy-chained down the bus (i.e. wired from
+an 'out' pin on one slot to an 'in' pin on the next sequential slot, for every pair of
+adjacent slots).
+
+Each device that is not requesting the bus simply repeats the bus grant signal along.  The
+first device that is requesting the bus does not repeat the bus grant signal and assumes
+that it now has exclusive use of the bus.  It asserts an acknowledgment back to the
+processor, and asserts its interrupt vector, or begins DMA operations as appropriate.
+
+=== Detailed Descriptions
+
+Each of the four combinations of Unibus vs. QBUS and DMA vs. interrupts has little
+variations from that general description so we'll briefly introduce those here.  All the
+bus signals mentioned below, except the grants, are, like the request line, also common
+open-collector signal (wired-OR); i.e. they are broadcast to all devices on the bus.
+
+==== Unibus Non-Processor Grant
+
+The Unibus NPG Arbitration Sequence -- description starting on page 36 -- follows the
+general description pretty closely.  It allows a device to become bus master in order to
+perform DMA operations.  To start, a device requests the bus by asserting NPR.  The bus
+arbitrator responds, when it's ready, by asserting the daisy-chained signal NPG.  The
+requesting device captures NPG (doesn't pass it along to devices further down the chain)
+and asserts SACK to acknowledge the bus-grant; the arbitrator negates NPG when it sees
+that acknowledgment.  Important note: the requesting device must not grab NPG if it's
+already passing it along for some other device.  More on this later.
+
+When the bus is idle (BBSY, NPG, and SSYN are all negated), the requesting device asserts
+BBSY and becomes the bus master.  The requesting device now can run data transfer bus
+cycles.  When it's done, the requesting device negates SACK and BBSY and control reverts
+to the processor.  footnote:[The formatting of the 1979 __PDP-11 Bus Handbook__ seems to
+have gotten broken here.  Immediately following the description of the NPG Arbitration
+Sequence, without any sort of header or break, the text goes into describing how to
+generate INTR cycles.  Other Unibus descriptions make it clear that the NPG sequence is
+only for DMA and not for interrupts.]
+
+==== Unibus Bus Grant
+
+The Unibus also has a priority Bus Grant system with four priority levels that work just
+like NPG but requests are made on BR[7..4] and the daisy-chained bus-grant signals are on
+BG[7..4].  Once a device becomes bus master, it may run either data transfer cycles (aka
+DMA) or an interrupt cycle to pass its interrupt vector to the processor.
+
+==== QBUS DMA Protocol
+
+The QBUS DMA protocol is described starting on page 115 with the timing diagram Figure 2-8
+on page 117.  It follows the general description given above exactly.  A device requesting
+the bus for DMA asserts DMR.
+footnote:[A note on QBUS signal terminology.  A signal like DMR (DMA Request) may show up with
+three different names depending on how this signal is being considered, distinguished by a
+prefix letter.  A leading B is the signal on the bus; it is inverted logic, that is an
+asserted signal is a low voltage (open-collector signals).  A leading T indicates this is
+the signal transmitted by a board and a leading R indicates a received signal; these
+signals are not inverted.  In addition, the daisy-chained signals (DMG and IAK) often have
+a trailing letter (I or O) to indicate if the signal is coming in (from the processor) or
+going out (away from the processor).]
+When the processor replies with DMGI the device does not pass this through by asserting
+DMGO to the next device (not shown in the timing diagram) but captures that bus grant for
+itself and asserts SACK to acknowledge that it has the bus.  It then clears DMR which it
+was asserting, goes on to do its DMA operations, and clears SACK when it is done.
+
+==== QBUS Interrupt Protocol
+
+The QBUS interrupt protocol diverges the most from the general description we've been
+using.  The basic ideas are the same but there are a bunch of details that differ.  The
+big difference is that for Unibus interrupts, the interrupt device becomes bus master and
+then runs an INTR bus cycle to send its interrupt vector to the processor.  On the QBUS,
+the device runs through the bus arbitration but then the processor reads the interrupt
+vector from the device similarly to how the processor would read an I/O register from the
+device.
+
+The interrupt protocol description starts on page 117 with the timing diagram figure 2-10
+on page 120.  The QBUS has four different interrupt request lines IRQ4, IRQ5, IRQ6, and
+IRQ7.  A single shared daisy-chained "bus grant" comes back as IAKI and continues down
+the bus as IAKO.
+
+A device that's requesting an interrupt will not pass an incoming IAKI to IAKO, but will
+assume that it has won the bus arbitration.  At that point it deasserts its request,
+asserts RPLY and its interrupt vector, and then removes RPLY and its interrupt vector
+when it sees IAKI go away.
+
+There is a little more complication with not capturing a bus grant if someone at higher
+priority is requesting an interrupt but that's not relevant to the discussion here about
+bus arbitration.
+
+The other variation that we have skipped until now is the DIN signal.  We will come back
+to this but, for now, just note that DIN is asserted with SYNC not asserted a minimum of
+150ns before IAKI is asserted.  This provides the device advance notice that an interrupt
+bus grant is coming soon.
+
+== The Problem
+
+Now we focus in on just how a device decides if it is going to pass the bus grant signal
+through, or capture it for itself, thereby deciding that it has won the arbitration.  This
+decision of whether to pass the bus grant signal or not is where the problem arises.  We
+will use the QBUS DMA signal names to be specific in the examples.
+
+The first naive approach is that it is a simple AND gate.  If bus grant comes in and this
+device is not requesting the bus, pass the signal through.  In Verilog:
+
+    assign TDMGO = RDMGI & ~bus_request;
+
+In this example, the bus_request signal is generated internally by the device whenever it
+decides it wants to acquire the bus for DMA operations.  It is sure a nice,
+straightforward implementation but of course if that were all there was to it, I wouldn't
+be writing this paper and you wouldn't be reading it.
+
+Consider that the device can decide it wants the bus at any arbitrary time relative to
+whatever the processor is doing.  So it is possible that the bus grant may come through as
+a result of a down-steam device's request just before this device asserts bus_request.  In
+that case, TDMGO is asserted briefly and then the device "takes it back".
+
+Besides being downright rude, this can easily result in two devices both thinking that
+they own the bus and chaos ensures when they both start running DMA operations.  Given the
+design of the Unibus and QBUS with open-collector bus drivers this is unlikely to let out
+the magic smoke but scrambling memory or the data on your disk is almost guaranteed.
+
+The fix, you think, is to latch the fact that you passed through bus grant so you never
+"take it back".  Exactly right.  Here is the Verilog for this:
+
+----
+always @(posedge RDMGI, posedge RINIT, posedge finished) begin
+   if (RINIT || finished)
+     won_arbitration <= 0;
+   else
+     won_arbitration <= bus_request;
+end
+    
+assign TDMGO = RDMGI & ~won_arbitration;
+----
+
+In this, finished is a signal from the DMA state machine that gets asserted when DMA
+operations are complete.  This will synthesize to something like this:
+
+image::grant1.png[]
+
+=== Meta-stability
+
+Now we have a circuit that is an
+https://en.wikipedia.org/wiki/Arbiter_(electronics)[arbiter].
+footnote:[https://en.wikipedia.org/wiki/Arbiter_(electronics)]
+footnote:[http://gunkies.org/wiki/Arbiter]
+Since we are doing bus
+arbitration, that should be no surprise.  The flip-flop is determining if the positive
+edge of RDMGI happens before bus_request goes high.  Flip-flops have specifications called
+their setup and hold times.  The data input to the flip-flop must be valid at least the
+setup time before the clock and must remain valid at least hold time after the clock
+otherwise the flip-flop may enter a
+https://en.wikipedia.org/wiki/Metastability_in_electronics[meta-stable state].
+footnote:[https://en.wikipedia.org/wiki/Metastability_in_electronics]
+footnote:[http://gunkies.org/wiki/Meta-stability]
+
+A latch is a circuit with feedback -- i.e. an output is connected back to an input. In line
+with the axiom that 'digital circuits are made out of analog parts', this feedback is not
+digital (i.e. restricted to '0' or '1'), but may be any intermediate voltage. Generally,
+if the output is 'toward' one of those two values, the circuit moves quickly (via
+feedback) all the way to that value. However, if it is balanced precisely in the middle,
+it may take a while before it fluctuates to one side or the other, and then rapidly moves
+to that value.
+
+Note that there is no way to avoid this situation (and considerable theoretical work has
+gone into studying it, and 'proves' that there is no solution). The best one can do is
+create circuits that ask 'is it still trying to decide', and if so, wait.
+
+Since bus_request can happen at any time relative to bus grant (RDMGI), these setup and
+hold times cannot be guaranteed and the output of the arbiter may go meta-stable.  This is
+a fundamental property of any arbiter.  The fix is to wait a while to let the
+meta-stability settle out.  While there is no time interval you can specify that guarantees
+success, the longer you wait the better your chances and in reality it almost always does
+settle out pretty quickly.
+
+The key though is that you should not use the arbitration output immediately, and this
+circuit does use it immediately to gate the pass-through of RDMGI to TDMGO.  In other
+words, it can result in a short pulse of grant being passed through, so that two devices
+decide that they won the bus arbitration and chaos reigns as described previously.
+
+=== Glitching
+
+Turns out the circuit here also has another problem; it glitches TDMGO when RDMGI comes in
+if bus_request is asserted.  The short explanation of this glitch is that whenever an
+input signal travels two paths to an output signal, those two paths may take differing
+times and so you want to think about glitches.
+
+In more detail, if the circuit is quiescent then RDGMI is low and won_arbitration is low
+which makes [overline]#Q# high, therefore TDMGO is low.  If bus_request is high and RDMGI
+goes high, [overline]#Q# is still high briefly so TDMGO will go high.  In a very short
+interval, the propagation time of the flip-flop, [overline]#Q# will go low and TDMGO will
+go low again.  However, this has glitched TDMGO and some device downstream that is also
+requesting DMA may think it just won the bus arbitration.
+
+The fix we will apply for the meta-stability problem will fix the glitch as well.
+
+== The Solution
+
+=== The Idea
+
+The basic idea is simple.  Since the problem comes from trying to use the arbitration
+output immediately, we should wait a while before using it.  If we could do the
+arbitration some time before the bus grant signal arrived then we could let any
+meta-stability settle out before we had to pass gate bus grant through or not using that
+pre-decided answer.
+
+=== QBUS DMA
+
+For the bus grant on Unibus or DMA on the QBUS, there is no early indication that a bus
+grant is soon to come but we can get that effect by running the bus grant through a delay.
+The un-delayed signal clocks the arbiter and the delayed bus grant is passed down the
+chain or not.
+
+This circuit looks like this:
+
+image::grant3.png[]
+
+Now the, possibly meta-stable, output of the Arbiter will not be sent out to TDMGO until
+'delay' after RDMGI's positive edge, by which time it ought to have stabilized on an
+answer to the question of whether bus_request or RDMGI happened first.  The
+won_arbitration needs this type of protection as well.
+
+Since delay lines are not available in most FPGAs, we can use a bucket-brigade of
+flip-flops to get a similar effect.  Note that this bucket-brigade is the same circuit as
+a synchronizer used when signals travel between clock domains.
+
+Here is the Verilog for this final design with its circuit:
+
+----
+always @(posedge RDMGI, posedge RINIT, posedge finished) begin
+   if (RINIT || finished)
+     won_arbitration <= 0;
+   else
+     won_arbitration <= bus_request;
+end
+
+reg RDMGIra[1:0];
+reg RDMGI_delayed = RDMGIra[1];
+always @(posedge CLK)
+  RDMGIra <= { RDMGIra[0], RDMGI };
+
+assign TDMGO = RDMGI_delayed & ~won_arbitration;
+----
+
+image::grant4.png[]
+
+Obviously this adds delay to the bus grant chain at each device in the chain.  How much of
+a problem is this?  From page 117:
+
+____
+Propagation delay from BDMGI L to BDMGO L must be less than 500 ns per LSI-11 bus slot.
+Since this delay directly affects system performance, it should be kept as short as
+possible.
+____
+
+With a 20MHz clock, two flip-flops will add between 50ns and 100ns of delay depending on
+the phase relationship of the incoming bus grant with the clock, well within the spec.
+footnote:[We are unable to find the Unibus spec for this delay.]
+Also, if the reader would consider the simplified logic diagram of DEC's DC010 Direct
+Memory Access Logic chip
+footnote:[http://bitsavers.trailing-edge.com/pdf/dec/qbus/Chipkit_Users_Manual_1982.pdf[ChipKit Users Manual] pg.43 Figure 18]
+, they can see the delay line in the BDMGI to BDMGO logic chain.  From the timing table,
+the total propagation delay high-low is between 95 and 220ns while low-high is between 15
+and 60ns.footnote:[Ibid pg.54 Table 10] Apparently DEC considered delays of this order
+acceptable in practice as well as in theory.
+
+=== Unibus Interrupts
+
+We have used the QBUS for our specifics so far but it all works the same on the Unibus.
+However, an interesting difference between the QBUS and Unibus happens once you've won
+arbitration and want to generate an interrupt.  On the Unibus, the device runs an INTR bus
+cycle that basically writes the interrupt vector into the interrupt fielding processor.
+On the QBUS, after the arbitrator has granted the bus to some device requesting an
+interrupt, the processor runs what looks very much like a DATI cycle (bus read) to read
+the interrupt vector from the device.
+
+This has a couple interesting results which comes back to touch on the bus arbitration
+question.  First, implementing interrupts on a Unibus device needs a state machine --
+simpler than the DMA state machine but a state machine nonetheless -- to sequence through
+the bus signals needed to run the INTR bus cycle.  On the QBUS, interrupt processing on a
+slave device is simply another register read.  It's driven off RDIN and won_arbitration
+rather than an address match but it's otherwise very similar.  No state machine is needed,
+just combinational logic.
+
+=== QBUS Interrupts
+
+In the QBUS interrupt protocol,as mentioned earlier, DIN is asserted at least 150ns before
+bus grant (RIAKI).  So if we clock the arbitrator flip-flop on RDIN, we get a minimum of
+150ns to let any meta-stability clear before we use the signal.  The Verilog for this is:
+
+----
+always @(posedge RDIN, posedge RINIT) begin
+   if (RINIT)
+     interrupt_mine <= 0;
+   else if (irql && !irq_higher)
+     interrupt_mine <= 1;
+   else
+     interrupt_mine <= 0;
+end
+
+assign TIAKO = RIAKI & ~interrupt_mine;
+----
+
+This should look very similar to the bus grant logic we considered previously with the
+change that we clock the arbiter flip-flop off RDIN while we pass RIAKI rather than doing
+both off the bus grant.  The irql signal is a latched version of the internal interrupt
+request line on the device and irq_higher is a calculation among the four QBUS interrupt
+request lines to make sure some higher priority interrupt isn't currently being requested.
+
+The synthesized circuit would look something like this (the irq_higher part removed as it
+just muddies the picture):
+
+image::grant2.png[]
+
+Again, the output of the Arbiter may be meta-stable for a little while so those outputs
+should not be used until they have time to settle.  Gating the output with RIAKI provides
+that protection.  The interrupt_mine signal gets this protection as well, as you'll see
+below.
+
+One bit of subtlety here is that only RDIN clocks the Arbiter.  Since RDIN is also used to
+signal DATI (data read) cycles on the QBUS, doesn't that confuse things?  When RDIN is
+asserted and RSYNC is not, that is the early indication that the bus arbitrator is about
+to assert RIAKI to read an interrupt vector.  So why are we not including RSYNC in here
+somewhere?  Well, we could but it turns out it doesn't matter.  Since the output of the
+Arbiter here is only used when RIAKI gets asserted, clocking in irql on every RDIN
+transition doesn't hurt anything and it simplifies the circuit a little.  Also, once our
+interrupt vector is read and irql is negated, the next RDIN will clear the Arbiter
+flip-flop naturally so we don't have to add some circuitry to deal with that.
+
+This is only a small piece of the QBUS interrupt circuitry and on the QBUS, unlike on
+the Unibus, the rest of the interrupt processing is a part of the bus arbitration
+sequence.  So here is that arbitrator in a little more context.  The interrupt_request
+line comes from the device when it wants to trigger an interrupt; TIRQn expands to the
+different IRQ signals depending on what priority this device is set to; and
+assert_vector is a signal to the register read circuitry that causes it to put the
+interrupt vector on the BDAL lines rather than I/O register contents.
+
+When RIAKI comes in, we either pass it through to TIKAO or assert our own interrupt vector
+as determined by the bus arbitration flip-flop which was clocked off RDIN at least 150ns
+earlier.  If we assert the interrupt vector, then we also clear the interrupt request
+flip-flop and negate TIRQn.
+
+image::qint2.png[]
+
+== Conclusion
+
+There is no revealed wisdom here.  These are just the opinions of the author and not
+inside information from DEC engineers.  We present the information to aid those in the
+community who experiment with their own device designs.  We welcome feedback and
+discussion to make this information as complete and correct as possible.
+
+== Acknowledgments
+
+The author gratefully acknowledges the assistance of Noel Chiappa in working through
+questions about how the Unibus and QBUS work as well as reviewing this paper not to
+mention starting the QSIC project
+footnote:[http://pdp10.froghouse.org/qsic/html/overview.html]
+that lead to discovering all this stuff in the first place.
