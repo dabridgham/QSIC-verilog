@@ -73,14 +73,16 @@ open-collector signal (wired-OR); i.e. they are broadcast to all devices on the 
 
 ==== Unibus Non-Processor Grant
 
-The Unibus NPG Arbitration Sequence -- description starting on page 36 -- follows the
-general description pretty closely.  It allows a device to become bus master in order to
-perform DMA operations.  To start, a device requests the bus by asserting NPR.  The bus
-arbitrator responds, when it's ready, by asserting the daisy-chained signal NPG.  The
-requesting device captures NPG (doesn't pass it along to devices further down the chain)
-and asserts SACK to acknowledge the bus-grant; the arbitrator negates NPG when it sees
-that acknowledgment.  Important note: the requesting device must not grab NPG if it's
-already passing it along for some other device.  More on this later.
+The Unibus NPG Arbitration Sequence allows a device to become bus master in order to
+perform DMA operations.  The description, starting on page 36, follows the general
+description pretty closely.
+
+To start, a device requests the bus by asserting NPR.  The bus arbitrator responds, when
+it's ready, by asserting the daisy-chained signal NPG.  The requesting device captures NPG
+(doesn't pass it along to devices further down the chain) and asserts SACK to acknowledge
+the bus-grant; the arbitrator negates NPG when it sees that acknowledgment.  Important
+note: the requesting device must not grab an NPG if it has already started passing it
+along for some other device.  More on this later.
 
 When the bus is idle (BBSY, NPG, and SSYN are all negated), the requesting device asserts
 BBSY and becomes the bus master.  The requesting device now can run data transfer bus
@@ -128,8 +130,8 @@ device.
 
 The interrupt protocol description starts on page 117 with the timing diagram figure 2-10
 on page 120.  The QBUS has four different interrupt request lines IRQ4, IRQ5, IRQ6, and
-IRQ7.  A single shared daisy-chained "bus grant" comes back as IAKI and continues down
-the bus as IAKO.
+IRQ7.  A single shared daisy-chained "bus grant" comes back down the bus and into a device
+as IAKI and continues out of the device as IAKO.
 
 A device that's requesting an interrupt will not pass an incoming IAKI to IAKO, but will
 assume that it has won the bus arbitration.  At that point it deasserts its request,
@@ -141,9 +143,9 @@ priority is requesting an interrupt but that's not relevant to the discussion he
 bus arbitration.
 
 The other variation that we have skipped until now is the DIN signal.  We will come back
-to this but, for now, just note that DIN is asserted with SYNC not asserted a minimum of
-150ns before IAKI is asserted.  This provides the device advance notice that an interrupt
-bus grant is coming soon.
+to this but, for now, just note that DIN (normally used to signal a read cycle on the bus)
+is asserted with SYNC not asserted a minimum of 150ns before IAKI is asserted.  This
+provides the device advance notice that an interrupt bus grant is coming soon.
 
 == The Problem
 
@@ -163,9 +165,10 @@ straightforward implementation but of course if that were all there was to it, I
 be writing this paper and you wouldn't be reading it.
 
 Consider that the device can decide it wants the bus at any arbitrary time relative to
-whatever the processor is doing.  So it is possible that the bus grant may come through as
-a result of a down-steam device's request just before this device asserts bus_request.  In
-that case, TDMGO is asserted briefly and then the device "takes it back".
+whatever the processor or any other device on the bus is doing.  So it is possible that
+the bus grant may come through as a result of a down-steam device's request just before
+this device asserts bus_request.  In that case, TDMGO is asserted briefly and then the
+device "takes it back".
 
 Besides being downright rude, this can easily result in two devices both thinking that
 they own the bus and chaos ensures when they both start running DMA operations.  Given the
@@ -176,8 +179,8 @@ The fix, you think, is to latch the fact that you passed through bus grant so yo
 "take it back".  Exactly right.  Here is the Verilog for this:
 
 ----
-always @(posedge RDMGI, posedge RINIT, posedge finished) begin
-   if (RINIT || finished)
+always @(posedge RDMGI, posedge RINIT, posedge cycle_finished) begin
+   if (RINIT || cycle_finished)
      won_arbitration <= 0;
    else
      won_arbitration <= bus_request;
@@ -186,8 +189,8 @@ end
 assign TDMGO = RDMGI & ~won_arbitration;
 ----
 
-In this, finished is a signal from the DMA state machine that gets asserted when DMA
-operations are complete.  This will synthesize to something like this:
+In this, 'cycle_finished' is a signal from the DMA state machine that gets asserted when
+DMA operations are complete.  This will synthesize to something like this:
 
 image::grant1.png[]
 
@@ -214,6 +217,10 @@ if the output is 'toward' one of those two values, the circuit moves quickly (vi
 feedback) all the way to that value. However, if it is balanced precisely in the middle,
 it may take a while before it fluctuates to one side or the other, and then rapidly moves
 to that value.
+
+The race condition is between the clock to the latch and the data input.  As they change
+closer together, the setup and hold time limitations mentioned above are violated, and the
+probability of the latch going meta-stable increase.
 
 Note that there is no way to avoid this situation (and considerable theoretical work has
 gone into studying it, and 'proves' that there is no solution). The best one can do is
@@ -268,20 +275,23 @@ This circuit looks like this:
 
 image::grant3.png[]
 
-Now the, possibly meta-stable, output of the Arbiter will not be sent out to TDMGO until
+Now the output of the Arbiter, possibly meta-stable, will not be sent out to TDMGO until
 'delay' after RDMGI's positive edge, by which time it ought to have stabilized on an
 answer to the question of whether bus_request or RDMGI happened first.  The
 won_arbitration needs this type of protection as well.
 
-Since delay lines are not available in most FPGAs, we can use a bucket-brigade of
-flip-flops to get a similar effect.  Note that this bucket-brigade is the same circuit as
-a synchronizer used when signals travel between clock domains.
+DEC's DC010 Direct Memory Access Logic chip
+footnote:[http://bitsavers.trailing-edge.com/pdf/dec/qbus/Chipkit_Users_Manual_1982.pdf[ChipKit Users Manual] pg.43 Figure 18]
+uses a delay line just like this but since delay lines are not available in most FPGAs, we
+can use a bucket-brigade of flip-flops to get a similar effect.  Note that this
+bucket-brigade is the same circuit as a synchronizer used when signals travel between
+clock domains.
 
 Here is the Verilog for this final design with its circuit:
 
 ----
-always @(posedge RDMGI, posedge RINIT, posedge finished) begin
-   if (RINIT || finished)
+always @(posedge RDMGI, posedge RINIT, posedge cycle_finished) begin
+   if (RINIT || cycle_finished)
      won_arbitration <= 0;
    else
      won_arbitration <= bus_request;
@@ -309,17 +319,26 @@ ____
 With a 20MHz clock, two flip-flops will add between 50ns and 100ns of delay depending on
 the phase relationship of the incoming bus grant with the clock, well within the spec.
 footnote:[We are unable to find the Unibus spec for this delay.]
-Also, if the reader would consider the simplified logic diagram of DEC's DC010 Direct
-Memory Access Logic chip
-footnote:[http://bitsavers.trailing-edge.com/pdf/dec/qbus/Chipkit_Users_Manual_1982.pdf[ChipKit Users Manual] pg.43 Figure 18]
-, they can see the delay line in the BDMGI to BDMGO logic chain.  From the timing table,
+Looking at the timing table for the DC010 chip mentioned above,
+footnote:[Ibid pg.54 Table 10] 
 the total propagation delay high-low is between 95 and 220ns while low-high is between 15
-and 60ns.footnote:[Ibid pg.54 Table 10] Apparently DEC considered delays of this order
-acceptable in practice as well as in theory.
+and 60ns.  Apparently DEC considered delays of this order acceptable in practice as well as
+in theory.
 
-=== Unibus Interrupts
+=== FPGAs and Glitching
 
-We have used the QBUS for our specifics so far but it all works the same on the Unibus.
+One final consideration comes up when implementing this on an FPGA.  Specifically, what
+about that AND gate that's feeding TDMGO and what happens if the output of the Arbiter
+flip-flop goes meta-stable for a little while?  On a real AND gate, holding one input low
+means the output will be low no matter what the other input does.  But what about an AND
+gate that's implemented by other means, like the LUTs in an FPGA?  It turns out that
+FPGA's LUTs are built to be glitch-free in the face of a single input changing.  So it's a
+problem worth considering but, at least in the case of FPGAs, this works.
+
+=== Unibus DMA and Interrupts
+
+We have used the QBUS for our specifics so far but it all works the same on the Unibus,
+just wire this circuit up to NPR/NPG or BRn/BGn depending on your desired priority.
 However, an interesting difference between the QBUS and Unibus happens once you've won
 arbitration and want to generate an interrupt.  On the Unibus, the device runs an INTR bus
 cycle that basically writes the interrupt vector into the interrupt fielding processor.
@@ -327,19 +346,20 @@ On the QBUS, after the arbitrator has granted the bus to some device requesting 
 interrupt, the processor runs what looks very much like a DATI cycle (bus read) to read
 the interrupt vector from the device.
 
-This has a couple interesting results which comes back to touch on the bus arbitration
-question.  First, implementing interrupts on a Unibus device needs a state machine --
-simpler than the DMA state machine but a state machine nonetheless -- to sequence through
-the bus signals needed to run the INTR bus cycle.  On the QBUS, interrupt processing on a
-slave device is simply another register read.  It's driven off RDIN and won_arbitration
-rather than an address match but it's otherwise very similar.  No state machine is needed,
-just combinational logic.
+This means the implementation of interrupts on the Unibus vs QBUS are quite different
+once the bus arbitration is done.  Implementing interrupts on a Unibus device needs a
+state machine -- simpler than the DMA state machine but a state machine nonetheless -- to
+sequence through the bus signals needed to run the INTR bus cycle.  On the QBUS, interrupt
+processing on a slave device is simply another register read.  It's driven off RDIN and
+won_arbitration rather than an address match but it's otherwise very similar.  No state
+machine is needed, just combinational logic.
 
 === QBUS Interrupts
 
-In the QBUS interrupt protocol,as mentioned earlier, DIN is asserted at least 150ns before
-bus grant (RIAKI).  So if we clock the arbitrator flip-flop on RDIN, we get a minimum of
-150ns to let any meta-stability clear before we use the signal.  The Verilog for this is:
+In the QBUS interrupt protocol, as mentioned earlier, BDIN is asserted at least 150ns
+before bus grant (BIAKI).  So if we clock the arbitrator flip-flop on RDIN, we get a
+minimum of 150ns to let any meta-stability clear before we use the signal.  The Verilog
+for this is:
 
 ----
 always @(posedge RDIN, posedge RINIT) begin
@@ -366,31 +386,32 @@ just muddies the picture):
 image::grant2.png[]
 
 Again, the output of the Arbiter may be meta-stable for a little while so those outputs
-should not be used until they have time to settle.  Gating the output with RIAKI provides
-that protection.  The interrupt_mine signal gets this protection as well, as you'll see
-below.
+should not be used until they have time to settle.  Gating the output with RIAKI, which
+will be low during any potential meta-stability, provides that protection.  The
+interrupt_mine signal gets this protection as well, as you'll see below.
 
 One bit of subtlety here is that only RDIN clocks the Arbiter.  Since RDIN is also used to
-signal DATI (data read) cycles on the QBUS, doesn't that confuse things?  When RDIN is
-asserted and RSYNC is not, that is the early indication that the bus arbitrator is about
+signal DATI (data read) cycles on the QBUS, doesn't that confuse things?  The processor
+asserts RDIN while RSYNC is negated to provide the early indication that the it is about
 to assert RIAKI to read an interrupt vector.  So why are we not including RSYNC in here
 somewhere?  Well, we could but it turns out it doesn't matter.  Since the output of the
-Arbiter here is only used when RIAKI gets asserted, clocking in irql on every RDIN
-transition doesn't hurt anything and it simplifies the circuit a little.  Also, once our
-interrupt vector is read and irql is negated, the next RDIN will clear the Arbiter
-flip-flop naturally so we don't have to add some circuitry to deal with that.
+Arbiter is only used when RIAKI gets asserted, clocking in irql on every RDIN transition
+doesn't hurt anything and it simplifies the circuit a little.  Also, once our interrupt
+vector is read and irql is negated, the next RDIN will clear the Arbiter flip-flop
+naturally so we don't have to add some circuitry to deal with that.
 
 This is only a small piece of the QBUS interrupt circuitry and on the QBUS, unlike on
 the Unibus, the rest of the interrupt processing is a part of the bus arbitration
-sequence.  So here is that arbitrator in a little more context.  The interrupt_request
+sequence.  So here is that arbiter in a little more context.  The interrupt_request
 line comes from the device when it wants to trigger an interrupt; TIRQn expands to the
-different IRQ signals depending on what priority this device is set to; and
+different IRQ signals depending on what priority this device is configured for; 
 assert_vector is a signal to the register read circuitry that causes it to put the
-interrupt vector on the BDAL lines rather than I/O register contents.
+interrupt vector on the BDAL lines rather than I/O register contents; and, as before, the
+irq_higher logic has been omitted for clarity.
 
 When RIAKI comes in, we either pass it through to TIKAO or assert our own interrupt vector
 as determined by the bus arbitration flip-flop which was clocked off RDIN at least 150ns
-earlier.  If we assert the interrupt vector, then we also clear the interrupt request
+earlier.  When we assert the interrupt vector, then we also clear the interrupt request
 flip-flop and negate TIRQn.
 
 image::qint2.png[]

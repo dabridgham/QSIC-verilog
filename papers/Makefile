@@ -1,11 +1,11 @@
 IMAGES = grant1.png grant2.png grant3.png grant4.png grant5.png grant6.png qint2.png qint3.png
 SRC = bus-arbitration.txt $(IMAGES)
 
-all: bus-arbitration.html
+all: bus-arbitration.html bus-arbitration.pdf
 bus-arbitration.html: bus-arbitration.adoc
-	asciidoc bus-arbitration.adoc
+	asciidoctor bus-arbitration.adoc
 
-# the asciidoctor pdf backend doesn't handle footnotes or overlines correctly
+# the asciidoc pdf backend doesn't handle overlines correctly
 bus-arbitration.pdf: bus-arbitration.adoc $(IMAGES)
 	a2x -f pdf bus-arbitration.adoc
 
