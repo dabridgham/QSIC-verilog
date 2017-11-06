@@ -1,4 +1,5 @@
 EESchema Schematic File Version 2
+LIBS:qsic-rescue
 LIBS:power
 LIBS:device
 LIBS:transistors
@@ -32,11 +33,11 @@ LIBS:myLib
 LIBS:qsic-cache
 EELAYER 25 0
 EELAYER END
-$Descr USLetter 11000 8500
+$Descr A 11000 8500
 encoding utf-8
 Sheet 1 6
 Title "QBUS Interface"
-Date "2017-03-12"
+Date "2017-10-31"
 Rev "0.1"
 Comp "VIntage Computer Engineering"
 Comment1 ""
@@ -104,7 +105,7 @@ L +5V #PWR06
 U 1 1 58814E9D
 P 850 4000
 F 0 "#PWR06" H 850 3850 50  0001 C CNN
-F 1 "+5V" H 850 4140 50  0000 C CNN
+F 1 "+5V" V 850 4200 50  0000 C CNN
 F 2 "" H 850 4000 60  0000 C CNN
 F 3 "" H 850 4000 60  0000 C CNN
 	1    850  4000
@@ -139,7 +140,7 @@ L +12V #PWR07
 U 1 1 58814ECD
 P 850 3600
 F 0 "#PWR07" H 850 3450 50  0001 C CNN
-F 1 "+12V" H 850 3740 50  0000 C CNN
+F 1 "+12V" V 850 3800 50  0000 C CNN
 F 2 "" H 850 3600 50  0000 C CNN
 F 3 "" H 850 3600 50  0000 C CNN
 	1    850  3600
