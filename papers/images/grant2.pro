@@ -1,4 +1,4 @@
-update=Mon 17 Apr 2017 10:57:39 AM EDT
+update=Tue 02 May 2017 10:15:20 AM EDT
 version=1
 last_client=kicad
 [pcbnew]
@@ -60,7 +60,7 @@ LibName29=valves
 version=1
 [schematic_editor]
 version=1
-PageLayoutDescrFile=/home/dab/me/qsic/papers/pagelayout_blank.kicad_wks
+PageLayoutDescrFile=pagelayout_blank.kicad_wks
 PlotDirectoryName=
 SubpartIdSeparator=0
 SubpartFirstId=65

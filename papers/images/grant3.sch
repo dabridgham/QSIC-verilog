@@ -54,11 +54,11 @@ F 3 "" H 2850 1100 50  0000 C CNN
 	1    2850 1100
 	1    0    0    -1  
 $EndComp
-Text GLabel 1400 1600 0    60   Input ~ 0
+Text GLabel 1100 1600 0    60   Input ~ 0
 RDMGI
-Text GLabel 1650 900  0    60   Input ~ 0
+Text GLabel 1350 900  0    60   Input ~ 0
 bus_request
-Text GLabel 1350 1900 0    60   Input ~ 0
+Text GLabel 1050 1900 0    60   Input ~ 0
 RINIT
 Text GLabel 1450 2100 0    60   Input ~ 0
 cycle_finished
@@ -78,9 +78,9 @@ F 3 "" H 4150 1500 50  0000 C CNN
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	2250 900  1650 900 
+	2250 900  1350 900 
 Wire Wire Line
-	1350 1900 1550 1900
+	1050 1900 1550 1900
 Wire Wire Line
 	1450 2100 1550 2100
 Text GLabel 4850 1500 2    60   Output ~ 0
@@ -122,7 +122,7 @@ $EndComp
 Wire Wire Line
 	2650 1600 3550 1600
 Wire Wire Line
-	1400 1600 1900 1600
+	1100 1600 1900 1600
 Wire Wire Line
 	1900 1600 2050 1600
 Wire Wire Line
