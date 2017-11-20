@@ -8,4 +8,5 @@ board-prototype:: KiCAD designs for a prototype board with 8641 bus transceivers
 board-smt:: KiCAD design where I've been experimenting with discrete bus drivers
 board-wirewrap:: KiCAD designs for the wire-wrap prototype board
 indicator-panel:: Gotta have blinkenlights
+papers:: A paper on QBUS and Unibus arbitration
 verilog:: The FPGA code to implement the QSIC
