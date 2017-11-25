@@ -84,7 +84,7 @@ sd.vvp: Makefile sd.v sd.hex sd-crc.v
 sd.check: sd.v sd-crc.v
 	iverilog -tnull $(ICOPTS) sd.v sd-crc.v
 sd.hex: sd.asm
-	uas ../uas/ueng sd.asm sd.hex sd.lst
+	uas sd-asm.def sd.asm sd.hex sd.lst
 
 
 .SUFFIXES: .v .check

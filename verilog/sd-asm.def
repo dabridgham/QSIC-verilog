@@ -1,0 +1,125 @@
+# 'uas' configuration file for QSIC SD uengine
+#
+# The contents consist of a number of lines containing tokens; the order
+# of the lines, and the tokens that each contains, are fixed.
+#
+# Tokens are separated by white space (either space or tab - extra white
+# space is ignored); blank lines are ignored, and comment lines _start_ with
+# a '#', ';', or '/'.
+#
+# Numeric items are either octal (leading "0"), decimal or hexadecimal
+# (with a leading "0x"; uppercase A-F only).
+
+# The first line _must_ contain the uword width, and uROM size
+
+25 256
+
+# The second line _must_ contain the format strings used for printing addresses,
+# uinsts, and literals
+
+0%03o 0x%06x 0x%02x
+
+# Next comes a block of lines containing the field definitions: it starts with
+# a line containing the number of field definitions, then the definitions,
+# one field per line, and finally a line with only a '.' to mark the end of
+# the table. (The number, and terminator, are there as cross-checks.)
+#
+# Each field definition line contains: the field name (a string), the
+# default value for that field (a string; 'none' if none), the location of
+# the start bit for the field, the number of bits in the field, and two
+# control tokens (strings, here, using names defined in uas.c) which are
+# used in dis-assembling uinsts when producing a ucode listing.
+#
+# The first token says what form the field takes (a bit string, an ordinal,
+# or a literal); the second token says how the literal field is used (if
+# it is used with this field). 'none' is an acceptable value for the
+# second token, but not the first. The literal use token also indicates
+# whether all values for this field use the literal, or only some;
+# a leading 'v' in the token indicates the latter.
+#
+# The start bits for each field are given, as well as the field width, as
+# a cross-check - it does make a little work if a field is inserted in the
+# middle of the uword, but it was felt that this price was worth paying
+# for the benefit of being able to do a consistency check.
+
+11
+
+usync	none	24	1	bit	none
+ureset	none	23	1	bit	none
+ucrc7	none	22	1	bit	none
+ucrc16	none	21	1	bit	none
+uset	none	20	1	bit	bits
+uclr	none	19	1	bit	bits
+usete	none	18	1	bit	imm
+jcond	next	14	4	ord	lbl
+rxdest	rnone	12	2	ord	vimm
+txsrc	tnone	8	4	ord	vimm
+literal	none	0	8	lit	none
+
+.
+
+# Finally, a block of lines containing the field value definitions: like
+# the previous section, it starts with a line containing the number of
+# value definitions, then the definitions themselves, one per line, and
+# finally a line with only a '.' to mark the end of the table.
+#
+# Each value definition line contains: the value name (a string), the
+# field that value belongs to (another string), the numeric value of
+# that value (relative to the field - 'uas' will convert it to the
+# correct value to go in the uword), and one control token (a string,
+# here) used in dis-assembling uinsts.
+#
+# That token says if the literal field is used for this value (if it is
+# used with some, but not all, values of that field). 'yes' and 'no' are
+# the acceptable values for this token.
+
+42
+
+sync	usync	1	no
+reset	ureset	1	no
+crc7	ucrc7	1	no
+crc16	ucrc16	1	no
+set	uset	1	no
+clr	uclr	1	no
+sete	usete	1	no
+
+next	jcond	0	no
+jmp	jcond	1	no
+nocard	jcond	2	no
+timer	jcond	3	no
+eq	jcond	4	no
+neq	jcond	5	no
+byte	jcond	6	no
+read	jcond	7	no
+write	jcond	8	no
+vers1	jcond	9	no
+block	jcond	10	no
+crcerr	jcond	11	no
+wrerr	jcond	12	no
+
+rnone	rxdest	0	no
+cmp	rxdest	1	yes
+rlow	rxdest	2	no
+rhigh	rxdest	3	no
+
+tnone	txsrc	0	no
+imm	txsrc	1	yes
+tlow	txsrc	2	no
+thigh	txsrc	3	no
+tcrc7	txsrc	4	no
+tcrc16l	txsrc	5	no
+tcrc16h	txsrc	6	no
+addr0	txsrc	7	no
+addr1	txsrc	8	no
+addr2	txsrc	9	no
+addr3	txsrc	10	no
+
+hispd	literal	0200	no
+hicap	literal	0100	no
+vers2	literal	040	no
+time	literal	020	no
+rdy	literal	010	no
+csel	literal	04	no
+nop	literal	0	no
+
+.
