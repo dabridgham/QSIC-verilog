@@ -20,19 +20,12 @@ dly2:	timer	gotcard
 	;; start the initialization sequence
 
 	;; CMD0 - GO_IDLE_STATE
-gotcard:	byte	.	; synchronize to the byte boundary
-	reset,imm	0x40
-	crc7,byte	.
-	crc7,imm	0
-	crc7,byte	.
-	crc7,imm	0
-	crc7,byte 	.
-	crc7,imm	0
-	crc7,byte 	.
-	crc7,imm	0
-	crc7,byte 	.
-	crc7,tcrc7
-; 	crc7,imm	0x95		; CRC
+gotcard:	sync,reset,imm	0x40
+	sync,crc7,imm	0
+	sync,crc7,imm	0
+	sync,crc7,imm	0
+	sync,crc7,imm	0
+	sync,crc7,tcrc7
 
 	clr	time
 r1:	byte	.
@@ -46,20 +39,12 @@ r1:	byte	.
 	clr	csel		; release the SD card
 
 	;; CMD8 - SEND_IF_COND
-cmd8:	byte	.
-	byte	.		; time delay
-	byte	.		; synchronize to the byte boundary
-	reset,imm	0x48
-	crc7,byte	.
-	crc7,imm	0
-	crc7,byte	.
-	crc7,imm	0
-	crc7,byte 	.
-	crc7,imm	0x01		; 2.7 - 3.6V - we're fixed at 3.3V
-	crc7,byte 	.
-	crc7,imm	0
-	crc7,byte 	.
-	crc7,tcrc7
+cmd8:	sync,reset,imm	0x48
+	sync,crc7,imm	0
+	sync,crc7,imm	0
+	sync,crc7,imm	0x01	; 2.7 - 3.6V - we're fixed at 3.3V
+	sync,crc7,imm	0
+	sync,crc7,tcrc7
 
 	clr	time
 r2:	byte	.
@@ -69,7 +54,7 @@ r2:	byte	.
 	cmp	0x04		; illegal command (0x04)
 	eq	v1		; v1 cards don't do CMD8
 	cmp	0x08		; CRC error
-	eq	crcerr
+	eq	crcer
 	byte	.		; don't care
 	byte	.		; don't care
 	byte	.
@@ -81,18 +66,12 @@ vltgd:	byte	.		; don't care
 v1:	clr	csel		; release the SD card
 
 	;; CMD58 - READ_OCR	
-	byte	.		; synchronize to the byte boundary
-	reset,imm	0x7A
-	crc7,byte	.
-	crc7,imm	0
-	crc7,byte	.
-	crc7,imm	0
-	crc7,byte 	.
-	crc7,imm	0
-	crc7,byte 	.
-	crc7,imm	0
-	crc7,byte 	.
-	crc7,tcrc7
+	sync,reset,imm	0x7A
+	sync,crc7,imm	0
+	sync,crc7,imm	0
+	sync,crc7,imm	0
+	sync,crc7,imm	0
+	sync,crc7,tcrc7
 
 	clr	time
 r3:	byte	.
@@ -109,18 +88,12 @@ r3:	byte	.
 	clr	csel		; release the SD card
 
 	;; CMD55 - APP_CMD
-initloop:	byte	.	; synchronize to the byte boundary
-	reset,imm	0x77
-	crc7,byte	.
-	crc7,imm	0
-	crc7,byte	.
-	crc7,imm	0
-	crc7,byte 	.
-	crc7,imm	0
-	crc7,byte 	.
-	crc7,imm	0
-	crc7,byte 	.
-	crc7,tcrc7
+initloop:	sync,reset,imm	0x77
+	sync,crc7,imm	0
+	sync,crc7,imm	0
+	sync,crc7,imm	0
+	sync,crc7,imm	0
+	sync,crc7,tcrc7
 
 	clr	time
 r4:	byte	.
@@ -132,18 +105,12 @@ r4:	byte	.
 	clr	csel		; release the SD card
 	
 	;; ACMD41 - SD_SEND_OP_COND
-	byte	.		; synchronize to the byte boundary
-	reset,imm	0x69
-	crc7,byte	.
-	crc7,imm	0x40	; HCS=1, I support high-capacity
-	crc7,byte	.
-	crc7,imm	0
-	crc7,byte 	.
-	crc7,imm	0
-	crc7,byte 	.
-	crc7,imm	0
-	crc7,byte 	.
-	crc7,tcrc7
+	sync,reset,imm	0x69
+	sync,crc7,imm	0x40	; HCS=1, I support high-capacity
+	sync,crc7,imm	0
+	sync,crc7,imm	0
+	sync,crc7,imm	0
+	sync,crc7,tcrc7
 
 	clr	time
 r5:	byte	.
@@ -159,18 +126,12 @@ r5:	byte	.
 	vers1	initdone	; for v1 cards, we're finished initialization
 	
 	;; CMD58 again to get CCS from v2 cards
-	byte	.		; synchronize to the byte boundary
-	reset,imm	0x7A		; CMD58 - READ_OCR
-	crc7,byte	.
-	crc7,imm	0
-	crc7,byte	.
-	crc7,imm	0
-	crc7,byte 	.
-	crc7,imm	0
-	crc7,byte 	.
-	crc7,imm	0
-	crc7,byte 	.
-	crc7,tcrc7
+	sync,reset,imm	0x7A	; CMD58 - READ_OCR
+	sync,crc7,imm	0
+	sync,crc7,imm	0
+	sync,crc7,imm	0
+	sync,crc7,imm	0
+	sync,crc7,tcrc7
 
 	clr	time
 r6:	byte	.
@@ -190,8 +151,9 @@ lowcap:	byte	.		; don't care
 	byte	.		; don't care
 	clr	csel		; release the SD card
 
-	;; card is initialized, look for read or write commands or for the card to be
+	;; the card is initialized, look for read or write commands or for the card to be
 	;; removed
+	
 initdone:	set	rdy
 	;; a bit of time to let Card Detect settle
 	nop
@@ -202,18 +164,12 @@ idle:	nocard	start
 	;; 
 	;; Write out a block of data
 	;; 
-write:	byte	.
-	reset,imm	0x58	; CMD24 WRITE_BLOCK	
-	crc7,byte	.
-	crc7,imm	0
-	crc7,byte	.
-	crc7,imm	0
-	crc7,byte	.
-	crc7,imm	0
-	crc7,byte	.
-	crc7,imm	0	; block 0
-	crc7,byte	.
-	crc7,tcrc7
+bwrite:	sync,reset,imm	0x58	; CMD24 WRITE_BLOCK	
+	sync,crc7,imm	0
+	sync,crc7,imm	0
+	sync,crc7,imm	0
+	sync,crc7,imm	0	; block 0
+	sync,crc7,tcrc7
 	;; command response
 	clr	time
 r7:	byte	.
@@ -225,19 +181,15 @@ r7:	byte	.
 	;; write data block
 	byte	.
 	byte	.		; give it one more byte time N_WR
-	reset,imm	0xFE	; Start Block token
-tloop:	crc16,byte	.
-	crc16,thigh
-	crc16,byte	.
-	crc16,tlow
+	sync,reset,imm	0xFE	; Start Block token
+tloop:	sync,crc16,thigh
+	sync,crc16,tlow
 	crc16,block	tloop
-	crc16,byte	.
-	crc16,tcrc16h
-	byte	.
-	tcrc16l
+	sync,crc16,tcrc16h
+	sync,tcrc16l
 	;; the data response immediately follows
 	byte	.
-	tcrcerr	crcerr
+	crcerr	crcer
 	wrerr	wrterr
 	clr	time
 tbusy:	byte	.
@@ -258,7 +210,7 @@ wrtimeout:	clr csel
 	;;
 	;; Read in a block of data
 	;;
-read:	byte	.
+bread:	byte	.
 	reset,imm	0x51	; CMD17 READ_SINGLE_BLOCK
 	crc7,byte	.
 	crc7,imm	0
@@ -297,7 +249,7 @@ rderr:	clr	csel
 
 
 	;; in any error, just wait for the card to be removed and reset
-crcerr:	jmp	initfail
+crcer:	jmp	initfail
 notmemory:	jmp	initfail
 cmdtimeout: jmp initfail
 illcrc:	sete	0x84
@@ -305,4 +257,3 @@ illcrc:	sete	0x84
 initfail:	clr	csel
 waitcd:	nocard	start		; when the card goes away, go back to start
 	jmp	waitcd
-	

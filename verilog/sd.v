@@ -98,7 +98,8 @@ module SD_spi
    // still the clock
 
    // The micro-instruction and breakout
-   reg [23:0] 	uinst;
+   reg [24:0] 	uinst;
+   wire 	byte_sync = uinst[24];	  // sync instruction to byte clock
    wire 	crc_reset = uinst[23];	  // reset both crc chains
    wire 	crc7_enable = uinst[22];  // enable the crc7 calc
    wire 	crc16_enable = uinst[21]; // enable the crc16 calc
@@ -197,39 +198,57 @@ module SD_spi
    assign ip_SC = ~high_capacity;
    assign ip_HC = high_capacity;
    always @(negedge sd_clk)
-     if (clr_bits & literal_high_capacity)
-       high_capacity <= 0;
-     else if (set_bits & literal_high_capacity)
-       high_capacity <= 1;
+     if (clr_bits & literal_high_capacity) begin
+`ifdef SIM
+	$display("Clear: High Cap");
+`endif
+	high_capacity <= 0;
+     end else if (set_bits & literal_high_capacity) begin
+`ifdef SIM
+	$display("Set: High Cap");
+`endif
+	high_capacity <= 1;
+     end
 
    // keep track of whether the card is version 1 or 2
    reg 		version_2 = 0;
    assign ip_v1 = ~version_2;
    assign ip_v2 = version_2;
    always @(negedge sd_clk)
-     if (clr_bits & literal_version_2)
-       version_2 <= 0;
-     else if (set_bits & literal_version_2)
-       version_2 <= 1;
+     if (clr_bits & literal_version_2) begin
+`ifdef SIM
+	$display("Clear: V2");
+`endif
+	version_2 <= 0;
+     end else if (set_bits & literal_version_2) begin
+`ifdef SIM
+	$display("Set: V2");
+`endif
+	version_2 <= 1;
+	end
 
    // run the device ready line back to the disk controller
    always @(negedge sd_clk)
-     if (clr_bits & literal_ready)
-       device_ready <= 0;
-     else if (set_bits & literal_ready)
-       device_ready <= 1;
-
-   // the Card Select is asserted when data is sent to the TxSR
-   always @(negedge sd_clk)
-     if (clr_bits & literal_cs)
-       sd_cs <= 0;
-     else if ((set_bits & literal_cs) || (tx_src != TX_NONE))
-       sd_cs <= 1;
+     if (clr_bits & literal_ready) begin
+`ifdef SIM
+	$display("Clear: Card Ready");
+`endif
+	device_ready <= 0;
+     end else if (set_bits & literal_ready) begin
+`ifdef SIM
+	$display("Set: Card Ready");
+`endif
+	device_ready <= 1;
+     end
 
    // Set an error code
    always @(negedge sd_clk)
-     if (set_error)
-       ip_err <= literal;
+     if (set_error) begin
+`ifdef SIM
+	$display("Error: 0x%02x", literal);
+`endif
+	ip_err <= literal;
+     end
 
    wire 	crc7_reset = crc_reset;
    wire 	crc16_reset = crc_reset;
@@ -249,19 +268,32 @@ module SD_spi
    reg [7:0] 	tx_sr;
    assign sd_di = tx_sr[7];
    always @(negedge sd_clk)	// change on negedge for SPI mode 0
-     case (tx_src)
-       TX_NONE: tx_sr <= { tx_sr[6:0], 1'b1 };
-       TX_IMM: tx_sr <= literal;
-       TX_DATA_LOW: tx_sr <= write_data[7:0];
-       TX_DATA_HIGH: tx_sr <= write_data[15:8];
-       TX_CRC7: tx_sr <= { crc7_do, 1'b1 };
-       TX_CRC16_LOW: tx_sr <= crc16_do[7:0];
-       TX_CRC16_HIGH: tx_sr <= crc16_do[15:8];
-       TX_ADDR_0: tx_sr <= disk_address[7:0];
-       TX_ADDR_1: tx_sr <= disk_address[15:8];
-       TX_ADDR_2: tx_sr <= disk_address[23:16];
-       TX_ADDR_3: tx_sr <= disk_address[31:24];
-     endcase
+     if (byte_clk)
+       case (tx_src)
+	 TX_IMM: tx_sr <= literal;
+	 TX_DATA_LOW: tx_sr <= write_data[7:0];
+	 TX_DATA_HIGH: tx_sr <= write_data[15:8];
+	 TX_CRC7: tx_sr <= { crc7_do, 1'b1 };
+	 TX_CRC16_LOW: tx_sr <= crc16_do[7:0];
+	 TX_CRC16_HIGH: tx_sr <= crc16_do[15:8];
+	 TX_ADDR_0: tx_sr <= disk_address[7:0];
+	 TX_ADDR_1: tx_sr <= disk_address[15:8];
+	 TX_ADDR_2: tx_sr <= disk_address[23:16];
+	 TX_ADDR_3: tx_sr <= disk_address[31:24];
+	 TX_NONE: tx_sr <= { tx_sr[6:0], 1'b1 };
+	 default: tx_sr <= { tx_sr[6:0], 1'b1 };
+       endcase // case (tx_src)
+     else
+       tx_sr <= { tx_sr[6:0], 1'b1 };
+
+   // the Card Select is asserted when data is sent to the TxSR
+   always @(negedge sd_clk)
+     if (clr_bits && literal_cs)
+       sd_cs <= 0;
+     else if ((set_bits & literal_cs) || 
+	      ((tx_src != TX_NONE) && byte_clk))
+       sd_cs <= 1;
+
 
    // data input shift register
    reg [7:0] 	rx_sr;
@@ -274,7 +306,7 @@ module SD_spi
    reg 		delayed_byte;
    always @(negedge sd_clk) delayed_byte <= byte_clk;
    always @(negedge sd_clk)
-     if (delayed_byte)
+     if (byte_clk)
        rx_reg <= rx_sr;
 
    // move Rx data to where it's going
@@ -322,13 +354,15 @@ module SD_spi
 
    reg [7:0] 	uPC = 0;
    reg [7:0] 	uPC_next = 0;
-   reg [23:0] 	uROM [0:255];
+   reg [24:0] 	uROM [0:255];
 
    initial $readmemh("sd.hex", uROM);
    
    always @(*)
      if (reset)
        uPC_next = 0;
+     else if (byte_sync && !byte_clk)
+       uPC_next = uPC;
      else if (jump)
        uPC_next = literal;
      else
@@ -398,6 +432,7 @@ module SD_card
 		state[READ_CMD] <= 1;
 	      else		// we have a command
 		begin
+		   $display("Command: %d", input_sr[45:40]);
 		   state[SEND_RESP] <= 1;
 		   byte_count <= 0;
 		   case (input_sr[45:40])
@@ -488,7 +523,7 @@ module SD_test();
       #1000 sd_cd <= 1;		// plug in the card
       
 
-      #120000 $finish_and_return(0);
+      #130000 $finish_and_return(0);
    end
 
 endmodule // SD_test
