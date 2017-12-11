@@ -6,4 +6,7 @@
  o Implement 4 transfers per bus acquisition.
  o Implement block mode DMA.
  o Restore RINIT reset to the RK11
+ o check error returns when reading/writing SD card
+ o optimize transfers to go directly when using QSIC memory (ENABLE+)
+ o check overflow on WC_next rather than ==0
  

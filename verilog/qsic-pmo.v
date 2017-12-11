@@ -77,7 +77,8 @@ module pmo
    // throughout the QSIC
    wire 	clk20, reset, locked;
    assign reset = 0;
-   clk_wiz_0 clk(clk48, clk20, reset, locked);
+//   clk_wiz_0 clk(clk48, clk20, reset, locked);
+   clk_wiz_0 clk(clk20, reset, locked, clk48);
 
    // The direction of the bi-directional lines are controlled with DALtx
    // -- moved to below
@@ -304,8 +305,8 @@ module pmo
    //
 
    wire sd0_read = 0, sd0_write = 0;
-   wire [31:0] sd0_addr = 0;
-   wire [15:0] sd0_write_data = 0;
+   wire [31:0] sd0_addr = 32'h0000_0102;
+   wire [15:0] sd0_write_data = 16'h0102;
    wire        sd0_ready, sd0_cd, sd0_v1, sd0_v2, sd0_SC, sd0_HC;
    wire [7:0]  sd0_err;
    wire [15:0] sd0_read_data;

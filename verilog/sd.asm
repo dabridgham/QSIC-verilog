@@ -158,6 +158,7 @@ initdone:	set	rdy
 	;; a bit of time to let Card Detect settle
 	nop
 	nop
+	jmp	bwrite
 idle:	nocard	start
 	jmp	idle
 
@@ -165,10 +166,10 @@ idle:	nocard	start
 	;; Write out a block of data
 	;; 
 bwrite:	sync,reset,imm	0x58	; CMD24 WRITE_BLOCK	
-	sync,crc7,imm	0
-	sync,crc7,imm	0
-	sync,crc7,imm	0
-	sync,crc7,imm	0	; block 0
+	sync,crc7,addr3		; MSB of disk address
+	sync,crc7,addr2
+	sync,crc7,addr1
+	sync,crc7,addr0		; LSB of disk address
 	sync,crc7,tcrc7
 	;; command response
 	clr	time

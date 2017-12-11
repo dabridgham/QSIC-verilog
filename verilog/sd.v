@@ -117,7 +117,10 @@ module SD_spi
      JMP_BYTE = 6,
      JMP_READ = 7,
      JMP_WRITE = 8,
-     JMP_V1 = 9;
+     JMP_V1 = 9,
+     JMP_BLOCK = 10,		// counter for one block of data
+     JMP_CRCERR = 11,		// write response indicates a CRC error
+     JMP_WRERR = 12;		// write response indicate some other write error
    wire [1:0] 	rx_dest = uinst[13:12]; // move from Rx SR to dest
    localparam
      RX_NONE = 0,
@@ -261,7 +264,7 @@ module SD_spi
 
    // Older SD cards used byte addressing which limited the size to 2GB (why wasn't it 4GB?).
    // In HC and XC cards they went to block addressing, pushing that limit up to 2TB.  The disk
-   // controllers generate block addresses so convert here if using an SD card.
+   // controllers generate block addresses so convert here if using an SC card.
    wire [31:0] 	disk_address = high_capacity ? block_address : block_address << 9;
 
    // data output shift register
@@ -294,6 +297,22 @@ module SD_spi
 	      ((tx_src != TX_NONE) && byte_clk))
        sd_cs <= 1;
 
+   // word count - reset using the same signal that resets the CRC counters (kinda overloaded
+   // there, but for now it works), increment each time the low byte is read out of the write
+   // FIFO or written to the read FIFO, the high bit indicates an entire block has been
+   // transferred
+   reg [8:0] 	word_count;
+   wire 	block_detect = word_count[8];
+   always @(negedge sd_clk)
+     if (crc_reset)
+       word_count <= 0;
+     else if (byte_clk && (tx_src == TX_DATA_LOW))
+       word_count <= word_count + 1;
+     else if (byte_clk && (rx_dest == RX_DATA_LOW))
+       word_count <= word_count + 1;
+     else
+       word_count <= word_count;
+   
 
    // data input shift register
    reg [7:0] 	rx_sr;
@@ -346,6 +365,9 @@ module SD_spi
        JMP_READ: jump = s_read_cmd;
        JMP_WRITE: jump = s_write_cmd;
        JMP_V1: jump = !version_2;
+       JMP_BLOCK: jump = !block_detect;
+       JMP_CRCERR: jump = 0;	// !!! need to figure this one out
+       JMP_WRERR: jump = 0;	// !!! need to fix this
        default: jump = 0;
      endcase
      
