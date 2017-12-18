@@ -11,6 +11,7 @@
 *.pdf
 vivado*.jou
 vivado*.log
+vivado*.str
 vivado_pid*.zip
 /verilog/sd.hex
 /verilog/sd.lst
