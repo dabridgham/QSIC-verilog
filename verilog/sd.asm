@@ -4,6 +4,7 @@
 	
 
 start:	clr	hispd|hicap|vers2|rdy|csel|time
+	sete	0x40
 	nop			; do I need longer to let CS settle?
 	nocard	.		; wait for a card to appear
 	clr	time		; reset the timer
@@ -158,8 +159,10 @@ initdone:	set	rdy
 	;; a bit of time to let Card Detect settle
 	nop
 	nop
-	jmp	bwrite
 idle:	nocard	start
+	sete	0x61
+	;; 	read	bread
+	write	bwrite
 	jmp	idle
 
 	;; 
@@ -172,6 +175,7 @@ bwrite:	sync,reset,imm	0x58	; CMD24 WRITE_BLOCK
 	sync,crc7,addr0		; LSB of disk address
 	sync,crc7,tcrc7
 	;; command response
+	sete	0x62
 	clr	time
 r7:	byte	.
 	timer	cmdtimeout
@@ -180,11 +184,12 @@ r7:	byte	.
 	cmp	0x7F
 	eq	wrterr
 	;; write data block
+	sete	0x63
 	byte	.
 	byte	.		; give it one more byte time N_WR
 	sync,reset,imm	0xFE	; Start Block token
-tloop:	sync,crc16,thigh
-	sync,crc16,tlow
+tloop:	sync,crc16,tlow		; The PDP-11 is little-endian so that's how we write out the data
+	sync,crc16,thigh
 	crc16,block	tloop
 	sync,crc16,tcrc16h
 	sync,tcrc16l
@@ -198,7 +203,8 @@ tbusy:	byte	.
 	cmp	0xFF		; loop while the card is busy writing data
 	eq	wdone
 	jmp	tbusy
-wdone:	clr	csel
+wdone:	sete	0x64
+	clr	csel
 	jmp	idle
 
 wrterr:	clr	csel
@@ -211,18 +217,12 @@ wrtimeout:	clr csel
 	;;
 	;; Read in a block of data
 	;;
-bread:	byte	.
-	reset,imm	0x51	; CMD17 READ_SINGLE_BLOCK
-	crc7,byte	.
-	crc7,imm	0
-	crc7,byte	.
-	crc7,imm	0
-	crc7,byte	.
-	crc7,imm	0
-	crc7,byte	.
-	crc7,imm	0	; block 0
-	crc7,byte	.
-	crc7,tcrc7
+bread:	sync,reset,imm	0x51	; CMD17 READ_SINGLE_BLOCK
+	sync,crc7,addr3		; MSB of disk address
+	sync,crc7,addr2
+	sync,crc7,addr1
+	sync,crc7,addr0		; LSB of disk address
+	sync,crc7,tcrc7
 	;; command response
 	clr	time
 r8:	byte	.
@@ -237,9 +237,9 @@ rwait:	byte	.
 	eq	rwait
 	;; read words into FIFO
 rloop:	byte	.
-	rhigh
+	rlow			; Little endian for the data
 	byte	.
-	rlow
+	rhigh
 	block	rloop
 	clr	csel
 	jmp	idle
