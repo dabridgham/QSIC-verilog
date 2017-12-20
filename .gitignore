@@ -9,6 +9,8 @@
 *.jpg
 *.png
 *.pdf
+*.ps
+*.bit
 vivado*.jou
 vivado*.log
 vivado*.str
