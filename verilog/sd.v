@@ -71,7 +71,9 @@ module SD_spi
    input 	     write_cmd,
    input [31:0]      block_address,
    input [15:0]      write_data,
+   output reg 	     write_data_enable,
    output reg [15:0] read_data,
+   output reg 	     read_data_enable,
    // the SD card itself
    output 	     sd_clk,
    inout 	     sd_cmd,
@@ -103,7 +105,7 @@ module SD_spi
    wire 	crc_reset = uinst[23];	  // reset both crc chains
    wire 	crc7_enable = uinst[22];  // enable the crc7 calc
    wire 	crc16_enable = uinst[21]; // enable the crc16 calc
-   wire 	set_bits = uinst[20];	  // set bits from literal
+   wire 	set_bits = uinst[20];	  // set bits l
    wire 	clr_bits = uinst[19];	  // clear bits from literal
    wire 	set_error = uinst[18];	  // set the error code from literal
    wire [3:0]	condition = uinst[17:14]; // jump conditions
@@ -270,24 +272,31 @@ module SD_spi
    // data output shift register
    reg [7:0] 	tx_sr;
    assign sd_di = tx_sr[7];
-   always @(negedge sd_clk)	// change on negedge for SPI mode 0
-     if (byte_clk)
-       case (tx_src)
-	 TX_IMM: tx_sr <= literal;
-	 TX_DATA_LOW: tx_sr <= write_data[7:0];
-	 TX_DATA_HIGH: tx_sr <= write_data[15:8];
-	 TX_CRC7: tx_sr <= { crc7_do, 1'b1 };
-	 TX_CRC16_LOW: tx_sr <= crc16_do[7:0];
-	 TX_CRC16_HIGH: tx_sr <= crc16_do[15:8];
-	 TX_ADDR_0: tx_sr <= disk_address[7:0];
-	 TX_ADDR_1: tx_sr <= disk_address[15:8];
-	 TX_ADDR_2: tx_sr <= disk_address[23:16];
-	 TX_ADDR_3: tx_sr <= disk_address[31:24];
-	 TX_NONE: tx_sr <= { tx_sr[6:0], 1'b1 };
-	 default: tx_sr <= { tx_sr[6:0], 1'b1 };
-       endcase // case (tx_src)
-     else
-       tx_sr <= { tx_sr[6:0], 1'b1 };
+   always @(negedge sd_clk) begin // change on negedge for SPI mode 0
+      write_data_enable <= 0;
+      
+      if (byte_clk)
+	case (tx_src)
+	  TX_IMM: tx_sr <= literal;
+	  TX_DATA_LOW: tx_sr <= write_data[7:0];
+	  TX_DATA_HIGH: begin
+	     tx_sr <= write_data[15:8];
+	     // the FIFO is clocked after the high byte is read
+	     write_data_enable <= 1;
+	  end
+	  TX_CRC7: tx_sr <= { crc7_do, 1'b1 };
+	  TX_CRC16_LOW: tx_sr <= crc16_do[7:0];
+	  TX_CRC16_HIGH: tx_sr <= crc16_do[15:8];
+	  TX_ADDR_0: tx_sr <= disk_address[7:0];
+	  TX_ADDR_1: tx_sr <= disk_address[15:8];
+	  TX_ADDR_2: tx_sr <= disk_address[23:16];
+	  TX_ADDR_3: tx_sr <= disk_address[31:24];
+	  TX_NONE: tx_sr <= { tx_sr[6:0], 1'b1 };
+	  default: tx_sr <= { tx_sr[6:0], 1'b1 };
+	endcase // case (tx_src)
+      else
+	tx_sr <= { tx_sr[6:0], 1'b1 };
+   end
 
    // the Card Select is asserted when data is sent to the TxSR
    always @(negedge sd_clk)
@@ -319,26 +328,34 @@ module SD_spi
    always @(posedge sd_clk)	// read on posedge for SPI mode 0
      rx_sr <= { rx_sr[6:0], sd_do };
 
-   // on the byte strobe delayed by one cycle, transfer the RxSR to a receive register where it
-   // will remain stable until the next byte is done.  this is what's used for comaprison
+   // on the byte strobe, transfer the RxSR to a receive register where it will remain stable
+   // until the next byte is done.  this is what's used for comparison.
    reg [7:0] 	rx_reg, literal_reg;
-   reg 		delayed_byte;
-   always @(negedge sd_clk) delayed_byte <= byte_clk;
    always @(negedge sd_clk)
      if (byte_clk)
        rx_reg <= rx_sr;
 
    // move Rx data to where it's going
-   always @(negedge sd_clk)
-     case (rx_dest)
-       RX_NONE: ;
-       RX_CMP:
-	 // this one is a little strange.  rx_sr is already being copied to rx_reg on the byte
-	 // strobe.  To do a compare, we save the literal here for branching later.
-	 literal_reg <= literal;
-       RX_DATA_LOW: read_data[7:0] <= rx_reg;
-       RX_DATA_HIGH: read_data[15:8] <= rx_reg;
-     endcase // case (rx_dest)
+   always @(negedge sd_clk) begin
+      read_data_enable <= 0;
+
+      case (rx_dest)
+	RX_NONE: ;
+	RX_CMP:
+	  // this one is a little strange.  rx_sr is already being copied to rx_reg on the byte
+	  // strobe.  To do a compare, we save the literal here for branching later.
+	  literal_reg <= literal;
+	RX_DATA_LOW: read_data[7:0] <= rx_reg;
+	RX_DATA_HIGH:
+	  begin
+	     read_data[15:8] <= rx_reg;
+	     if (byte_clk)
+	       // data is strobed into the FIFO whenever the high byte is written, assumes
+	       // little-endian
+	       read_data_enable <= 1;
+	  end
+      endcase // case (rx_dest)
+   end
 
    // compare rx_reg with literal_reg
    wire 	cmp_eq = ((rx_reg & literal_reg) != 8'b0); // if any masked bit set
@@ -509,7 +526,9 @@ module SD_test();
    wire ready_cmd, data_ready;
    reg [31:0]  block_address;
    wire [15:0] read_data;
+   wire read_data_enable;
    reg [15:0] write_data;
+   wire write_data_enable;
    wire sd_clk, sd_cs, sd_di, sd_do, sd_nc1, sd_nc2;
    wire ip_cd, ip_v1, ip_v2, ip_SC, ip_HC;
    wire [7:0] ip_err;
@@ -521,7 +540,7 @@ module SD_test();
    assign (pull1, weak0) sd_cs = sd_cd; // 270k pull-down, card has a 50k pull-up
    
    SD_spi sd(clk, reset, ready_cmd, read_cmd, write_cmd, block_address, 
-	     write_data, read_data,
+	     write_data, write_data_enable, read_data, read_data_enable,
 	     sd_clk, sd_di, { sd_cs, sd_nc2, sd_nc1, sd_do },
 	     ip_cd, ip_v1, ip_v2, ip_SC, ip_HC, ip_err);
    
