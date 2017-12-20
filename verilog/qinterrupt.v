@@ -2,7 +2,7 @@
 //
 // The QBUS Interrupt Protocol
 //
-// Copyright 2016 Noel Chiappa and David Bridgham
+// Copyright 2016-2017 Noel Chiappa and David Bridgham
 
 `timescale 1 ns / 1 ns
 
@@ -11,8 +11,6 @@
 // Manages the QBUS Interrupt Protocol
 module qint
    (
-    input 	     clk, // 20MHz
-
     // Configuration
     input [1:0]      int_priority,
    
