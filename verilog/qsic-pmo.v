@@ -77,7 +77,6 @@ module pmo
    // throughout the QSIC
    wire 	clk20, reset, locked;
    assign reset = 0;
-//   clk_wiz_0 clk(clk48, clk20, reset, locked);
    clk_wiz_0 clk(clk20, reset, locked, clk48);
 
    // The direction of the bi-directional lines are controlled with DALtx
@@ -116,15 +115,6 @@ module pmo
       read_cycle <= ~ZWTBT;
    end
    
-
-   // The internal microcontroller bus
-   reg [15:0]  uADDR;
-   wire [15:0] uDATA;
-   reg 	       uWRITE;
-   reg 	       uCLK;
-   wire        uWAIT; // wired-OR !!!
-   wire [7:0]  uINTERRUPT;
-
 
 
    //
@@ -232,13 +222,29 @@ module pmo
    wire [15:0] rk_tdl;
    wire [21:0] rk_tal;
 
+   // connection to the storage device
+   reg [7:0]   sd_loaded = 8'h01; // "disk" loaded and ready
+   reg [7:0]   sd_write_protect = 0; // the "disk" is write protected
+   wire [2:0]  sd_dev_sel;	     // "disk" drive select
+   wire [12:0] sd_lba;		     // linear block address
+   wire        sd_read;		     // initiate a block read
+   wire        sd_write;	     // initiate a block write
+   wire        sd_ready;	     // selected disk is ready for a command
+   wire [15:0] sd_write_data;
+   wire        sd_write_enable;	  // enables writing data to the write FIFO
+   wire        sd_write_full;	  // write FIFO is full
+   wire [15:0] sd_read_data;
+   wire        sd_read_enable;	  // enables reading data from the read FIFO
+   wire        sd_read_empty;	  // no data in the read FIFO
+   
+
    qmaster2908 
      rk_master(clk20, RSYNC, RRPLY, RDMR, RSACK, RINIT, RDMGI, sRDMGI, RREF,
 	       TSYNC, rk_wtbt, TDIN, TDOUT, TDMR, TSACK, TDMGO,
 	       rk_dma_read, rk_dma_write, rk_assert_addr, rk_assert_data,
 	       rk_bus_master, rk_dma_complete, rk_DALst, rk_DALbe, rk_nxm);
 
-   qint rk_int(clk20, `INTP_4, RINIT, RDIN, 
+   qint rk_int(`INTP_4, RINIT, RDIN, 
  	       { RIRQ4, RIRQ5, RIRQ6, RIRQ7 }, RIAKI,
  	       { TIRQ4, TIRQ5, TIRQ6, TIRQ7 }, TIAKO,
 	       rk_irq, rk_assert_vector);
@@ -247,7 +253,9 @@ module pmo
 	       rk_match, rk_assert_vector, sRDOUTpulse, 
 	       rk_dma_read, rk_dma_write, rk_bus_master, rk_dma_complete, rk_nxm, 
 	       rk_irq, 
-	       uADDR, uDATA, uWRITE, uCLK, uWAIT, uINTERRUPT);
+	       sd_loaded, sd_write_protect, sd_dev_sel, sd_lba, sd_read, sd_write, sd_ready,
+	       sd_write_data, sd_write_enable, sd_write_full,
+	       sd_read_data, sd_read_enable, sd_read_empty);
 `endif
 
    // mix the control signals from the DMA controller(s) and the register controller
@@ -277,7 +285,7 @@ module pmo
 	  if (RSYNC)
 	    case (1'b1)
 	      (bs7_reg & (addr_reg[12:0] == 13'o17720)):
-			   { addr_match, TDAL } = { 1'b1, 6'b0, test_reg };
+					  { addr_match, TDAL } = { 1'b1, 6'b0, test_reg };
 `ifdef SW_REG
 	      sr_match: { addr_match, TDAL } = { 1'b1, 6'b0, sr_tdl };
 `endif
@@ -287,7 +295,7 @@ module pmo
 	      default: 
 		addr_match = 0;
 	    endcase
-	  // with no RSYNC, look for a interrupt vector read
+	// with no RSYNC, look for a interrupt vector read
 	  else
 	    case (1'b1)
 `ifdef RKV11
@@ -304,16 +312,59 @@ module pmo
    // Interface an SD Card
    //
 
-   wire sd0_read = 0, sd0_write = 0;
-   wire [31:0] sd0_addr = 32'h0000_0102;
-   wire [15:0] sd0_write_data = 16'h0102;
+   wire sd0_read, sd0_write;
+   wire [31:0] sd0_lba;
+   wire [15:0] sd0_write_data;
+   wire        sd0_write_data_enable;
    wire        sd0_ready, sd0_cd, sd0_v1, sd0_v2, sd0_SC, sd0_HC;
    wire [7:0]  sd0_err;
    wire [15:0] sd0_read_data;
-   SD_spi SD0(clk20, RINIT, sd0_ready, sd0_read, sd0_write, sd0_addr, sd0_write_data, sd0_read_data,
+   wire        sd0_read_data_enable;
+   SD_spi SD0(clk20, RINIT, sd0_ready, sd0_read, sd0_write, sd0_lba, 
+	      sd0_write_data, sd0_write_data_enable, sd0_read_data, sd0_read_data_enable,
 	      sd0_sdclk, sd0_sdcmd, sd0_sddat,
 	      sd0_cd, sd0_v1, sd0_v2, sd0_SC, sd0_HC, sd0_err);
    
+
+   //
+   // Connections beween RK11 and SD card
+   //
+
+   // This is where the drive number and block address from the RK11 is mapped to the SD card.
+   // Eventually this mapping will be controlled by the pack load configuration. !!!
+   //
+   // The high 16 bits just offset the 8 RK05 disks into the SD card.  Largest values are:
+   //  8GB: h00ff
+   // 16GB: h01ff
+   // 32GB: h03ff
+   assign sd0_lba = { 16'h0002, sd_dev_sel, sd_lba };
+   assign sd_ready = sd0_ready;
+   assign sd0_read = sd_read;
+   assign sd0_write = sd_write;
+
+   wire        sd0_full;	// the SD card ignores this
+   aFifo #(.DATA_WIDTH(16), .ADDRESS_WIDTH(9)) sd_read_fifo
+     (.Data_out(sd_read_data),
+      .Empty_out(sd_read_empty),
+      .ReadEn_in(sd_read_enable),
+      .RClk(clk20),
+      .Data_in(sd0_read_data),
+      .Full_out(sd0_full),
+      .WriteEn_in(sd0_read_data_enable),
+      .WClk(clk20),
+      .Clear_in(RINIT));
+
+   wire        sd0_empty;	// the SD card ignores this
+   aFifo #(.DATA_WIDTH(16), .ADDRESS_WIDTH(9)) sd_write_fifo
+     (.Data_out(sd0_write_data),
+      .Empty_out(sd0_empty),
+      .ReadEn_in(sd0_write_data_enable),
+      .RClk(clk20),
+      .Data_in(sd_write_data),
+      .Full_out(sd_write_full),
+      .WriteEn_in(sd_write_enable),
+      .WClk(clk20),
+      .Clear_in(RINIT));
 
 
    //
@@ -338,7 +389,7 @@ module pmo
 
 
    //
-   // Hook up an indicator panel
+   // Hook up an indicator panel, now we're blinken lots of lights
    //
 
    // first get an approx 100kHz clock
@@ -362,7 +413,7 @@ module pmo
      qsic_ip(clk100k, (ip_count == 0), panel_out,
 	     { read_cycle, bs7_reg, addr_reg, 
 	       1'b0, sd0_cd, sd0_v1, sd0_v2, sd0_SC, sd0_HC, sd0_ready, 1'b1, 1'b1, rk_dma_read, rk_dma_write, sd0_sddat[3] },
-	     { 1'b0, DALtx, ZDAL, 12'b0 },
+	     { 1'b0, DALtx, ZDAL, 9'b0, sd0_read, sd0_write, 1'b1 },
 	     { ZWTBT, ZBS7, RSYNC, RDIN, RDOUT, RRPLY, RREF, 1'b0, RIAKI, RIRQ7, RIRQ6, RIRQ5, RIRQ4,
 	       1'b0, RSACK, RDMGI, RDMR, 1'b0, RINIT, 1'b0, RDCOK, RPOK, sd0_read_data[7:0], 6'b0 },
 	     { DALtx & ZWTBT, DALtx & ZBS7, TSYNC, TDIN, TDOUT, TRPLY, TREF, 1'b0,
