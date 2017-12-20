@@ -31,50 +31,32 @@ module rkv11
    input 	     dma_nxm,
    output reg 	     interrupt_request,
 
-   // The internal microcontroller bus
-   input [15:0]      uADDR,
-   inout [15:0]      uDATA,
-   input 	     uWRITE,
-   input 	     uCLK,
-   output 	     uWAIT, // wired-OR
-   output [7:0]      uINTERRUPT
+   // connection to the storage device
+   input [7:0] 	     sd_loaded, // "disk" loaded and ready
+   input [7:0] 	     sd_write_protect, // the "disk" is write protected
+   output [2:0]      sd_dev_sel, // "disk" drive select
+   output reg [12:0] sd_lba, // linear block address
+   output reg 	     sd_read, // initiate a block read
+   output reg 	     sd_write, // initiate a block write
+   input 	     sd_ready, // selected disk is ready for a command
+   output [15:0]     sd_write_data,
+   output reg 	     sd_write_enable, // enables writing data to the write FIFO
+   input 	     sd_write_full, // write FIFO is full
+   input [15:0]      sd_read_data,
+   output reg 	     sd_read_enable, // enables reading data from the read FIFO
+   input 	     sd_read_empty // no data in the read FIFO
    );
 
 
-   //
-   // Connect up to the uC bus
-   //
+   // these values need to come from the configuration system !!!
+   wire [12:0] addr_base = 13'o17_400;
+   wire [8:0]  int_vec = 9'o220;
+   wire [1:0]  mode = `MODE_Q22;
 
-   wire [12:0] addr_base;
-   wire [8:0]  int_vec;
-   wire [1:0]  int_priority;
-   wire [1:0]  mode;
-   wire [7:0]  loaded;		// a "disk pack" is loaded and working
-   wire [7:0]  write_protect;	// the disk is write protected
-   reg [2:0]   ucmd;
-   reg 	       uint_req;
 
-`ifdef NOTDEF
-   disk_uc #(.uDEV(`uDEV_RK),
-	     .DEFAULT_ADDR(13'o17_400),
-	     .DEFAULT_INT_VEC(9'o220),
-	     .DEFAULT_INT_PRI(`INTP_5))
-   uc(.init(init), .qclk(clk),
-      .uADDR(uADDR), .uDATA(uDATA), .uWRITE(uWRITE), .uCLK(uCLK), .uWAIT(uWAIT),
-      .uINTERRUPT(uINTERRUPT),
-      .io_addr_base(addr_base), .int_vec(int_vec), .int_priority(int_priority),
-      .mode(mode), .loaded(loaded), .write_protect(write_protect),
-      .cmd(ucmd), .drive_select(DR_SEL), .lba({ 19'b0, lba }), .interrupt(uint_req) );
-`else // !`ifdef NOTDEF
-   assign addr_base = 13'o17_400;
-   assign int_vec = 9'o220;
-   assign int_priority = `INTP_5;
-   assign mode = `MODE_Q22;
-   assign loaded = 0;
-   assign write_protect = 0;
-`endif // !`ifdef NOTDEF
-   
+   //
    // All the bits in the various device registers.  Device register addresses are shown as addr[3:1]
+   //
 
    localparam RKDS = 3'b000;	// Drive Status
    reg [2:0] ID;		// Drive ID [15..13]
@@ -87,7 +69,7 @@ module rkv11
    reg 	     RWS_RDY;		// Read/Write/Seek Ready [6]
    reg 	     WPS;		// Write Protect Status [5]
    wire      SCeqSA = (SC == SA); // Sector Counter = Sector Address [4]
-   reg [3:0] SC;		  // Sector Counter [3..0]
+   reg [3:0] SC = 0;		  // Sector Counter [3..0]
 
    localparam RKER = 3'b001;	// Error
    reg 	     DRE;		// Drive Error [15]
@@ -121,8 +103,7 @@ module rkv11
    reg 	     GO = 1;		// Go [0]
 
    localparam RKWC = 3'b011;	// Word Count
-   reg [15:0] WC;		// WC is the 2s complement of the number of words to transfer,
-   wire [15:0] WC_next = WC + 1; // so increment until 0
+   reg [15:0] WC;		// WC is the 2s complement of the negative of the number of words to transfer,
 
    localparam RKBA = 3'b100;	// Current Bus Address
 //   reg [15:0] BA;
@@ -137,8 +118,7 @@ module rkv11
 //   reg [5:0]  BAE;		// Bus Address Extension
 
    localparam RKDB = 3'b111;	// Data Buffer
-   reg [15:0] DB;		// this will probably be replaced by one end of a FIFO, but the
-				// register is useful for now
+   wire [15:0] DB;		// connected to the read FIFO
 
    reg [21:1] RK_BAR;		// The full bus address register (low bit assumed = 0)
    assign TAL = { RK_BAR, 1'b0 }; // send it out the address lines
@@ -192,33 +172,16 @@ module rkv11
 
    // simulate the sectors flying by on the disk.  we only have a single sector counter,
    // not one for each disk.  it seems sufficient.
-   reg [5:0] clk_div;		// divide down the QBUS clock (20MHz) to get a sector clock
-   always @(posedge clk) begin
-      if (init) begin
-	 SC <= 0;
-	 clk_div <= 0;
-      end else begin
-	 clk_div <= clk_div + 1;
-	 if (clk_div == 0)
-	   SC <= SC + 1;
-      end
-   end
+   reg [5:0] clk_div = 0;	// divide down the QBUS clock (20MHz) to get a sector clock
+   always @(posedge clk)
+      { SC, clk_div } <= { SC, clk_div } + 1;
 
    // either the device or commands from the QBUS may write protect a disk
-   wire [7:0] write_protect_flag = write_protect | protect;
+   wire [7:0] write_protect_flag = sd_write_protect | protect;
    reg [7:0]  protect = 0;
 
 
-   // internal RAM disk (have to shrink the number of CYLINDERS depending on how much block RAM
-   // is available inside the FPGA)
-   localparam DISK_WORDS = 256 * SECTORS * SURFACES * CYLINDERS;
-   //synthesis attribute ram_style of ram_disk is block
-   reg [15:0] ram_disk[0:DISK_WORDS-1];    // the RAM disk
-   reg [7:0]  saddr;			   // word count within a sector
-   wire [7:0] saddr_next;
-   wire       saddr_carry;
-   assign { saddr_carry, saddr_next } = saddr + 1;
-   wire [20:0] rd_addr = { lba, saddr }; // index into the RAM disk
+   reg [7:0]  saddr;			 // word count within a sector
 
    
    //
@@ -230,11 +193,11 @@ module rkv11
 			(RAL[12:4] == addr_base[12:4])); // my address
    
    // data line mux
-   wire [15:0] rd_data = ram_disk[rd_addr]; // lookup in the RAM disk
+//   wire [15:0] rd_data = ram_disk[rd_addr]; // lookup in the RAM disk
    always @(*) begin
       if (dma_bus_master) begin
-	 TDL = rd_data;
-//	 TDL = DB;		// Not tested!!! just trying to get ram_disk to use block RAM
+//	 TDL = rd_data;
+	 TDL = DB;		// Not tested!!! just trying to get ram_disk to use block RAM
 
       end else if (assert_vector) begin
 	 TDL = { 7'b0, int_vec };
@@ -269,14 +232,33 @@ module rkv11
       end
    end
 
+   //
    // write registers and execute commands
-   reg dma_read = 0,
-       dma_write = 0;
-   assign dma_read_req = dma_read & (WC != 0);
-   assign dma_write_req = dma_write & (WC != 0);
+   //
+
+   // send some signals out to the storage device
+   assign sd_write_data = RDL;	// send DMA data to the write FIFO
+   assign sd_dev_sel = DR_SEL;	// send drive select to the storage device
+   assign DB = sd_read_data;	// send the read FIFO to the Data Buffer register
+   
+   // internal state if we're in a read or write operation
+   reg dma_read = 0,		// disk write
+       dma_write = 0;		// disk read
+   // whenever there are words to move and the FIFO allows, request the DMA
+   assign dma_read_req = dma_read & (WC != 0) & !sd_write_full;
+   assign dma_write_req = dma_write & (WC != 0) & !sd_read_empty;
+
+   reg [15:8] block_count = 0;	// keep track of number of blocks written to the FIFO
+   reg 	      sd_ready_wait = 0;
+   reg 	      WC_zero = 0;	// flag when the Word Count (WC) rolls over
    
    always @(posedge clk) begin
       interrupt_request <= 0;
+      sd_read_enable <= 0;
+      sd_write_enable <= 0;
+      sd_ready_wait <= 0;
+      sd_write <= 0;
+      sd_read <= 0;
 
       // write data to a register
       if (addr_match && write_pulse) begin
@@ -285,19 +267,24 @@ module rkv11
 	     { INH_BA, FMT, SSE, IDE, RK_BAR[17:16], FUNC, GO } 
 	       <= { RDL[11], RDL[10], RDL[8], RDL[6], RDL[5:4], RDL[3:1], RDL[0] };
 	   RKWC:		// Word Count
-	     WC <= RDL;
+	     { WC_zero, WC } <= { 1'b0, RDL };
 	   RKBA:		// Bus Address
 	     RK_BAR[15:1] <= RDL[15:1];
 	   RKDA:
 	     { DR_SEL, CYL_ADD, SUR, SA } <= RDL;
 	   RKXA:		// RKXA - Extended Address
+	     // The extended address was not implemented in any DEC RK11 controller but this is
+	     // done similarly to how it was handled in the RLV12.  Notice that RK_BAR[17:16] can
+	     // be set either through RKCS or through RKXA.  Again, this is like the RLV12.
 	     if (mode == `MODE_Q22)
 	       RK_BAR[21:16] <= RDL[5:0];
+`ifdef NOTDEF
 	   // the data buffer will likely be replaced by one end of a FIFO and then no longer be
 	   // writable.  for now it's useful to be able to write values into it.  !!!
 	   RKDB:		// Data Buffer
 	     DB <= RDL;
-	 endcase // case (RAL[3:0])
+`endif
+	 endcase // case (RAL[3:1])
       end
 
       else if (init) begin
@@ -305,45 +292,62 @@ module rkv11
 	 { DRE, OVR, WLO, SKE, PGE, NXM, DLT, TE, NXD, NXC, NXS, CSE, WCE } <= 0;
 	 { SCP, INH_BA, FMT, SSE, RDY, IDE, FUNC, GO } <= 0;
 	 WC <= 0;
+	 WC_zero <= 0;
 	 RK_BAR <= 0;
 	 { DR_SEL, CYL_ADD, SUR, SA } <= 0;
-	 DB <= 0;
 	 protect <= 0;
 	 dma_write <= 0;
 	 dma_read <= 0;
 	 interrupt_request <= 0;
+	 block_count <= 0;
 	 RDY <= 1;
       end
 
       // handle DMA cycles
       else if (dma_read || dma_write) begin
+	 // move the data to/from a FIFO and update counters
 	 if (dma_complete) begin
+	    // control writing/reading the storage device FIFO
 	    if (dma_read)
-	      ram_disk[rd_addr] <= RDL;
+	      sd_write_enable <= 1;
 	    else if (dma_write)
-	      DB <= ram_disk[rd_addr];
+	      sd_read_enable <= 1;
 
+	    // increment the various counters
 	    if (!INH_BA)
 	      RK_BAR <= RK_BAR + 1;
-	    saddr <= saddr_next;
+	    { block_count, saddr } <= { block_count, saddr } + 1;
+	    { WC_zero, WC} <= WC + 1;
+	 end // if (dma_complete)
 
-	    if (saddr_carry)
-	      { CYL_ADD, SUR, SA } <= { next_cylinder, next_surface, next_sector };
-	    WC <= WC_next;
-
-	    if (WC_next == 0) begin
-	       RDY <= 1;
-	       dma_read <= 0;
-	       dma_write <= 0;
-	       if (IDE)
-		 interrupt_request <= 1;
+	 // kick the storage device to read or write a block
+	 // I don't think this really works if the write FIFO is larger than two blocks and
+	 // block_count is ever greater than 1  !!!
+	 else if (block_count != 0) begin
+	    if (sd_ready) begin
+	       sd_lba <= lba;	// set the lba from the current disk address
+	       if (dma_read)
+		 sd_write <= 1;	// tell the storage device to start writing
+	       else if (dma_write)
+		 sd_read <= 1;	// tell the storage device to start reading
+	       sd_ready_wait <= 1; // flag that we're waiting for the storage device to read the command
+	    end else if (sd_ready_wait) begin
+	       // wait until now to increment the disk address
+	       { CYL_ADD, SUR, SA } <= { next_cylinder, next_surface, next_sector };
+	       block_count <= block_count - 1;
 	    end
 	 end
 
-	 if (dma_nxm) begin
+	 // If all the words have been DMAd (WC_zero) and all the SD read/write commands have
+	 // been issued (block_count == 0) and the SD is ready, then we're done.  Also done if
+	 // there's a NXM.
+	 else if ((WC_zero && (block_count == 0) && sd_ready) ||
+		  dma_nxm) begin
+	    // need to implement partial block read/write here !!!
 	    RDY <= 1;
 	    dma_read <= 0;
 	    dma_write <= 0;
+	    block_count <= 0;
 	    if (dma_nxm)
 	      NXM <= 1;
 	    if (IDE)
@@ -358,18 +362,22 @@ module rkv11
 //	   CONTROL_RESET: handled by the init signal
 	   WRITE: 
 	     begin
-		ucmd <= `CMD_WRITE;
-		uint_req <= 1;
+		// !!! need to check drive ready
+		sd_lba <= lba;
 		dma_read <= 1;
 		saddr <= 0;
+		block_count <= 0;
+		WC_zero <= 0;
 		RDY <= 0;
 	     end
 	   READ:
 	     begin
-		ucmd <= `CMD_READ;
-		uint_req <= 1;
+		// !!! need to check drive ready
+		sd_lba <= lba;
 		dma_write <= 1;
 		saddr <= 0;
+		block_count <= 1; // this will trigger the first read from the storage device
+		WC_zero <= 0;
 		RDY <= 0;
 	     end
 `ifdef NOTDEF
