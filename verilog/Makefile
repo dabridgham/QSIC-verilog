@@ -21,6 +21,9 @@ tb_bg.check: $(BG_FILES)
 rkv11.check: rkv11.v disk-uc.v qreg.v $(INCLUDES)
 	iverilog -tnull $(ICOPTS) rkv11.v disk-uc.v $(INCLUDES)
 
+aFifo.check: aFifo.v GrayCounter.v
+	iverilog -tnull $(ICOPTS) aFifo.v GrayCounter.v
+
 test: test.qbus
 
 test.bg: test_bg.vvp
