@@ -211,16 +211,17 @@ module pmo
    wire [15:0] sr_tdl;
 
    switch_register
-     switch_register(clk20, addr_reg, bs7_reg, RDL, sr_tdl,
+     switch_register(clk20, addr_reg[12:0], bs7_reg, RDL, sr_tdl,
 		     sr_addr, sr_match, assert_vector, sRDOUTpulse);
 `endif
 
 `ifdef RKV11
-   wire        rk_match, rk_dma_read, rk_dma_write, rk_assert_addr, rk_assert_data;
+   wire        rk_match, rk_dma_read, rk_dma_write, rk_assert_addr, rk_assert_data, rk_read_pulse;
    wire        rk_bus_master, rk_dma_complete, rk_DALst, rk_DALbe, rk_nxm;
    wire        rk_wtbt, rk_irq, rk_assert_vector;
    wire [15:0] rk_tdl;
    wire [21:0] rk_tal;
+   wire [15:0] rk_ip;		// indicator panel bits
 
    // connection to the storage device
    reg [7:0]   sd_loaded = 8'h01; // "disk" loaded and ready
@@ -241,7 +242,7 @@ module pmo
    qmaster2908 
      rk_master(clk20, RSYNC, RRPLY, RDMR, RSACK, RINIT, RDMGI, sRDMGI, RREF,
 	       TSYNC, rk_wtbt, TDIN, TDOUT, TDMR, TSACK, TDMGO,
-	       rk_dma_read, rk_dma_write, rk_assert_addr, rk_assert_data,
+	       rk_dma_read, rk_dma_write, rk_assert_addr, rk_assert_data, rk_read_pulse,
 	       rk_bus_master, rk_dma_complete, rk_DALst, rk_DALbe, rk_nxm);
 
    qint rk_int(`INTP_4, RINIT, RDIN, 
@@ -249,10 +250,10 @@ module pmo
  	       { TIRQ4, TIRQ5, TIRQ6, TIRQ7 }, TIAKO,
 	       rk_irq, rk_assert_vector);
 
-   rkv11 rkv11(clk20, addr_reg, bs7_reg, rk_tal, RDL, rk_tdl, RINIT,
-	       rk_match, rk_assert_vector, sRDOUTpulse, 
+   rkv11 rkv11(clk20, addr_reg[12:0], bs7_reg, rk_tal, RDL, rk_tdl, RINIT,
+	       rk_match, rk_assert_vector, sRDOUTpulse, rk_read_pulse,
 	       rk_dma_read, rk_dma_write, rk_bus_master, rk_dma_complete, rk_nxm, 
-	       rk_irq, 
+	       rk_irq, rk_ip,
 	       sd_loaded, sd_write_protect, sd_dev_sel, sd_lba, sd_read, sd_write, sd_ready,
 	       sd_write_data, sd_write_enable, sd_write_full,
 	       sd_read_data, sd_read_enable, sd_read_empty);
@@ -320,10 +321,20 @@ module pmo
    wire [7:0]  sd0_err;
    wire [15:0] sd0_read_data;
    wire        sd0_read_data_enable;
-   SD_spi SD0(clk20, RINIT, sd0_ready, sd0_read, sd0_write, sd0_lba, 
-	      sd0_write_data, sd0_write_data_enable, sd0_read_data, sd0_read_data_enable,
-	      sd0_sdclk, sd0_sdcmd, sd0_sddat,
-	      sd0_cd, sd0_v1, sd0_v2, sd0_SC, sd0_HC, sd0_err);
+   wire        sd0_fifo_clk;
+   wire [13:0] sd0_random;
+   SD_spi SD0(.clk(clk20), .reset(RINIT), .device_ready(sd0_ready),
+	      .read_cmd(sd0_read), .write_cmd(sd0_write),
+	      .block_address(sd0_lba),
+    	      .fifo_clk(sd0_fifo_clk),
+	      .write_data(sd0_write_data),
+	      .write_data_enable(sd0_write_data_enable),
+	      .read_data(sd0_read_data),
+	      .read_data_enable(sd0_read_data_enable),
+ 	      .sd_clk(sd0_sdclk), .sd_cmd(sd0_sdcmd), .sd_dat(sd0_sddat),
+ 	      .ip_cd(sd0_cd), .ip_v1(sd0_v1), .ip_v2(sd0_v2), .ip_SC(sd0_SC),
+    	      .ip_HC(sd0_HC), .ip_err(sd0_err),
+	      .ip_random(sd0_random));
    
 
    //
@@ -351,7 +362,7 @@ module pmo
       .Data_in(sd0_read_data),
       .Full_out(sd0_full),
       .WriteEn_in(sd0_read_data_enable),
-      .WClk(clk20),
+      .WClk(sd0_fifo_clk),
       .Clear_in(RINIT));
 
    wire        sd0_empty;	// the SD card ignores this
@@ -359,12 +370,19 @@ module pmo
      (.Data_out(sd0_write_data),
       .Empty_out(sd0_empty),
       .ReadEn_in(sd0_write_data_enable),
-      .RClk(clk20),
+      .RClk(sd0_fifo_clk),
       .Data_in(sd_write_data),
       .Full_out(sd_write_full),
       .WriteEn_in(sd_write_enable),
       .WClk(clk20),
       .Clear_in(RINIT));
+
+   reg [12:0]  write_counter = 0;
+   always @(posedge sd0_fifo_clk)
+     if (RINIT)
+       write_counter <= 0;
+     else if (sd0_read_data_enable)
+       write_counter <= write_counter + 1;
 
 
    //
@@ -415,9 +433,9 @@ module pmo
 	       1'b0, sd0_cd, sd0_v1, sd0_v2, sd0_SC, sd0_HC, sd0_ready, 1'b1, 1'b1, rk_dma_read, rk_dma_write, sd0_sddat[3] },
 	     { 1'b0, DALtx, ZDAL, 9'b0, sd0_read, sd0_write, 1'b1 },
 	     { ZWTBT, ZBS7, RSYNC, RDIN, RDOUT, RRPLY, RREF, 1'b0, RIAKI, RIRQ7, RIRQ6, RIRQ5, RIRQ4,
-	       1'b0, RSACK, RDMGI, RDMR, 1'b0, RINIT, 1'b0, RDCOK, RPOK, sd0_read_data[7:0], 6'b0 },
+	       1'b0, RSACK, RDMGI, RDMR, 1'b0, RINIT, 1'b0, RDCOK, RPOK, sd0_random },
 	     { DALtx & ZWTBT, DALtx & ZBS7, TSYNC, TDIN, TDOUT, TRPLY, TREF, 1'b0,
 	       TIAKO, TIRQ7, TIRQ6, TIRQ5, TIRQ4, 1'b0, TSACK, TDMGO, TDMR, 1'b0, 
-	       4'b0, sd0_err, 6'b0 });
+	       4'b0, sd0_err, 5'b0, sd_read_empty });
 
 endmodule // pmo

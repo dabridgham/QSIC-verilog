@@ -70,10 +70,11 @@ module SD_spi
    input 	     read_cmd,
    input 	     write_cmd,
    input [31:0]      block_address,
+   output 	     fifo_clk, 
    input [15:0]      write_data,
-   output reg 	     write_data_enable,
+   output 	     write_data_enable,
    output reg [15:0] read_data,
-   output reg 	     read_data_enable,
+   output 	     read_data_enable,
    // the SD card itself
    output 	     sd_clk,
    inout 	     sd_cmd,
@@ -84,7 +85,8 @@ module SD_spi
    output 	     ip_v2, // Ver2.0 or higher
    output 	     ip_SC, // Standard Capacity
    output 	     ip_HC, // High Capacity or Extended Capacity
-   output reg [7:0]  ip_err // saw an error
+   output reg [7:0]  ip_err, // saw an error
+   output [12:0]     ip_random
    );
    
    // For SPI mode, the signals get different meanings
@@ -100,7 +102,9 @@ module SD_spi
    // still the clock
 
    // The micro-instruction and breakout
-   reg [24:0] 	uinst;
+   reg [26:0] 	uinst;
+   wire 	wde = uinst[26];	  // write data enable
+   wire 	rde = uinst[25];	  // read data enable
    wire 	byte_sync = uinst[24];	  // sync instruction to byte clock
    wire 	crc_reset = uinst[23];	  // reset both crc chains
    wire 	crc7_enable = uinst[22];  // enable the crc7 calc
@@ -253,7 +257,7 @@ module SD_spi
 	$display("Error: 0x%02x", literal);
 `endif
 	ip_err <= literal;
-     end
+     end 
 
    wire 	crc7_reset = crc_reset;
    wire 	crc16_reset = crc_reset;
@@ -273,17 +277,11 @@ module SD_spi
    reg [7:0] 	tx_sr;
    assign sd_di = tx_sr[7];
    always @(negedge sd_clk) begin // change on negedge for SPI mode 0
-      write_data_enable <= 0;
-      
       if (byte_clk)
 	case (tx_src)
 	  TX_IMM: tx_sr <= literal;
 	  TX_DATA_LOW: tx_sr <= write_data[7:0];
-	  TX_DATA_HIGH: begin
-	     tx_sr <= write_data[15:8];
-	     // the FIFO is clocked after the high byte is read
-	     write_data_enable <= 1;
-	  end
+	  TX_DATA_HIGH: tx_sr <= write_data[15:8];
 	  TX_CRC7: tx_sr <= { crc7_do, 1'b1 };
 	  TX_CRC16_LOW: tx_sr <= crc16_do[7:0];
 	  TX_CRC16_HIGH: tx_sr <= crc16_do[15:8];
@@ -296,7 +294,12 @@ module SD_spi
 	endcase // case (tx_src)
       else
 	tx_sr <= { tx_sr[6:0], 1'b1 };
-   end
+   end // always @ (negedge sd_clk)
+
+   // clock data to and from the FIFO
+   assign read_data_enable = rde;
+   assign write_data_enable = wde;
+   assign fifo_clk = ~sd_clk;
 
    // the Card Select is asserted when data is sent to the TxSR
    always @(negedge sd_clk)
@@ -312,15 +315,14 @@ module SD_spi
    // transferred
    reg [8:0] 	word_count;
    wire 	block_detect = word_count[8];
+   assign ip_random = word_count;
+   
    always @(negedge sd_clk)
      if (crc_reset)
        word_count <= 0;
-     else if (byte_clk && (tx_src == TX_DATA_LOW))
+     else if ((byte_clk && (tx_src == TX_DATA_LOW)) ||
+	      rde) //(byte_clk && (rx_dest == RX_DATA_LOW)))
        word_count <= word_count + 1;
-     else if (byte_clk && (rx_dest == RX_DATA_LOW))
-       word_count <= word_count + 1;
-     else
-       word_count <= word_count;
    
 
    // data input shift register
@@ -337,8 +339,6 @@ module SD_spi
 
    // move Rx data to where it's going
    always @(negedge sd_clk) begin
-      read_data_enable <= 0;
-
       case (rx_dest)
 	RX_NONE: ;
 	RX_CMP:
@@ -346,20 +346,15 @@ module SD_spi
 	  // strobe.  To do a compare, we save the literal here for branching later.
 	  literal_reg <= literal;
 	RX_DATA_LOW: read_data[7:0] <= rx_reg;
-	RX_DATA_HIGH:
-	  begin
-	     read_data[15:8] <= rx_reg;
-	     if (byte_clk)
-	       // data is strobed into the FIFO whenever the high byte is written, assumes
-	       // little-endian
-	       read_data_enable <= 1;
-	  end
+	RX_DATA_HIGH: read_data[15:8] <= rx_reg;
       endcase // case (rx_dest)
-   end
+   end // always @ (negedge sd_clk)
 
    // compare rx_reg with literal_reg
-   wire 	cmp_eq = ((rx_reg & literal_reg) != 8'b0); // if any masked bit set
+   wire 	cmp_eq = ((rx_reg & literal_reg) != 8'b0);   // if any masked bit set
    wire 	cmp_neq = ((~rx_reg & literal_reg) == 8'b0); // if all masked bits set
+   wire 	cmp_crcerr = (rx_reg[4:0] == 5'b01011);	     // data response token
+   wire 	cmp_wrerr = (rx_reg[4:0] == 5'b01101);	     // data response token
 
    // synchronize read and write commands from the disk controller
    reg [1:0] 	read_ra, write_ra;
@@ -383,8 +378,8 @@ module SD_spi
        JMP_WRITE: jump = s_write_cmd;
        JMP_V1: jump = !version_2;
        JMP_BLOCK: jump = !block_detect;
-       JMP_CRCERR: jump = 0;	// !!! need to figure this one out
-       JMP_WRERR: jump = 0;	// !!! need to fix this
+       JMP_CRCERR: jump = cmp_crcerr;
+       JMP_WRERR: jump = cmp_wrerr;
        default: jump = 0;
      endcase
      
@@ -393,7 +388,7 @@ module SD_spi
 
    reg [7:0] 	uPC = 0;
    reg [7:0] 	uPC_next = 0;
-   reg [24:0] 	uROM [0:255];
+   reg [26:0] 	uROM [0:255];
 
    initial $readmemh("sd.hex", uROM);
    

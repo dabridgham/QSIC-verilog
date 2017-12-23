@@ -13,7 +13,7 @@ module rkv11
    input 	     clk, // 20MHz
 
    // The Bus
-   input [21:0]      RAL, // latched address input
+   input [12:0]      RAL, // latched address input
    input 	     RBS7,
    output [21:0]     TAL, // address output
    input [15:0]      RDL, // data lines
@@ -24,12 +24,16 @@ module rkv11
    output 	     addr_match,
    input 	     assert_vector,
    input 	     write_pulse,
+   input 	     read_pulse,
    output 	     dma_read_req,
    output 	     dma_write_req,
    input 	     dma_bus_master,
    input 	     dma_complete,
    input 	     dma_nxm,
    output reg 	     interrupt_request,
+
+   // indicator panel
+   output reg [15:0] ip_data,
 
    // connection to the storage device
    input [7:0] 	     sd_loaded, // "disk" loaded and ready
@@ -244,9 +248,41 @@ module rkv11
    // internal state if we're in a read or write operation
    reg dma_read = 0,		// disk write
        dma_write = 0;		// disk read
-   // whenever there are words to move and the FIFO allows, request the DMA
+   // whenever there are words to move and the FIFO allows, request DMA
    assign dma_read_req = dma_read & (WC != 0) & !sd_write_full;
    assign dma_write_req = dma_write & (WC != 0) & !sd_read_empty;
+
+   // generates a pulse when the read FIFO goes from empty to non-empty
+   reg sd_read_new_data_reg = 0;
+   always @(posedge clk)
+     sd_read_new_data_reg <= sd_read_empty;
+   wire sd_read_new_data = ~sd_read_empty & sd_read_new_data_reg;
+
+   // testing !!!
+   always @(posedge clk)
+      if (RINIT)
+	ip_data <= 0;
+      else if (sd_write_enable)
+	ip_data <= ip_data + 1;
+
+   // control clocking the FIFOs
+   always @(posedge clk) begin
+      sd_read_enable <= 0;
+      sd_write_enable <= 0;
+
+      // if we're doing a disk write, when each DMA completes clock the FIFO to write the data
+      // into it
+      if (dma_complete && dma_read)
+	sd_write_enable <= 1;
+
+      // on a disk read, we need to clock the FIFO to expose the output data whenever we see the
+      // read_pulse and we're doing DMA
+//      if (sd_read_new_data ||
+//	  (dma_complete && dma_write && !sd_read_empty))   !!! testing
+      if (read_pulse)
+	sd_read_enable <= 1;
+   end
+
 
    reg [15:8] block_count = 0;	// keep track of number of blocks written to the FIFO
    reg 	      sd_ready_wait = 0;
@@ -254,8 +290,6 @@ module rkv11
    
    always @(posedge clk) begin
       interrupt_request <= 0;
-      sd_read_enable <= 0;
-      sd_write_enable <= 0;
       sd_ready_wait <= 0;
       sd_write <= 0;
       sd_read <= 0;
@@ -298,21 +332,13 @@ module rkv11
 	 protect <= 0;
 	 dma_write <= 0;
 	 dma_read <= 0;
-	 interrupt_request <= 0;
 	 block_count <= 0;
 	 RDY <= 1;
       end
 
       // handle DMA cycles
       else if (dma_read || dma_write) begin
-	 // move the data to/from a FIFO and update counters
 	 if (dma_complete) begin
-	    // control writing/reading the storage device FIFO
-	    if (dma_read)
-	      sd_write_enable <= 1;
-	    else if (dma_write)
-	      sd_read_enable <= 1;
-
 	    // increment the various counters
 	    if (!INH_BA)
 	      RK_BAR <= RK_BAR + 1;
@@ -332,7 +358,7 @@ module rkv11
 		 sd_read <= 1;	// tell the storage device to start reading
 	       sd_ready_wait <= 1; // flag that we're waiting for the storage device to read the command
 	    end else if (sd_ready_wait) begin
-	       // wait until now to increment the disk address
+	       // now that the command is started, increment the disk address
 	       { CYL_ADD, SUR, SA } <= { next_cylinder, next_surface, next_sector };
 	       block_count <= block_count - 1;
 	    end

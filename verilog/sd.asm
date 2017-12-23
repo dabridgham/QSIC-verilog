@@ -124,7 +124,7 @@ r5:	byte	.
 	cmp	0x01		; in idle state
 	eq	initloop	; keep sending ACMD41 until the card shows idle
 
-	vers1	initdone	; for v1 cards, we're finished initialization
+	vers1	idle		; for v1 cards, we're finished initialization
 	
 	;; CMD58 again to get CCS from v2 cards
 	sync,reset,imm	0x7A	; CMD58 - READ_OCR
@@ -155,20 +155,21 @@ lowcap:	byte	.		; don't care
 	;; the card is initialized, look for read or write commands or for the card to be
 	;; removed
 	
-initdone:	set	rdy
-	;; a bit of time to let Card Detect settle
-	nop
-	nop
-idle:	nocard	start
-	sete	0x61
-	;; 	read	bread
+idle:	set	rdy
+	sync		     ; delay to let Card Detect settle
+	sync
+	sete	0x81
+idloop:	clr	csel
+	nocard	start
+	read	bread
 	write	bwrite
-	jmp	idle
+	jmp	idloop
 
 	;; 
 	;; Write out a block of data
 	;; 
-bwrite:	sync,reset,imm	0x58	; CMD24 WRITE_BLOCK	
+bwrite:	clr	rdy
+	sync,reset,imm	0x58	; CMD24 WRITE_BLOCK	
 	sync,crc7,addr3		; MSB of disk address
 	sync,crc7,addr2
 	sync,crc7,addr1
@@ -181,14 +182,15 @@ r7:	byte	.
 	timer	cmdtimeout
 	cmp	0x80
 	eq	r7
-	cmp	0x7F
+	cmp	0x7E
 	eq	wrterr
 	;; write data block
 	sete	0x63
 	byte	.
 	byte	.		; give it one more byte time N_WR
 	sync,reset,imm	0xFE	; Start Block token
-tloop:	sync,crc16,tlow		; The PDP-11 is little-endian so that's how we write out the data
+tloop:	wde,crc16		; clock the FIFO
+	sync,crc16,tlow		; The PDP-11 is little-endian so that's how we write out the data
 	sync,crc16,thigh
 	crc16,block	tloop
 	sync,crc16,tcrc16h
@@ -196,10 +198,10 @@ tloop:	sync,crc16,tlow		; The PDP-11 is little-endian so that's how we write out
 	;; the data response immediately follows
 	byte	.
 	crcerr	crcer
-	wrerr	wrterr
+	wrerr	wrderr
 	clr	time
 tbusy:	byte	.
-	timer	wrtimeout
+	timer	wrtmo
 	cmp	0xFF		; loop while the card is busy writing data
 	eq	wdone
 	jmp	tbusy
@@ -207,17 +209,22 @@ wdone:	sete	0x64
 	clr	csel
 	jmp	idle
 
+wrtmo:	clr csel
+	sete	0x93
+	jmp	initfail
 wrterr:	clr	csel
 	sete	0x91
 	jmp	initfail
-wrtimeout:	clr csel
+wrderr:	clr	csel
 	sete	0x92
 	jmp	initfail
 
 	;;
 	;; Read in a block of data
 	;;
-bread:	sync,reset,imm	0x51	; CMD17 READ_SINGLE_BLOCK
+bread:	clr	rdy
+	sete	0xC1
+	sync,reset,imm	0x51	; CMD17 READ_SINGLE_BLOCK
 	sync,crc7,addr3		; MSB of disk address
 	sync,crc7,addr2
 	sync,crc7,addr1
@@ -226,6 +233,7 @@ bread:	sync,reset,imm	0x51	; CMD17 READ_SINGLE_BLOCK
 	;; command response
 	clr	time
 r8:	byte	.
+	sete	0xC2
 	timer	cmdtimeout
 	cmp	0x80
 	eq	r8
@@ -233,14 +241,18 @@ r8:	byte	.
 	eq	rderr
 	;; wait for Start Block token
 rwait:	byte	.
+	sete	0xC3
 	cmp	0x01
 	eq	rwait
+	reset,sete 0xC4
 	;; read words into FIFO
 rloop:	byte	.
 	rlow			; Little endian for the data
 	byte	.
 	rhigh
+	rde,sete 0xC5		; clock the FIFO
 	block	rloop
+	sete	0xC6
 	clr	csel
 	jmp	idle
 
@@ -250,7 +262,8 @@ rderr:	clr	csel
 
 
 	;; in any error, just wait for the card to be removed and reset
-crcer:	jmp	initfail
+crcer:	sete	0x95
+	jmp	initfail
 notmemory:	jmp	initfail
 cmdtimeout: jmp initfail
 illcrc:	sete	0x84
