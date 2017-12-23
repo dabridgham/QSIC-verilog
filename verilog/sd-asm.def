@@ -12,7 +12,7 @@
 
 # The first line _must_ contain the uword width, and uROM size
 
-25 256
+27 256
 
 # The second line _must_ contain the format strings used for printing addresses,
 # uinsts, and literals
@@ -42,8 +42,10 @@
 # middle of the uword, but it was felt that this price was worth paying
 # for the benefit of being able to do a consistency check.
 
-11
+13
 
+uwde	none	26	1	bit	none
+urde	none	25	1	bit	none
 usync	none	24	1	bit	none
 ureset	none	23	1	bit	none
 ucrc7	none	22	1	bit	none
@@ -73,8 +75,10 @@ literal	none	0	8	lit	none
 # used with some, but not all, values of that field). 'yes' and 'no' are
 # the acceptable values for this token.
 
-42
+44
 
+wde	uwde	1	no
+rde	urde	1	no
 sync	usync	1	no
 reset	ureset	1	no
 crc7	ucrc7	1	no
