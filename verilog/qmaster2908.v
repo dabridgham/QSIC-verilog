@@ -4,7 +4,7 @@
 // handles bus acquisition, managing the data transfers, and handing the bus back.  The actual
 // data paths are elsewhere.
 //
-// Copyright 2016 Noel Chiappa and David Bridgham
+// Copyright 2016-2017 Noel Chiappa and David Bridgham
 
 `timescale 1 ns / 1 ns
 
@@ -34,6 +34,7 @@ module qmaster2908
    input      dma_write,
    output reg assert_addr,
    output reg assert_data,
+   output     read_pulse, // a one clock pulse if a device needs to clock out data
    output reg bus_master,
    output reg dma_complete, // only asserted for one clock cycle each dma cycle
    output reg DALst,
@@ -49,6 +50,7 @@ module qmaster2908
    //
 
    assign TDMR = dma_read | dma_write;
+   assign read_pulse = assert_data_set;
    
 
    // each time RDMGI gets asserted, latch if we're requesting the bus
