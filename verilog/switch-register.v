@@ -10,7 +10,7 @@ module switch_register
   (
    input 	 qclk, // 20MHz
    // the bus
-   input [21:0]  RAL, // latched address
+   input [12:0]  RAL, // latched address
    input 	 RBS7,
    input [15:0]  RDL, // data lines
    output [15:0] TDL, 
