@@ -2205,4 +2205,30 @@ F 3 "" H 850 10050 60  0000 C CNN
 	1    850  10050
 	1    0    0    -1  
 $EndComp
+$Comp
+L TEST_1P J103
+U 1 1 5A4009D2
+P 6650 8900
+F 0 "J103" H 6650 9170 50  0000 C CNN
+F 1 "GND" H 6650 9100 50  0000 C CNN
+F 2 "Mounting_Holes:MountingHole_3-5mm" H 6850 8900 50  0001 C CNN
+F 3 "" H 6850 8900 50  0001 C CNN
+	1    6650 8900
+	-1   0    0    1   
+$EndComp
+$Comp
+L TEST_1P J102
+U 1 1 5A40116B
+P 6400 8900
+F 0 "J102" H 6400 9170 50  0000 C CNN
+F 1 "GND" H 6400 9100 50  0000 C CNN
+F 2 "Mounting_Holes:MountingHole_3-5mm" H 6600 8900 50  0001 C CNN
+F 3 "" H 6600 8900 50  0001 C CNN
+	1    6400 8900
+	-1   0    0    1   
+$EndComp
+Wire Wire Line
+	6400 8900 6950 8900
+Connection ~ 6950 8900
+Connection ~ 6650 8900
 $EndSCHEMATC
