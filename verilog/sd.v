@@ -86,7 +86,8 @@ module SD_spi
    output 	     ip_SC, // Standard Capacity
    output 	     ip_HC, // High Capacity or Extended Capacity
    output reg [7:0]  ip_err, // saw an error
-   output [12:0]     ip_random
+   output reg [7:0]  ip_d8,
+   output reg [35:0] ip_debug
    );
    
    // For SPI mode, the signals get different meanings
@@ -167,6 +168,8 @@ module SD_spi
  `else
    wire 	clk400k = clk_div[5];
  `endif
+   // normally this would be just clk, but that's causing problems so let's try 10MHz for now
+   wire 	clk_fast = clk_div[0];
 
    // control which clock goes to the SD card
    reg 		fpp = 0;
@@ -175,7 +178,7 @@ module SD_spi
        fpp <= 0;
      else if (set_bits & literal_high_speed)
        fpp <= 1;
-   assign sd_clk = fpp ? clk : clk400k;
+   assign sd_clk = fpp ? clk_fast : clk400k;
 
    // generate a byte strobe from the sd_clk
    reg [2:0] 	byte_clk_ra = 0;
@@ -315,8 +318,6 @@ module SD_spi
    // transferred
    reg [8:0] 	word_count;
    wire 	block_detect = word_count[8];
-   assign ip_random = word_count;
-   
    always @(negedge sd_clk)
      if (crc_reset)
        word_count <= 0;
@@ -326,25 +327,35 @@ module SD_spi
    
 
    // data input shift register
+`ifdef NOT_TESTING  // !!!
    reg [7:0] 	rx_sr;
    always @(posedge sd_clk)	// read on posedge for SPI mode 0
      rx_sr <= { rx_sr[6:0], sd_do };
+`else
+   reg [35:0] 	rx_sr;
+   always @(posedge sd_clk)	// read on posedge for SPI mode 0
+     rx_sr <= { rx_sr[34:0], sd_do };
+`endif
 
    // on the byte strobe, transfer the RxSR to a receive register where it will remain stable
    // until the next byte is done.  this is what's used for comparison.
    reg [7:0] 	rx_reg, literal_reg;
    always @(negedge sd_clk)
      if (byte_clk)
-       rx_reg <= rx_sr;
+       rx_reg <= rx_sr[7:0];
 
    // move Rx data to where it's going
    always @(negedge sd_clk) begin
       case (rx_dest)
 	RX_NONE: ;
-	RX_CMP:
-	  // this one is a little strange.  rx_sr is already being copied to rx_reg on the byte
-	  // strobe.  To do a compare, we save the literal here for branching later.
-	  literal_reg <= literal;
+	RX_CMP: begin
+	   // this one is a little strange.  rx_sr is already being copied to rx_reg on the byte
+	   // strobe.  To do a compare, we save the literal here for branching later.
+	   literal_reg <= literal;
+	   // testing !!!
+	   ip_debug <= rx_sr;
+	   ip_d8 <= rx_reg;
+	end
 	RX_DATA_LOW: read_data[7:0] <= rx_reg;
 	RX_DATA_HIGH: read_data[15:8] <= rx_reg;
       endcase // case (rx_dest)
