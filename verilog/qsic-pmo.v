@@ -221,7 +221,7 @@ module pmo
    wire        rk_wtbt, rk_irq, rk_assert_vector;
    wire [15:0] rk_tdl;
    wire [21:0] rk_tal;
-   wire [15:0] rk_ip;		// indicator panel bits
+   wire [35:0] rk_debug;	// indicator panel bits
 
    // connection to the storage device
    reg [7:0]   sd_loaded = 8'h01; // "disk" loaded and ready
@@ -253,7 +253,7 @@ module pmo
    rkv11 rkv11(clk20, addr_reg[12:0], bs7_reg, rk_tal, RDL, rk_tdl, RINIT,
 	       rk_match, rk_assert_vector, sRDOUTpulse, rk_read_pulse,
 	       rk_dma_read, rk_dma_write, rk_bus_master, rk_dma_complete, rk_nxm, 
-	       rk_irq, rk_ip,
+	       rk_irq, rk_debug,
 	       sd_loaded, sd_write_protect, sd_dev_sel, sd_lba, sd_read, sd_write, sd_ready,
 	       sd_write_data, sd_write_enable, sd_write_full,
 	       sd_read_data, sd_read_enable, sd_read_empty);
@@ -322,8 +322,9 @@ module pmo
    wire [15:0] sd0_read_data;
    wire        sd0_read_data_enable;
    wire        sd0_fifo_clk;
-   wire [13:0] sd0_random;
-   SD_spi SD0(.clk(clk20), .reset(RINIT), .device_ready(sd0_ready),
+   wire [35:0] sd0_debug;
+   wire [7:0]  sd0_d8;
+   SD_spi SD0(.clk(clk20), .reset(0), .device_ready(sd0_ready),
 	      .read_cmd(sd0_read), .write_cmd(sd0_write),
 	      .block_address(sd0_lba),
     	      .fifo_clk(sd0_fifo_clk),
@@ -334,7 +335,7 @@ module pmo
  	      .sd_clk(sd0_sdclk), .sd_cmd(sd0_sdcmd), .sd_dat(sd0_sddat),
  	      .ip_cd(sd0_cd), .ip_v1(sd0_v1), .ip_v2(sd0_v2), .ip_SC(sd0_SC),
     	      .ip_HC(sd0_HC), .ip_err(sd0_err),
-	      .ip_random(sd0_random));
+	      .ip_d8(sd0_d8), .ip_debug(sd0_debug));
    
 
    //
@@ -377,14 +378,6 @@ module pmo
       .WClk(clk20),
       .Clear_in(RINIT));
 
-   reg [12:0]  write_counter = 0;
-   always @(posedge sd0_fifo_clk)
-     if (RINIT)
-       write_counter <= 0;
-     else if (sd0_read_data_enable)
-       write_counter <= write_counter + 1;
-
-
    //
    // Wire up LEDs for testing
    //
@@ -419,7 +412,7 @@ module pmo
    wire 	panel_out;
    assign ip_out = ~panel_out;
    
-   reg [7:0] 	ip_count = 0 ;
+   reg [7:0] 	ip_count = 0;
    always @(posedge clk100k) begin
       if (RINIT || (ip_count == 143))
 	ip_count <= 0;
@@ -427,15 +420,30 @@ module pmo
 	ip_count <= ip_count + 1;
    end
    
+//`define LAMPTEST 1
+`define TESTING 1
    indicator
      qsic_ip(clk100k, (ip_count == 0), panel_out,
-	     { read_cycle, bs7_reg, addr_reg, 
-	       1'b0, sd0_cd, sd0_v1, sd0_v2, sd0_SC, sd0_HC, sd0_ready, 1'b1, 1'b1, rk_dma_read, rk_dma_write, sd0_sddat[3] },
-	     { 1'b0, DALtx, ZDAL, 9'b0, sd0_read, sd0_write, 1'b1 },
+`ifdef LAMPTEST
+	     { 36'o777_777_777_777 },
+	     { 36'o777_777_777_777 },
+	     { 36'o777_777_777_777 },
+	     { 36'o777_777_777_777 }
+`else
+	     { 1'b0, DALtx, ZDAL, 3'b0,
+	       sd0_cd, sd0_v1, sd0_v2, sd0_SC, sd0_HC, sd0_ready, rk_dma_read, rk_dma_write, sd0_sddat[3] },
+	     { read_cycle, bs7_reg, addr_reg, 3'b0, 6'b0, sd0_read, sd0_write, 1'b1 },
+`ifdef TESTING //!!!
+	     { rk_debug },
+	     { sd0_d8, 19'b0, sd0_err, 1'b0 }
+`else
 	     { ZWTBT, ZBS7, RSYNC, RDIN, RDOUT, RRPLY, RREF, 1'b0, RIAKI, RIRQ7, RIRQ6, RIRQ5, RIRQ4,
-	       1'b0, RSACK, RDMGI, RDMR, 1'b0, RINIT, 1'b0, RDCOK, RPOK, sd0_random },
+	       1'b0, RSACK, RDMGI, RDMR, 1'b0, RINIT, 1'b0, RDCOK, RPOK, 14'b0 },
 	     { DALtx & ZWTBT, DALtx & ZBS7, TSYNC, TDIN, TDOUT, TRPLY, TREF, 1'b0,
 	       TIAKO, TIRQ7, TIRQ6, TIRQ5, TIRQ4, 1'b0, TSACK, TDMGO, TDMR, 1'b0, 
-	       4'b0, sd0_err, 5'b0, sd_read_empty });
+	       9'b0, sd0_err, 1'b0 }
+`endif
+`endif
+	     );
 
 endmodule // pmo
