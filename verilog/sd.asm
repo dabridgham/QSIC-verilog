@@ -4,7 +4,7 @@
 	
 
 start:	clr	hispd|hicap|vers2|rdy|csel|time
-	sete	0x40
+	sete	0x01
 	nop			; do I need longer to let CS settle?
 	nocard	.		; wait for a card to appear
 	clr	time		; reset the timer
@@ -21,7 +21,8 @@ dly2:	timer	gotcard
 	;; start the initialization sequence
 
 	;; CMD0 - GO_IDLE_STATE
-gotcard:	sync,reset,imm	0x40
+gotcard: sete	0x02
+	sync,reset,imm	0x40
 	sync,crc7,imm	0
 	sync,crc7,imm	0
 	sync,crc7,imm	0
@@ -36,11 +37,12 @@ r1:	byte	.
 	cmp	0x04		; illegal command (0x04)
 	eq	notmemory	; no memory card should fail CMD0
 	cmp	0x08		; CRC error
-	eq	initfail
+	eq	illcrc
 	clr	csel		; release the SD card
 
 	;; CMD8 - SEND_IF_COND
-cmd8:	sync,reset,imm	0x48
+cmd8:	sete	0x04
+	sync,reset,imm	0x48
 	sync,crc7,imm	0
 	sync,crc7,imm	0
 	sync,crc7,imm	0x01	; 2.7 - 3.6V - we're fixed at 3.3V
@@ -66,7 +68,8 @@ vltgd:	byte	.		; don't care
 	set	vers2		; it's a v2 card
 v1:	clr	csel		; release the SD card
 
-	;; CMD58 - READ_OCR	
+	;; CMD58 - READ_OCR
+	sete	0x08
 	sync,reset,imm	0x7A
 	sync,crc7,imm	0
 	sync,crc7,imm	0
@@ -89,7 +92,8 @@ r3:	byte	.
 	clr	csel		; release the SD card
 
 	;; CMD55 - APP_CMD
-initloop:	sync,reset,imm	0x77
+initloop: sete 0x10	
+	sync,reset,imm	0x77
 	sync,crc7,imm	0
 	sync,crc7,imm	0
 	sync,crc7,imm	0
@@ -127,6 +131,7 @@ r5:	byte	.
 	vers1	idle		; for v1 cards, we're finished initialization
 	
 	;; CMD58 again to get CCS from v2 cards
+	sete	0x20
 	sync,reset,imm	0x7A	; CMD58 - READ_OCR
 	sync,crc7,imm	0
 	sync,crc7,imm	0
@@ -155,20 +160,24 @@ lowcap:	byte	.		; don't care
 	;; the card is initialized, look for read or write commands or for the card to be
 	;; removed
 	
-idle:	set	rdy
+idle:	sete	0x40
+	set	rdy|hispd
 	sync		     ; delay to let Card Detect settle
 	sync
-	sete	0x81
-idloop:	clr	csel
-	nocard	start
-	read	bread
+	sync
+	sync
+	sync
+	sync
+idloop:	read	bread
 	write	bwrite
+	nocard	start
 	jmp	idloop
 
 	;; 
 	;; Write out a block of data
 	;; 
 bwrite:	clr	rdy
+	sete	0x41
 	sync,reset,imm	0x58	; CMD24 WRITE_BLOCK	
 	sync,crc7,addr3		; MSB of disk address
 	sync,crc7,addr2
@@ -176,7 +185,7 @@ bwrite:	clr	rdy
 	sync,crc7,addr0		; LSB of disk address
 	sync,crc7,tcrc7
 	;; command response
-	sete	0x62
+	sete	0x42
 	clr	time
 r7:	byte	.
 	timer	cmdtimeout
@@ -185,7 +194,7 @@ r7:	byte	.
 	cmp	0x7E
 	eq	wrterr
 	;; write data block
-	sete	0x63
+	sete	0x44
 	byte	.
 	byte	.		; give it one more byte time N_WR
 	sync,reset,imm	0xFE	; Start Block token
@@ -195,35 +204,47 @@ tloop:	wde,crc16		; clock the FIFO
 	crc16,block	tloop
 	sync,crc16,tcrc16h
 	sync,tcrc16l
+	jmp	skip
+	
 	;; the data response immediately follows
 	byte	.
 	crcerr	crcer
 	wrerr	wrderr
+
+	;; the data response is *supposed* to immediately follow.  apparently
+	;; some SD cards miss this by a few bit times.  so for now, we'll
+	;; just wait a few byte times and assume it was good.  this
+	;; needs to get fixed somehow. !!!
+skip:	byte	.
+	byte	.
+	byte	.
+	byte	.
+
 	clr	time
 tbusy:	byte	.
 	timer	wrtmo
 	cmp	0xFF		; loop while the card is busy writing data
 	eq	wdone
 	jmp	tbusy
-wdone:	sete	0x64
+wdone:	sete	0x48
 	clr	csel
 	jmp	idle
 
-wrtmo:	clr csel
-	sete	0x93
-	jmp	initfail
 wrterr:	clr	csel
 	sete	0x91
 	jmp	initfail
 wrderr:	clr	csel
 	sete	0x92
 	jmp	initfail
+wrtmo:	clr	csel
+	sete	0x93
+	jmp	initfail
 
 	;;
 	;; Read in a block of data
 	;;
 bread:	clr	rdy
-	sete	0xC1
+	sete	0x21
 	sync,reset,imm	0x51	; CMD17 READ_SINGLE_BLOCK
 	sync,crc7,addr3		; MSB of disk address
 	sync,crc7,addr2
@@ -233,7 +254,6 @@ bread:	clr	rdy
 	;; command response
 	clr	time
 r8:	byte	.
-	sete	0xC2
 	timer	cmdtimeout
 	cmp	0x80
 	eq	r8
@@ -241,18 +261,18 @@ r8:	byte	.
 	eq	rderr
 	;; wait for Start Block token
 rwait:	byte	.
-	sete	0xC3
+	sete	0x22
 	cmp	0x01
 	eq	rwait
-	reset,sete 0xC4
+	reset,sete 0x24
 	;; read words into FIFO
 rloop:	byte	.
 	rlow			; Little endian for the data
 	byte	.
 	rhigh
-	rde,sete 0xC5		; clock the FIFO
+	rde,sete 0x28		; clock the FIFO
 	block	rloop
-	sete	0xC6
+	sete	0x30
 	clr	csel
 	jmp	idle
 
