@@ -1847,18 +1847,18 @@ Text Notes 7400 1850 0    60   ~ 12
 Indicator Panel (Rev 1 interface)
 Text GLabel 8150 1300 0    60   Input ~ 0
 IPclkP
-Text GLabel 8650 1400 2    60   Input ~ 0
+Text GLabel 8650 1300 2    60   Input ~ 0
 IPclkN
 Text GLabel 8150 1200 0    60   Input ~ 0
 IPdataP
 Text GLabel 8650 1200 2    60   Input ~ 0
 IPdataN
-Text GLabel 8150 1500 0    60   Input ~ 0
+Text GLabel 8150 1400 0    60   Input ~ 0
 IPlatchP
-Text GLabel 8650 1500 2    60   Input ~ 0
+Text GLabel 8650 1400 2    60   Input ~ 0
 IPlatchN
-NoConn ~ 8150 1400
-NoConn ~ 8650 1300
+NoConn ~ 8150 1500
+NoConn ~ 8650 1500
 $Comp
 L VDD #PWR121
 U 1 1 56BCEF63
