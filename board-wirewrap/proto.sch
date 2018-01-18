@@ -2031,7 +2031,7 @@ F 3 "" H 1500 10200 60  0000 C CNN
 	1    1500 10200
 	1    0    0    -1  
 $EndComp
-Text Label 9800 7400 0    60   ~ 0
+Text Label 11350 8600 0    60   ~ 0
 SD_CLK
 Text Label 9800 7500 0    60   ~ 0
 SD_DI
@@ -2041,7 +2041,7 @@ Text Label 9800 8100 0    60   ~ 0
 SD_NC1
 Text Label 9800 8200 0    60   ~ 0
 SD_NC2
-Text Label 9200 7400 2    60   ~ 0
+Text Label 9200 10100 2    60   ~ 0
 ~CS~/CD
 $Comp
 L Led_Small D?
