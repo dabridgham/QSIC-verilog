@@ -9,4 +9,5 @@
  o check error returns when reading/writing SD card
  o optimize transfers to go directly when using QSIC memory (ENABLE+)
  o check overflow on WC_next rather than ==0
+ o kick speed of SD card back up to 20MHz or even 25MHz
  

@@ -162,6 +162,7 @@ lowcap:	byte	.		; don't care
 	
 idle:	sete	0x40
 	set	rdy|hispd
+;	set	rdy
 	sync		     ; delay to let Card Detect settle
 	sync
 	sync
