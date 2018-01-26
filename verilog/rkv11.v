@@ -2,7 +2,7 @@
 //
 // An implementation of the RKV11 (extended for Q22).
 //
-// Copyright 2015 - 2017 Noel Chiappa and David Bridgham
+// Copyright 2015 - 2018 Noel Chiappa and David Bridgham
 
 `timescale 1 ns / 1 ns
 
@@ -129,8 +129,7 @@ module rkv11
 
 
    localparam 
-//     CYLINDERS = 203,
-     CYLINDERS = 2,		// reduced for the RAM disk !!!
+     CYLINDERS = 203,
      SURFACES = 2,
      SECTORS = 12;
    // Convert cylinder/surface/sector into linear block address
@@ -185,9 +184,6 @@ module rkv11
    reg [7:0]  protect = 0;
 
 
-   reg [7:0]  saddr;			 // word count within a sector
-
-   
    //
    // QBUS Interface
    //
@@ -239,7 +235,8 @@ module rkv11
    //
 
    // send some signals out to the storage device
-   assign sd_write_data = RDL;	// send DMA data to the write FIFO
+   reg sd_write_zero;		// zero out the data when filling out a partial block
+   assign sd_write_data = sd_write_zero ? 0 : RDL; // send DMA data to the write FIFO
    assign sd_dev_sel = DR_SEL;	// send drive select to the storage device
    assign DB = sd_read_data;	// send the read FIFO to the Data Buffer register
    
@@ -260,6 +257,7 @@ module rkv11
    reg [15:0] sd_debug;
    assign rk_debug = { rk_write_count, sd_write_count, 3'b0, sd_debug };
 
+`ifdef NOTDEF			// !!! old code
    // control clocking the FIFOs
    always @(posedge clk) begin
       sd_read_enable <= 0;
@@ -276,9 +274,11 @@ module rkv11
       // read_pulse and we're doing DMA
       if (dma_read_pulse)
 	sd_read_enable <= 1;
-   end
+   end // always @ (posedge clk)
+`endif
 
 
+   reg [7:0]  saddr;		// word count within a sector
    reg [15:8] block_count = 0;	// keep track of number of blocks written to the FIFO
    reg 	      sd_ready_wait = 0;
    reg 	      WC_zero = 0;	// flag when the Word Count (WC) rolls over
@@ -288,6 +288,30 @@ module rkv11
       sd_ready_wait <= 0;
       sd_write <= 0;
       sd_read <= 0;
+      sd_read_enable <= 0;
+      sd_write_enable <= 0;
+      sd_write_zero <= 0;
+
+      //
+      // handle FIFO control signals
+      //
+
+      // if we're doing a disk write, when each DMA completes clock the FIFO to write the data
+      // into it
+      if (dma_complete && dma_read) begin
+	 sd_write_enable <= 1;
+	 sd_debug <= RDL;
+      end
+
+      // on a disk read, we need to clock the FIFO to expose the output data whenever we see the
+      // read_pulse and we're doing DMA
+      if (dma_read_pulse)
+	sd_read_enable <= 1;
+
+
+      //
+      // The main state machine
+      //
 
       // write data to a register
       if (addr_match && write_pulse) begin
@@ -346,7 +370,7 @@ module rkv11
 	    if (sd_ready) begin
 	       sd_lba <= lba;	// set the lba from the current disk address
 	       if (dma_read) begin
-		  sd_write <= 1;	// tell the storage device to start writing
+		  sd_write <= 1; // tell the storage device to start writing
 		  sd_ready_wait <= 1; // flag that we're waiting for the storage device to read the command
 	       end else if (dma_write) begin
 		  // reading is a little different from writing because when WC rolls to 0 we're
@@ -355,7 +379,7 @@ module rkv11
 		  if (WC_zero)
 		    block_count <= 0;
 		  else begin
-		     sd_read <= 1;	// tell the storage device to start reading
+		     sd_read <= 1; // tell the storage device to start reading
 		     sd_ready_wait <= 1; // flag that we're waiting for the storage device to read the command
 		  end
 	       end
@@ -368,14 +392,29 @@ module rkv11
 	       else if (dma_write)
 		 sd_read_count <= sd_read_count + 1;
 	    end
-	 end
+	 end // if (block_count != 0)
 
+`ifdef NOTDEF
+	 // handle partial block reads and writes
+	 else if (WC_zero && (block_count == 0) && (saddr != 0)) begin
+	    if (dma_read) begin
+	       // fill out the block in the FIFO with zeros
+	       sd_write_enable <= 1;
+	       sd_write_zero <= 1;
+	       { block_count, saddr } <= { block_count, saddr } + 1;
+	    end else if (dma_write && !sd_read_empty) begin
+	       // drain the FIFO until saddr rolls over and we're done
+	       sd_read_enable <= 1;
+	       { block_count, saddr } <= { block_count, saddr } + 1;
+	    end
+	 end
+`endif //  `ifdef NOTDEF
+	 
 	 // If all the words have been DMAd (WC_zero) and all the SD read/write commands have
 	 // been issued (block_count == 0) and the SD is ready, then we're done.  Also done if
 	 // there's a NXM.
-	 else if ((WC_zero && (block_count == 0) && sd_ready) ||
-		  dma_nxm) begin
-	    // need to implement partial block read/write here !!!
+	 else if ((WC_zero && (block_count == 0) && sd_ready)
+		  || dma_nxm) begin
 	    RDY <= 1;
 	    dma_read <= 0;
 	    dma_write <= 0;
