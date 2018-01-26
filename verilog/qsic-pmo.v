@@ -4,7 +4,7 @@
 // module.  The prototype board uses Am2908s for bus transceiver for all the Data/Address lines
 // so there's a level of buffering there that needs to be considered.
 //
-// Copyright 2016-2017 Noel Chiappa and David Bridgham
+// Copyright 2016-2018 Noel Chiappa and David Bridgham
 
 `timescale 1 ns / 1 ns
 
@@ -68,9 +68,9 @@ module pmo
    output 	TIAKO,
    output 	TDMGO,
 
-   output 	sd0_sdclk,	// J18
-   output 	sd0_sdcmd,	// J17
-   inout [3:0] 	sd0_sddat	// K16 F16 H16 K15
+   output 	sd0_sdclk,
+   output 	sd0_sdcmd,
+   inout [3:0] 	sd0_sddat
    );
 
    // Turn the 48MHz clock into a 20MHz clock that will be used as the general QBUS clock
@@ -202,8 +202,9 @@ module pmo
 
    reg 	       assert_vector = 0;
 
-`define SW_REG 1
+//`define SW_REG 1
 `define RKV11 1
+`define SD_CARD 1
 
 `ifdef SW_REG
    reg [17:0]  sr_addr = 18'o777570;
@@ -309,6 +310,7 @@ module pmo
    end
 
 
+`ifdef SD_CARD
    //
    // Interface an SD Card
    //
@@ -337,10 +339,7 @@ module pmo
     	      .ip_HC(sd0_HC), .ip_err(sd0_err),
 	      .ip_d8(sd0_d8), .ip_debug(sd0_debug));
    
-
-   //
    // Connections beween RK11 and SD card
-   //
 
    // This is where the drive number and block address from the RK11 is mapped to the SD card.
    // Eventually this mapping will be controlled by the pack load configuration. !!!
@@ -377,6 +376,65 @@ module pmo
       .WriteEn_in(sd_write_enable),
       .WClk(clk20),
       .Clear_in(RINIT));
+
+`else  // RAM Disk
+   //
+   // Interface a Block RAM RAMdisk
+   //
+   wire        rd_read, rd_write;
+   wire [31:0] rd_lba;
+   wire [15:0] rd_write_data;
+   wire        rd_write_data_enable;
+   wire [15:0] rd_read_data;
+   wire        rd_write_fifo_empty;
+   wire        rd_read_data_enable;
+   wire        rd_fifo_clk;
+   wire [15:0] rd_debug;
+   ramdisk_block #(.BLOCKS(2 * 12 * 32)) // 32 cylinders uses up most of the Block RAM I have
+   RD (.clk(clk20), .reset(RINIT), .device_ready(rd_ready),
+       .read_cmd(rd_read), .write_cmd(rd_write),
+       .block_address(rd_lba),
+       .fifo_clk(rd_fifo_clk),
+       .write_data(rd_write_data),
+       .write_data_enable(rd_write_data_enable),
+       .write_fifo_empty(rd_write_fifo_empty),
+       .read_data(rd_read_data),
+       .read_data_enable(rd_read_data_enable),
+       .debug(rd_debug));
+
+   // Connect the RK11 to the RAM Disk
+
+   assign rd_lba = { 19'b0, sd_lba };
+   assign sd_ready = rd_ready;
+   assign rd_read = sd_read;
+   assign rd_write = sd_write;
+   
+   wire        rd_full;	// the RAM Disk ignores this
+   aFifo #(.DATA_WIDTH(16), .ADDRESS_WIDTH(9)) rd_read_fifo
+     (.Data_out(sd_read_data),
+      .Empty_out(sd_read_empty),
+      .ReadEn_in(sd_read_enable),
+      .RClk(clk20),
+      .Data_in(rd_read_data),
+      .Full_out(rd_full),
+      .WriteEn_in(rd_read_data_enable),
+      .WClk(rd_fifo_clk),
+      .Clear_in(RINIT));
+
+//   wire        rd_empty;	// the RAM Disk ignores this
+   aFifo #(.DATA_WIDTH(16), .ADDRESS_WIDTH(9)) rd_write_fifo
+     (.Data_out(rd_write_data),
+      .Empty_out(rd_write_fifo_empty),
+      .ReadEn_in(rd_write_data_enable),
+      .RClk(rd_fifo_clk),
+      .Data_in(sd_write_data),
+      .Full_out(sd_write_full),
+      .WriteEn_in(sd_write_enable),
+      .WClk(clk20),
+      .Clear_in(RINIT));
+
+`endif // !`ifdef SD_CARD
+   
 
    //
    // Wire up LEDs for testing
@@ -421,7 +479,7 @@ module pmo
    end
    
 //`define LAMPTEST 1
-`define TESTING 1
+//`define TESTING 1
    indicator
      qsic_ip(clk100k, (ip_count == 0), panel_out,
 `ifdef LAMPTEST
@@ -430,18 +488,26 @@ module pmo
 	     { 36'o777_777_777_777 },
 	     { 36'o777_777_777_777 }
 `else
-	     { 1'b0, DALtx, ZDAL, 3'b0,
-	       sd0_cd, sd0_v1, sd0_v2, sd0_SC, sd0_HC, sd0_ready, rk_dma_read, rk_dma_write, sd0_sddat[3] },
-	     { read_cycle, bs7_reg, addr_reg, 3'b0, 6'b0, sd0_read, sd0_write, 1'b1 },
-`ifdef TESTING //!!!
-	     { rk_debug },
-	     { sd0_d8, 19'b0, sd0_err, 1'b0 }
-`else
+ `ifdef SD_CARD
+	     { DALtx, 1'b0, ZDAL, 3'b0,
+	       sd0_cd, sd0_v1, sd0_v2, sd0_SC, sd0_HC, sd0_ready, rk_dma_read, rk_dma_write, 1'b0 },
+	     { read_cycle, bs7_reg, addr_reg, 3'b0, 6'b0, sd0_read, sd0_write, 1'b0 },
+ `else  // RAM Disk
+	     { DALtx, 1'b0, ZDAL, 3'b0, 9'b0 },
+	     { read_cycle, bs7_reg, addr_reg, 3'b0, 9'b0 },
+ `endif
+ `ifdef SD_CARD
 	     { ZWTBT, ZBS7, RSYNC, RDIN, RDOUT, RRPLY, RREF, 1'b0, RIAKI, RIRQ7, RIRQ6, RIRQ5, RIRQ4,
 	       1'b0, RSACK, RDMGI, RDMR, 1'b0, RINIT, 1'b0, RDCOK, RPOK, 14'b0 },
 	     { DALtx & ZWTBT, DALtx & ZBS7, TSYNC, TDIN, TDOUT, TRPLY, TREF, 1'b0,
+	       TIAKO, TIRQ7, TIRQ6, TIRQ5, TIRQ4, 1'b0, TSACK, TDMGO, TDMR,
+	       10'b0, sd0_err, 1'b0 }
+`else
+	     { ZWTBT, ZBS7, RSYNC, RDIN, RDOUT, RRPLY, RREF, 1'b0, RIAKI, RIRQ7, RIRQ6, RIRQ5, RIRQ4,
+	       1'b0, RSACK, RDMGI, RDMR, 1'b0, RINIT, 1'b0, RDCOK, RPOK, rd_debug[13:0] },
+	     { DALtx & ZWTBT, DALtx & ZBS7, TSYNC, TDIN, TDOUT, TRPLY, TREF, 1'b0,
 	       TIAKO, TIRQ7, TIRQ6, TIRQ5, TIRQ4, 1'b0, TSACK, TDMGO, TDMR, 1'b0, 
-	       9'b0, sd0_err, 1'b0 }
+	       2'b0, rd_read_data }
 `endif
 `endif
 	     );

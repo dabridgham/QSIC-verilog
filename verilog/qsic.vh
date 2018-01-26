@@ -2,7 +2,7 @@
 //
 // Common definitions for the Verilog in QSIC
 //
-// Copyright 2015 Noel Chiappa and David Bridgham
+// Copyright 2015, 2018 Noel Chiappa and David Bridgham
 //
 
 // Interrupt Priorities
@@ -46,7 +46,3 @@
 `define MODE_Q18 2'o2
 `define MODE_Q16 2'o3
 
-// Commands from the FPGA to the uC
-`define CMD_CONFIG 3'o0		// configure me
-`define CMD_READ 3'o1		// read a disk sector
-`define CMD_WRITE 3'o2		// write a disk sector
