@@ -204,7 +204,7 @@ module pmo
 
 //`define SW_REG 1
 `define RKV11 1
-`define SD_CARD 1
+`define SD_CARD 1		// commenting this out switches over to a RAM Disk
 
 `ifdef SW_REG
    reg [17:0]  sr_addr = 18'o777570;
@@ -222,10 +222,11 @@ module pmo
    wire        rk_wtbt, rk_irq, rk_assert_vector;
    wire [15:0] rk_tdl;
    wire [21:0] rk_tal;
-   wire [35:0] rk_debug;	// indicator panel bits
+   wire        rk_ip_latch;
+   wire        rk_ip_out;
 
    // connection to the storage device
-   reg [7:0]   sd_loaded = 8'h01; // "disk" loaded and ready
+   reg [7:0]   sd_loaded = 8'h03; // "disk" loaded and ready
    reg [7:0]   sd_write_protect = 0; // the "disk" is write protected
    wire [2:0]  sd_dev_sel;	     // "disk" drive select
    wire [12:0] sd_lba;		     // linear block address
@@ -254,7 +255,7 @@ module pmo
    rkv11 rkv11(clk20, addr_reg[12:0], bs7_reg, rk_tal, RDL, rk_tdl, RINIT,
 	       rk_match, rk_assert_vector, sRDOUTpulse, rk_read_pulse,
 	       rk_dma_read, rk_dma_write, rk_bus_master, rk_dma_complete, rk_nxm, 
-	       rk_irq, rk_debug,
+	       rk_irq, clk100k, rk_ip_latch, rk_ip_out,
 	       sd_loaded, sd_write_protect, sd_dev_sel, sd_lba, sd_read, sd_write, sd_ready,
 	       sd_write_data, sd_write_enable, sd_write_full,
 	       sd_read_data, sd_read_enable, sd_read_empty);
@@ -353,7 +354,35 @@ module pmo
    assign sd0_read = sd_read;
    assign sd0_write = sd_write;
 
-   wire        sd0_full;	// the SD card ignores this
+   wire        sd0_read_full, sd0_read_rst_write_busy, sd0_read_rst_read_busy; // the SD card ignores these
+   fifo_generator_0 sd_read_fifo
+     (.rst(RINIT),
+      .wr_clk(sd0_fifo_clk),
+      .rd_clk(clk20),
+      .din(sd0_read_data),
+      .wr_en(sd0_read_data_enable),
+      .rd_en(sd_read_enable),
+      .dout(sd_read_data),
+      .full(sd0_read_full),
+      .empty(sd_read_empty),
+      .wr_rst_busy(sd0_rst_write_busy),
+      .rd_rst_busy(sd0_rst_read_busy));
+
+   wire sd0_write_empty, sd0_write_rst_write_busy, sd0_write_rst_read_busy; // the SD card ignores these
+   fifo_generator_0 sd_write_fifo
+     (.rst(RINIT),
+      .wr_clk(clk20),
+      .rd_clk(sd0_fifo_clk),
+      .din(sd_write_data),
+      .wr_en(sd_write_enable),
+      .rd_en(sd0_write_data_enable),
+      .dout(sd0_write_data),
+      .full(sd_write_full),
+      .empty(sd0_write_empty),
+      .wr_rst_busy(sd0_write_rst_write_busy),
+      .rd_rst_busy(sd0_write_rst_read_busy));
+
+ `ifdef NOTDEF
    aFifo #(.DATA_WIDTH(16), .ADDRESS_WIDTH(9)) sd_read_fifo
      (.Data_out(sd_read_data),
       .Empty_out(sd_read_empty),
@@ -376,7 +405,8 @@ module pmo
       .WriteEn_in(sd_write_enable),
       .WClk(clk20),
       .Clear_in(RINIT));
-
+ `endif //  `ifdef NOTDEF
+   
 `else  // RAM Disk
    //
    // Interface a Block RAM RAMdisk
@@ -464,24 +494,27 @@ module pmo
    // first get an approx 100kHz clock
    wire 	clk100k = count[7];
 
-   // panel driver
-   assign ip_latch = ~(ip_count == 0);
+   // panel driver (Are these inverted because I wired the PMo wrong? !!!)
+   assign ip_latch = ~ip_done;
    assign ip_clk = ~clk100k;
    wire 	panel_out;
-   assign ip_out = ~panel_out;
+   assign ip_out = ~rk_ip_out;  // panel_out;
+   assign rk_ip_latch = ip_done;
    
    reg [7:0] 	ip_count = 0;
+   reg 		ip_done = 0;
    always @(posedge clk100k) begin
-      if (RINIT || (ip_count == 143))
-	ip_count <= 0;
-      else
-	ip_count <= ip_count + 1;
+      if (RINIT || ip_done) begin
+	 ip_count <= -143;
+	 ip_done <= 0;
+      end else
+	{ ip_done, ip_count } <= ip_count + 1;
    end
    
 //`define LAMPTEST 1
 //`define TESTING 1
    indicator
-     qsic_ip(clk100k, (ip_count == 0), panel_out,
+     qsic_ip(clk100k, ip_done, panel_out,
 `ifdef LAMPTEST
 	     { 36'o777_777_777_777 },
 	     { 36'o777_777_777_777 },
@@ -490,8 +523,8 @@ module pmo
 `else
  `ifdef SD_CARD
 	     { DALtx, 1'b0, ZDAL, 3'b0,
-	       sd0_cd, sd0_v1, sd0_v2, sd0_SC, sd0_HC, sd0_ready, rk_dma_read, rk_dma_write, 1'b0 },
-	     { read_cycle, bs7_reg, addr_reg, 3'b0, 6'b0, sd0_read, sd0_write, 1'b0 },
+	       sd0_cd, sd0_v1, sd0_v2, sd0_SC, sd0_HC, sd0_ready, sd0_read, sd0_write, 1'b0 },
+	     { read_cycle, bs7_reg, addr_reg, 3'b0, 6'b0, rk_dma_read, rk_dma_write, 1'b0 },
  `else  // RAM Disk
 	     { DALtx, 1'b0, ZDAL, 3'b0, 9'b0 },
 	     { read_cycle, bs7_reg, addr_reg, 3'b0, 9'b0 },
