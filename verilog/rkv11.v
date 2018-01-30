@@ -33,7 +33,9 @@ module rkv11
    output reg 	     interrupt_request,
 
    // indicator panel
-   output [35:0]     rk_debug,
+   input 	     ip_clk,
+   input 	     ip_latch,
+   output 	     ip_out,
 
    // connection to the storage device
    input [7:0] 	     sd_loaded, // "disk" loaded and ready
@@ -104,10 +106,10 @@ module rkv11
    reg 	     IDE;		// Interrupt on Done Enable [6]
 				// Memory Extension [5..4] (see BAE[1:0])
    reg [2:0] FUNC = CONTROL_RESET; // Function [3..1]
-   reg 	     GO = 1;		// Go [0]
+   reg 	     GO = 1;		// Go [0]  (Initializing to 1 may be obsolete!!!)
 
    localparam RKWC = 3'b011;	// Word Count
-   reg [15:0] WC;		// WC is the 2s complement of the negative of the number of words to transfer,
+   reg [15:0] WC;		// WC is the 2s complement of the number of words to transfer,
 
    localparam RKBA = 3'b100;	// Current Bus Address
 //   reg [15:0] BA;
@@ -135,7 +137,6 @@ module rkv11
    // Convert cylinder/surface/sector into linear block address
    wire [12:0] lba = SA + (SECTORS * (SUR + (SURFACES * CYL_ADD)));
    // Calculate the next disk address
-   wire [12:0] next_disk_address = { next_cylinder, next_surface, next_sector };
    reg [3:0]   next_sector;
    reg 	       next_surface;
    reg [7:0]   next_cylinder;
@@ -246,74 +247,69 @@ module rkv11
    // whenever there are words to move and the FIFO allows, request DMA
 //   assign dma_read_req = dma_read & ~WC_zero & ~sd_write_full;
    // testing!!! should be using the FIFO_full signal
-   assign dma_read_req = dma_read & ~WC_zero & (block_count == 0);
+   assign dma_read_req = dma_read & ~WC_zero & ~sector_done;
    assign dma_write_req = dma_write & ~WC_zero & ~sd_read_empty;
 
-   // testing !!!
-   reg [8:0] rk_write_count;
-   reg [8:0] sd_write_count;
-   reg [8:0] rk_read_count;
-   reg [8:0] sd_read_count;
-   reg [15:0] sd_debug;
-   assign rk_debug = { rk_write_count, sd_write_count, 3'b0, sd_debug };
-
-`ifdef NOTDEF			// !!! old code
-   // control clocking the FIFOs
-   always @(posedge clk) begin
-      sd_read_enable <= 0;
-      sd_write_enable <= 0;
-
-      // if we're doing a disk write, when each DMA completes clock the FIFO to write the data
-      // into it
-      if (dma_complete && dma_read) begin
-	 sd_write_enable <= 1;
-	 sd_debug <= RDL;
-      end
-
-      // on a disk read, we need to clock the FIFO to expose the output data whenever we see the
-      // read_pulse and we're doing DMA
-      if (dma_read_pulse)
-	sd_read_enable <= 1;
-   end // always @ (posedge clk)
-`endif
-
-
-   reg [7:0]  saddr;		// word count within a sector
-   reg [15:8] block_count = 0;	// keep track of number of blocks written to the FIFO
-   reg 	      sd_ready_wait = 0;
-   reg 	      WC_zero = 0;	// flag when the Word Count (WC) rolls over
    
+   // State Machine
+   reg 	      WC_zero = 0;	// flag when the Word Count (WC) rolls over
+   reg [7:0]  saddr = 0;	// word count within a sector
+   reg 	      sector_done = 0;	// saddr overflow
+   reg [12:0] state = 1;	// start in state INIT
+   localparam
+     INIT = 0,
+     READY = 1,
+     WRITE_LOOP = 2,
+     WRITE_WAIT = 3,
+     WRITE_WAIT_DONE = 4,
+     READ_START = 5,
+     READ_LOOP = 6,
+     READ_FLUSH = 7,
+     CMD_DONE = 8;
+
+   task set_state;
+      input integer s;
+      begin
+	 state[s] <= 1'b1;
+      end
+   endtask // set_state
+
+   task dma_step;
+      begin
+	 if (!INH_BA)
+	   RK_BAR <= RK_BAR + 1;
+	 { WC_zero, WC} <= WC + 1;
+      end
+   endtask
+
+   task sector_next;
+      begin
+	 { CYL_ADD, SUR, SA } <= { next_cylinder, next_surface, next_sector };
+      end
+   endtask
+
+   task sector_incr;
+      begin
+	 { sector_done, saddr } <= saddr + 1;
+      end
+   endtask
+
    always @(posedge clk) begin
-      interrupt_request <= 0;
-      sd_ready_wait <= 0;
-      sd_write <= 0;
-      sd_read <= 0;
+      state <= 0;
       sd_read_enable <= 0;
       sd_write_enable <= 0;
       sd_write_zero <= 0;
-
+      sd_write <= 0;
+      sd_read <= 0;
+      interrupt_request <= 0;
+      RDY <= 0;
+      
+      // register writes from the host processor
       //
-      // handle FIFO control signals
-      //
-
-      // if we're doing a disk write, when each DMA completes clock the FIFO to write the data
-      // into it
-      if (dma_complete && dma_read) begin
-	 sd_write_enable <= 1;
-	 sd_debug <= RDL;
-      end
-
-      // on a disk read, we need to clock the FIFO to expose the output data whenever we see the
-      // read_pulse and we're doing DMA
-      if (dma_read_pulse)
-	sd_read_enable <= 1;
-
-
-      //
-      // The main state machine
-      //
-
-      // write data to a register
+      // these share an always block with the state machine because both write to the RK11
+      // visible registers.  However, since the state machine only ever modifies these registers
+      // as a result of a DMA operation completing, the two cannot conflict since the QBUS can
+      // only be doing one or the other at a given time.
       if (addr_match && write_pulse) begin
 	 case (RAL[3:1])
 	   RKCS:		// Control/Status
@@ -334,137 +330,266 @@ module rkv11
 	 endcase // case (RAL[3:1])
       end
 
-      else if (init) begin
-	 { ID, DPL, DRU, SIN, SOK, DRY, RWS_RDY, WPS } <= 0;
-	 { DRE, OVR, WLO, SKE, PGE, NXM, DLT, TE, NXD, NXC, NXS, CSE, WCE } <= 0;
-	 { SCP, INH_BA, FMT, SSE, RDY, IDE, FUNC, GO } <= 0;
-	 WC <= 0;
-	 WC_zero <= 0;
-	 RK_BAR <= 0;
-	 { DR_SEL, CYL_ADD, SUR, SA } <= 0;
-	 protect <= 0;
-	 dma_write <= 0;
-	 dma_read <= 0;
-	 block_count <= 0;
-	 RDY <= 1;
-	 rk_write_count <= 0;	// testing !!!
-	 sd_write_count <= 0;
-	 rk_read_count <= 0;
-	 sd_read_count <= 0;
-      end
+      // the main RK11 state machine
+      if (RINIT)
+	set_state(INIT);
+      else
+	case (1'b1)
+	  state[INIT]:
+	    begin
+	       { ID, DPL, DRU, SIN, SOK, DRY, RWS_RDY, WPS } <= 0;
+	       { SCP, INH_BA, FMT, SSE, IDE, FUNC, GO } <= 0;
+	       WC <= 0;
+	       WC_zero <= 0;
+	       RK_BAR <= 0;
+	       { DR_SEL, CYL_ADD, SUR, SA } <= 0;
+	       { DRE, OVR, WLO, SKE, PGE, NXM, DLT, TE, NXD, NXC, NXS, CSE, WCE } <= 0;
+	       protect <= 0;
+	       dma_write <= 0;
+	       dma_read <= 0;
+	       saddr <= 0;
+	       sector_done <= 0;
+	       set_state(READY);
+	    end
 
-      // handle DMA cycles
-      else if (dma_read || dma_write) begin
-	 if (dma_complete) begin
-	    // increment the various counters
-	    if (!INH_BA)
-	      RK_BAR <= RK_BAR + 1;
-	    { block_count, saddr } <= { block_count, saddr } + 1;
-	    { WC_zero, WC} <= WC + 1;
-	 end // if (dma_complete)
+	  state[READY]:
+	    begin
+	       RDY <= 1;	// the RK11 is ready for commands
 
-	 // kick the storage device to read or write a block
-	 // I'm not sure this really works if the write FIFO is larger than two blocks and
-	 // block_count is ever greater than 1  !!!
-	 else if (block_count != 0) begin
-	    if (sd_ready) begin
-	       sd_lba <= lba;	// set the lba from the current disk address
-	       if (dma_read) begin
-		  sd_write <= 1; // tell the storage device to start writing
-		  sd_ready_wait <= 1; // flag that we're waiting for the storage device to read the command
-	       end else if (dma_write) begin
-		  // reading is a little different from writing because when WC rolls to 0 we're
-		  // really done while in writing we still have a FIFO with a block of data that
-		  // needs to go.
-		  if (WC_zero)
-		    block_count <= 0;
-		  else begin
-		     sd_read <= 1; // tell the storage device to start reading
-		     sd_ready_wait <= 1; // flag that we're waiting for the storage device to read the command
-		  end
+	       // initiate a command
+	       if (GO) begin
+		  GO <= 0;
+		  WC_zero <= 0;
+
+		  case (FUNC)
+		    CONTROL_RESET:
+		      set_state(INIT);
+		    
+		    WRITE: 
+		      begin
+			 // !!! need to check drive ready and write protect
+			 dma_read <= 1;
+			 saddr <= 0;
+			 sector_done <= 0;
+			 set_state(WRITE_LOOP);
+		      end
+		    READ:
+		      begin
+			 // !!! need to check drive ready
+			 dma_write <= 1;
+			 saddr <= 0;
+			 sector_done <= 0;
+			 sd_lba <= lba;
+			 sd_read <= 1; // start the first read from the storage device
+			 set_state(READ_START);
+		      end
+
+		    // gotta figure these out !!!
+		    WRITE_CHECK:	set_state(CMD_DONE);
+		    SEEK:		set_state(CMD_DONE);
+		    READ_CHECK:		set_state(CMD_DONE);
+		    DRIVE_RESET:	set_state(CMD_DONE);
+
+		    WRITE_LOCK:
+		      begin
+			 protect[DR_SEL] <= 1;
+			 set_state(CMD_DONE);
+		      end
+		  endcase // case (FUNC)
+	       end else
+		 set_state(READY);
+	    end
+
+	  state[WRITE_LOOP]:
+	    begin
+	       // on each DMA cycle, increment the counters and write the data to the FIFO
+	       if (dma_complete) begin
+		  dma_step();
+		  sector_incr();
+		  sd_write_enable <= 1;
 	       end
-	    end else if (sd_ready_wait) begin
-	       // now that the command is started, increment the disk address
-	       { CYL_ADD, SUR, SA } <= { next_cylinder, next_surface, next_sector };
-	       block_count <= block_count - 1;
-	       if (dma_read)	// testing !!!
-		 sd_write_count <= sd_write_count + 1;
-	       else if (dma_write)
-		 sd_read_count <= sd_read_count + 1;
-	    end
-	 end // if (block_count != 0)
 
-`ifdef NOTDEF
-	 // handle partial block reads and writes
-	 else if (WC_zero && (block_count == 0) && (saddr != 0)) begin
-	    if (dma_read) begin
-	       // fill out the block in the FIFO with zeros
-	       sd_write_enable <= 1;
-	       sd_write_zero <= 1;
-	       { block_count, saddr } <= { block_count, saddr } + 1;
-	    end else if (dma_write && !sd_read_empty) begin
-	       // drain the FIFO until saddr rolls over and we're done
-	       sd_read_enable <= 1;
-	       { block_count, saddr } <= { block_count, saddr } + 1;
-	    end
-	 end
-`endif //  `ifdef NOTDEF
-	 
-	 // If all the words have been DMAd (WC_zero) and all the SD read/write commands have
-	 // been issued (block_count == 0) and the SD is ready, then we're done.  Also done if
-	 // there's a NXM.
-	 else if ((WC_zero && (block_count == 0) && sd_ready)
-		  || dma_nxm) begin
-	    RDY <= 1;
-	    dma_read <= 0;
-	    dma_write <= 0;
-	    block_count <= 0;
-	    if (dma_nxm)
-	      NXM <= 1;
-	    if (IDE)
-	      interrupt_request <= 1;
-	 end
-      end
+	       // Need a NXM check in here and then a way to flush the write FIFO !!!
 
-      // initiate a command
-      else if (GO) begin
-	 GO <= 0;
-	 case (FUNC)
-//	   CONTROL_RESET: handled by the init signal
-	   WRITE: 
-	     begin
-		// !!! need to check drive ready
-		sd_lba <= lba;
-		dma_read <= 1;
-		saddr <= 0;
-		block_count <= 0;
-		WC_zero <= 0;
-		RDY <= 0;
-		rk_write_count <= rk_write_count + 1; // testing !!!
-	     end
-	   READ:
-	     begin
-		// !!! need to check drive ready
-		sd_lba <= lba;
-		dma_write <= 1;
-		saddr <= 0;
-		block_count <= 1; // this will trigger the first read from the storage device
-		WC_zero <= 0;
-		RDY <= 0;
-		rk_read_count <= rk_read_count + 1; // testing !!!
-	     end
+	       if (sector_done) begin
+		  if (sd_ready) begin
+		     // when a sector finishes, issue the write command to the storage device
+		     sd_lba <= lba;
+		     sd_write <= 1;
+		     set_state(WRITE_WAIT);
+		  end else
+		    // if the storage device isn't ready, just loop until it is.  sector_done
+		    // being set will pause DMA for now.
+		    set_state(WRITE_LOOP);
+	       end else begin
+		  if (WC_zero) begin
+		     // the sector's not done but we're out of words to transfer, fill out the
+		     // sector with zeros
+		     sd_write_zero <= 1;
+		     sd_write_enable <= 1;
+		     sector_incr();
+		  end
+		  set_state(WRITE_LOOP);
+	       end
+	    end
+
+	  state[WRITE_WAIT]:
+	    if (sd_ready) begin
+	       // wait for the storage device to see the write command
+	       sd_write <= 1;
+	       set_state(WRITE_WAIT);
+	    end else begin
+	       // once the storage device accepts the command, bump the disk address
+	       sector_next();
 `ifdef NOTDEF
-	   // gotta figure these out !!!
-	   WRITE_CHECK: ;
-	   SEEK: ;
-	   READ_CHECK: ;
-	   DRIVE_RESET: ;
+	       // this section starts the next DMA before the storage device writes are
+	       // completed.  It should work but it doesn't (for certain values of partial block
+	       // writes) and letting the storage device finish makes it work.  current
+	       // suspicion is something weird is going on in the FIFOs but, for now, we're
+	       // leaving it as is.  !!!
+
+	       if (WC_zero)
+		 // a sector is finished, the words are all transferred, then we're done.
+		 set_state(WRITE_WAIT_DONE);
+	       else begin
+		  // the sector's done but more words to go
+		  sector_done <= 0;
+		  set_state(WRITE_LOOP);
+	       end
+`else
+	       set_state(WRITE_WAIT_DONE); // testing !!! wait for the SD to finish before restarting DMA
 `endif
-	   WRITE_LOCK:
-	     protect[DR_SEL] <= 1;
-	 endcase // case (FUNC)
-      end
+	    end // else: !if(sd_ready)
 
+	  state[WRITE_WAIT_DONE]:
+	    // wait for the write command to finish.  eventually I need to check for write
+	    // errors here
+	    if (sd_ready)
+	      if (WC_zero)
+		set_state(CMD_DONE);
+	      else begin
+		 sector_done <= 0;
+		 set_state(WRITE_LOOP);
+	      end
+	    else
+	      set_state(WRITE_WAIT_DONE);
+
+	  state[READ_START]:
+	    if (sd_ready) begin
+	       sd_read <= 1;
+	       set_state(READ_START);
+	    end else begin
+	       // busy wait until the storage device sees the command, then increment the disk address
+	       sector_next();
+	       set_state(READ_LOOP);
+	    end
+
+	  state[READ_LOOP]:
+	    begin
+	       // whenever the DMA engine goes to read data, get it out of the FIFO
+	       if (dma_read_pulse)
+		 sd_read_enable <= 1;
+
+	       if (dma_complete) begin
+		  dma_step();
+		  sector_incr();
+	       end
+
+	       // If we see a NXM, then just abandon everything, flush the FIFO, and we're done
+	       if (dma_nxm)
+		 set_state(READ_FLUSH);
+	       else if (sector_done) // Four cases of { sector_done, WC_zero } ...
+		 if (WC_zero)
+		   // if saddr and WC hit 0 together, then we're done
+		   set_state(CMD_DONE);
+		 else begin
+		    if (sd_ready) begin
+		       // saddr has rolled over but there are still words to read so read the next
+		       // block from the storage device
+		       sd_lba <= lba;
+		       sd_read <= 1;
+		       sector_done <= 0;
+		       set_state(READ_START);
+		    end else
+		      set_state(READ_LOOP);
+		 end
+	       else
+		 if (WC_zero)
+		   // all the words are transfered to memory but we have more data in the sector
+		   // so we need to flush out the FIFO
+		   set_state(READ_FLUSH);
+		 else
+		   // WC and saddr are still non-zero so just keep going
+		   set_state(READ_LOOP);
+	    end
+
+	  state[READ_FLUSH]:
+	    if (~sd_ready)	// wait for the storage device to finish reading
+	      set_state(READ_FLUSH);
+	    else if (sector_done)
+	      set_state(CMD_DONE);
+	    else begin
+	       sd_read_enable <= 1;
+	       sector_incr();
+	       set_state(READ_FLUSH);
+	    end
+
+	  state[CMD_DONE]:
+	    begin
+	       dma_write <= 0;
+	       dma_read <= 0;
+	       if (dma_nxm)
+		 NXM <= 1;
+	       if (IDE)
+		 interrupt_request <= 1;
+	       set_state(READY);
+	    end
+	  
+
+	endcase // case (1'b1)
+   end // always @ (posedge clk)
+   
+
+   // Indicator Panel - The RK11-C has connectors for an indicator panel but we've never been
+   // able to find any examples of them or pictures.  Our supposition is that DEC, in fact,
+   // never made any RK11 indicator panels.  From the print set and that connector, we could
+   // determine the light layout that DEC used (or intended) but we've gone our own way here.
+   wire [7:0] drive_ready;
+   wire [7:0] drive_read;
+   wire [7:0] drive_write;
+
+   genvar     i;
+   for (i = 0; i < 8; i=i+1) begin
+      assign drive_ready[i] = (DR_SEL == i) ? sd_ready & sd_loaded[i] : sd_loaded[i];
+      assign drive_read[i] = (DR_SEL == i) ? dma_write : 0;
+      assign drive_write[i] = (DR_SEL == i) ? dma_read : 0;
    end
+
+`define SHOW_STATE 1
+   indicator
+     rk11_ip(ip_clk, ip_latch, ip_out,
+	     { 1'b0, 1'b0, mode == `MODE_Q22, mode == `MODE_Q18, 1'b0, 3'b0, interrupt_request,
+	       1'b0, dma_read_req, dma_write_req, 1'b0, 1'b0, RK_BAR, 1'b0 },
+	     { 2'b01, 2'b01, 1'b0, DR_SEL, 8'b0, CYL_ADD, 7'b0, SUR, SA },
+	     { state, 1'b0, DRE, OVR, WLO, SKE, NXM, NXD, NXC, NXS, CSE, WCE,
+	       1'b0, ERROR, HE, INH_BA, SSE, RDY, IDE, FUNC, GO, 1'b0 },
+	     {
+`ifdef SHOW_STATE
+	      sector_done, 1'b0, WC_zero,
+	      WC, saddr,
+`else
+	      3'b0,
+	      drive_ready[7], write_protect_flag[7], drive_read[7], drive_write[7],
+	      drive_ready[6], write_protect_flag[6], drive_read[6], drive_write[6],
+	      drive_ready[5], write_protect_flag[5], drive_read[5], drive_write[5],
+	      drive_ready[4], write_protect_flag[4], drive_read[4], drive_write[4],
+	      drive_ready[3], write_protect_flag[3], drive_read[3], drive_write[3],
+	      drive_ready[2], write_protect_flag[2], drive_read[2], drive_write[2],
+`endif
+	      drive_ready[1], write_protect_flag[1], drive_read[1], drive_write[1],
+	      drive_ready[0], write_protect_flag[0], drive_read[0], drive_write[0],
+	      1'b0 }
+	     );
+
 
 endmodule // rkv11
