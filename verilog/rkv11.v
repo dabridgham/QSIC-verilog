@@ -441,7 +441,8 @@ module rkv11
 	    end else begin
 	       // once the storage device accepts the command, bump the disk address
 	       sector_next();
-`ifdef NOTDEF
+`define OVERLAP 1
+`ifdef OVERLAP
 	       // this section starts the next DMA before the storage device writes are
 	       // completed.  It should work but it doesn't (for certain values of partial block
 	       // writes) and letting the storage device finish makes it work.  current
@@ -465,12 +466,16 @@ module rkv11
 	    // wait for the write command to finish.  eventually I need to check for write
 	    // errors here
 	    if (sd_ready)
+`ifdef OVERLAP
 	      if (WC_zero)
 		set_state(CMD_DONE);
 	      else begin
 		 sector_done <= 0;
 		 set_state(WRITE_LOOP);
 	      end
+`else
+              set_state(CMD_DONE);
+`endif
 	    else
 	      set_state(WRITE_WAIT_DONE);
 
