@@ -18,8 +18,8 @@ tb_dma.check: $(INCLUDES) $(DMA_FILES)
 tb_bg.check: $(BG_FILES)
 	iverilog -tnull $(BG_FILES)
 
-rkv11.check: rkv11.v disk-uc.v qreg.v $(INCLUDES)
-	iverilog -tnull $(ICOPTS) rkv11.v disk-uc.v $(INCLUDES)
+rkv11.check: rkv11.v indicator.v $(INCLUDES)
+	iverilog -tnull $(ICOPTS) rkv11.v indicator.v $(INCLUDES)
 
 aFifo.check: aFifo.v GrayCounter.v
 	iverilog -tnull $(ICOPTS) aFifo.v GrayCounter.v
