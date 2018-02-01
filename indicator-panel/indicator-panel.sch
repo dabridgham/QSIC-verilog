@@ -36,7 +36,7 @@ $Descr USLetter 8500 11000 portrait
 encoding utf-8
 Sheet 1 1
 Title "Indicator Panel"
-Date "2016-02-23"
+Date "2018-01-27"
 Rev "2.0"
 Comp "Vintage Computer Engineering"
 Comment1 ""
