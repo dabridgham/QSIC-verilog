@@ -7,6 +7,9 @@ push: all
 inlay-qbus-2-poster.ps: inlay-qbus-2.ps
 	poster -m letter -s 1 -o $@ $<
 
+inlay-rp11-d-2-poster.ps: inlay-rp11-d-2.ps
+	poster -m letter -s 1 -o $@ $<
+
 .SUFFIXES: .svg .pdf .ps
 
 .svg.pdf:
