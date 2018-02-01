@@ -4,7 +4,7 @@
 // handles bus acquisition, managing the data transfers, and handing the bus back.  The actual
 // data paths are elsewhere.
 //
-// Copyright 2016-2017 Noel Chiappa and David Bridgham
+// Copyright 2016-2018 Noel Chiappa and David Bridgham
 
 `timescale 1 ns / 1 ns
 
@@ -217,16 +217,16 @@ module qmaster2908
 
 	  state [WRITE_START]:
 	    begin
-	       timeout_next = 1;    // !!! extra time for the ribbon cable
+	       timeout_next = 2;    // !!! extra time for the ribbon cable (from 1 to 2 for testing !!!)
 	       assert_data_set = 1; // start the data towards the Am2908s
 	       set_state(WRITE_SETUP);
 	    end
 
 	   state[WRITE_SETUP]:
 	     if (timeout) begin
-		DALst_set = 1;	    // strobe the data into the Am2908s
-		DALbe_set = 1;	    // keep sending on the bus, but data now
-		timeout_next = 1;  // 100ns from data to TDOUT
+		DALst_set = 1;	  // strobe the data into the Am2908s
+		DALbe_set = 1;	  // keep sending on the bus, but data now
+		timeout_next = 1; // 100ns from data to TDOUT (from 1 to 2 for testing !!!)
 		set_state(WRITE);
 	     end else
 	       set_state(WRITE_SETUP);
