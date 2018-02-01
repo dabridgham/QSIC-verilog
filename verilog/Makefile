@@ -83,12 +83,15 @@ test.sd: sd.vvp
 	./sd.vvp $(SIMOPTS)
 sd.vvp: Makefile sd.v sd.hex sd-crc.v
 	iverilog $(ICOPTS) -o sd.vvp sd.v sd-crc.v
-
 sd.check: sd.v sd-crc.v
 	iverilog -tnull $(ICOPTS) sd.v sd-crc.v
 sd.hex: sd.asm
 	uas sd-asm.def sd.asm sd.hex sd.lst
 
+test.rd: ramdisk-block.vvp
+	./ramdisk-block.vvp $(SIMOPTS)
+ramdisk-block.vvp: Makefile ramdisk-block.v
+	iverilog $(ICOPTS) -o ramdisk-block.vvp ramdisk-block.v
 
 .SUFFIXES: .v .check
 

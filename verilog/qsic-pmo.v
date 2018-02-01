@@ -204,7 +204,7 @@ module pmo
 
 //`define SW_REG 1
 `define RKV11 1
-`define SD_CARD 1		// commenting this out switches over to a RAM Disk
+//`define SD_CARD 1		// commenting this out switches over to a RAM Disk
 
 `ifdef SW_REG
    reg [17:0]  sr_addr = 18'o777570;
@@ -381,31 +381,6 @@ module pmo
       .empty(sd0_write_empty),
       .wr_rst_busy(sd0_write_rst_write_busy),
       .rd_rst_busy(sd0_write_rst_read_busy));
-
- `ifdef NOTDEF
-   aFifo #(.DATA_WIDTH(16), .ADDRESS_WIDTH(9)) sd_read_fifo
-     (.Data_out(sd_read_data),
-      .Empty_out(sd_read_empty),
-      .ReadEn_in(sd_read_enable),
-      .RClk(clk20),
-      .Data_in(sd0_read_data),
-      .Full_out(sd0_full),
-      .WriteEn_in(sd0_read_data_enable),
-      .WClk(sd0_fifo_clk),
-      .Clear_in(RINIT));
-
-   wire        sd0_empty;	// the SD card ignores this
-   aFifo #(.DATA_WIDTH(16), .ADDRESS_WIDTH(9)) sd_write_fifo
-     (.Data_out(sd0_write_data),
-      .Empty_out(sd0_empty),
-      .ReadEn_in(sd0_write_data_enable),
-      .RClk(sd0_fifo_clk),
-      .Data_in(sd_write_data),
-      .Full_out(sd_write_full),
-      .WriteEn_in(sd_write_enable),
-      .WClk(clk20),
-      .Clear_in(RINIT));
- `endif //  `ifdef NOTDEF
    
 `else  // RAM Disk
    //
@@ -440,28 +415,27 @@ module pmo
    assign rd_write = sd_write;
    
    wire        rd_full;	// the RAM Disk ignores this
-   aFifo #(.DATA_WIDTH(16), .ADDRESS_WIDTH(9)) rd_read_fifo
-     (.Data_out(sd_read_data),
-      .Empty_out(sd_read_empty),
-      .ReadEn_in(sd_read_enable),
-      .RClk(clk20),
-      .Data_in(rd_read_data),
-      .Full_out(rd_full),
-      .WriteEn_in(rd_read_data_enable),
-      .WClk(rd_fifo_clk),
-      .Clear_in(RINIT));
+   fifo_generator_1 rd_read_fifo
+     (.rst(RINIT),
+      .wr_clk(rd_fifo_clk),
+      .rd_clk(clk20),
+      .din(rd_read_data),
+      .wr_en(rd_read_data_enable),
+      .rd_en(sd_read_enable),
+      .dout(sd_read_data),
+      .full(rd_full),
+      .empty(sd_read_empty));
 
-//   wire        rd_empty;	// the RAM Disk ignores this
-   aFifo #(.DATA_WIDTH(16), .ADDRESS_WIDTH(9)) rd_write_fifo
-     (.Data_out(rd_write_data),
-      .Empty_out(rd_write_fifo_empty),
-      .ReadEn_in(rd_write_data_enable),
-      .RClk(rd_fifo_clk),
-      .Data_in(sd_write_data),
-      .Full_out(sd_write_full),
-      .WriteEn_in(sd_write_enable),
-      .WClk(clk20),
-      .Clear_in(RINIT));
+   fifo_generator_1 rd_write_fifo
+     (.rst(RINIT),
+      .wr_clk(clk20),
+      .rd_clk(rd_fifo_clk),
+      .din(sd_write_data),
+      .wr_en(sd_write_enable),
+      .rd_en(rd_write_data_enable),
+      .dout(rd_write_data),
+      .full(sd_write_full),
+      .empty(rd_write_fifo_empty));
 
 `endif // !`ifdef SD_CARD
    
@@ -498,7 +472,11 @@ module pmo
    assign ip_latch = ~ip_done;
    assign ip_clk = ~clk100k;
    wire 	panel_out;
-   assign ip_out = ~rk_ip_out;  // panel_out;
+`ifdef NOTDEF
+   assign ip_out = ~rk_ip_out;
+`else
+   assign ip_out = ~panel_out;
+`endif
    assign rk_ip_latch = ip_done;
    
    reg [7:0] 	ip_count = 0;
@@ -512,7 +490,6 @@ module pmo
    end
    
 //`define LAMPTEST 1
-//`define TESTING 1
    indicator
      qsic_ip(clk100k, ip_done, panel_out,
 `ifdef LAMPTEST
@@ -526,7 +503,7 @@ module pmo
 	       sd0_cd, sd0_v1, sd0_v2, sd0_SC, sd0_HC, sd0_ready, sd0_read, sd0_write, 1'b0 },
 	     { read_cycle, bs7_reg, addr_reg, 3'b0, 6'b0, rk_dma_read, rk_dma_write, 1'b0 },
  `else  // RAM Disk
-	     { DALtx, 1'b0, ZDAL, 3'b0, 9'b0 },
+	     { DALtx, 1'b0, ZDAL, rd_debug[11:0] },
 	     { read_cycle, bs7_reg, addr_reg, 3'b0, 9'b0 },
  `endif
  `ifdef SD_CARD
@@ -540,7 +517,7 @@ module pmo
 	       1'b0, RSACK, RDMGI, RDMR, 1'b0, RINIT, 1'b0, RDCOK, RPOK, rd_debug[13:0] },
 	     { DALtx & ZWTBT, DALtx & ZBS7, TSYNC, TDIN, TDOUT, TRPLY, TREF, 1'b0,
 	       TIAKO, TIRQ7, TIRQ6, TIRQ5, TIRQ4, 1'b0, TSACK, TDMGO, TDMR, 1'b0, 
-	       2'b0, rd_read_data }
+	       2'b0, rd_write_data }
 `endif
 `endif
 	     );
