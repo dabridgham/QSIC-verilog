@@ -14,7 +14,7 @@ module ramdisk_block
     input 	      reset, 
 
    // connection to the disk controller
-    output reg 	      device_ready, // ready to accept a read or write command
+    output reg 	      command_ready, // ready to accept a read or write command
     input 	      read_cmd,
     input 	      write_cmd,
     input [31:0]      block_address,
@@ -65,7 +65,7 @@ module ramdisk_block
       writing <= 0;
       mem_read <= 0;
       mem_write <= 0;
-      device_ready <= 0;
+      command_ready <= 0;
       
       // the ordering of the cases here most definitely matters
       case (1'b1)
@@ -120,7 +120,7 @@ module ramdisk_block
 	     write_data_enable <= 1; // read the first word out of the FIFO
 	  end
 	default:
-	  device_ready <= 1;	// if we're not doing anything else, then we're ready for a command
+	  command_ready <= 1;	// if we're not doing anything else, then we're ready for a command
       endcase // case (1'b1)
       
    end // always @ (posedge ramclk)
@@ -141,7 +141,7 @@ module RD_test();
      #25 clk <= ~clk; // 20MHz clock (50ns cycle)
    
    reg reset, read_cmd, write_cmd, write_fifo_empty;
-   wire device_ready, fifo_clk, write_data_enable, read_data_enable;
+   wire command_ready, fifo_clk, write_data_enable, read_data_enable;
    reg [31:0] block_address = 0;
    reg [15:0] write_data = 16'o177000;
    wire [15:0] read_data;
@@ -151,7 +151,7 @@ module RD_test();
 				// ~32 cylinders because of the amount of Block RAM)
    RD0 (.clk(clk),
 	.reset(reset),
- 	.device_ready(device_ready),
+ 	.command_ready(command_ready),
 	.read_cmd(read_cmd),
 	.write_cmd(write_cmd),
 	.block_address(block_address),
@@ -223,55 +223,55 @@ module RD_test();
       // Write block 0
       block_address <= 0;
       #1000 write_cmd <= 1;
-      while (device_ready)
+      while (command_ready)
 	#50;
       #50 write_cmd <= 0;
-      while (!device_ready)
+      while (!command_ready)
 	#100;
 
       // Read block 0
       block_address <= 0;
       #100 read_cmd <= 1;
-      while (device_ready)
+      while (command_ready)
 	#50;
       #50 read_cmd <= 0;
-      while (!device_ready)
+      while (!command_ready)
 	#100;
 
       // Write block 1
       block_address <= 1;
       #1000 write_cmd <= 1;
-      while (device_ready)
+      while (command_ready)
 	#50;
       #50 write_cmd <= 0;
-      while (!device_ready)
+      while (!command_ready)
 	#100;
 
       // Write block 2
       block_address <= 2;
       #1000 write_cmd <= 1;
-      while (device_ready)
+      while (command_ready)
 	#50;
       #50 write_cmd <= 0;
-      while (!device_ready)
+      while (!command_ready)
 	#100;
 
       // Read block 1
       block_address <= 1;
       #100 read_cmd <= 1;
-      while (device_ready)
+      while (command_ready)
 	#50;
       #50 read_cmd <= 0;
-      while (!device_ready)
+      while (!command_ready)
 	#100;
 
       // Read block 2
       block_address <= 2;
       #100 read_cmd <= 1;
-      while (device_ready)
+      while (command_ready)
 	#50;
       #50 read_cmd <= 0;
-      while (!device_ready)
+      while (!command_ready)
 	#100;
 
       #100 $finish_and_return(0);

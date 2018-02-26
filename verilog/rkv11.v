@@ -66,14 +66,14 @@ module rkv11
 
    localparam RKDS = 3'b000;	// Drive Status
    reg [2:0] ID;		// Drive ID [15..13]
-   reg 	     DPL;		// Drive Power Low [12]
+   wire      DPL = 0;		// Drive Power Low [12]
    wire      RK05 = 1;		// RK05 [11]
-   reg 	     DRU;		// Drive Unsafe [10]
-   reg 	     SIN;		// Seek Incomplete [9]
-   reg 	     SOK;		// Sector Counter OK [8]
-   reg 	     DRY;		// Drive Ready [7]
-   reg 	     RWS_RDY;		// Read/Write/Seek Ready [6]
-   reg 	     WPS;		// Write Protect Status [5]
+   wire      DRU = 0;		// Drive Unsafe [10]
+   wire      SIN = 0;		// Seek Incomplete [9]
+   wire      SOK = 1;		// Sector Counter OK [8]
+   wire      DRY;		// Drive Ready [7]
+   wire	     RWS_RDY;		// Read/Write/Seek Ready [6]
+   wire      WPS;		// Write Protect Status [5]
    wire      SCeqSA = (SC == SA); // Sector Counter = Sector Address [4]
    reg [3:0] SC = 0;		  // Sector Counter [3..0]
 
@@ -184,6 +184,9 @@ module rkv11
    wire [7:0] write_protect_flag = sd_write_protect | protect;
    reg [7:0]  protect = 0;
 
+   assign WPS = protect[DR_SEL];
+   assign DRY = sd_loaded[DR_SEL];
+   assign RWS_RDY = sd_loaded[DR_SEL] & sd_ready;
 
    //
    // QBUS Interface
@@ -337,7 +340,7 @@ module rkv11
 	case (1'b1)
 	  state[INIT]:
 	    begin
-	       { ID, DPL, DRU, SIN, SOK, DRY, RWS_RDY, WPS } <= 0;
+	       ID <= 0;
 	       { SCP, INH_BA, FMT, SSE, IDE, FUNC, GO } <= 0;
 	       WC <= 0;
 	       WC_zero <= 0;
@@ -547,6 +550,7 @@ module rkv11
 		 NXM <= 1;
 	       if (IDE)
 		 interrupt_request <= 1;
+	       ID <= DR_SEL;
 	       set_state(READY);
 	    end
 	  
@@ -556,8 +560,8 @@ module rkv11
    
 
    // Indicator Panel - The RK11-C has connectors for an indicator panel but we've never been
-   // able to find any examples of them or pictures.  Our supposition is that DEC, in fact,
-   // never made any RK11 indicator panels.  From the print set and that connector, we could
+   // able to find any examples of them or even pictures.  Our supposition is that DEC, in fact,
+   // never made any RK11 indicator panels.  From the print set and those connectors, we could
    // determine the light layout that DEC used (or intended) but we've gone our own way here.
    wire [7:0] drive_ready;
    wire [7:0] drive_read;

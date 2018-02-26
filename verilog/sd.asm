@@ -3,7 +3,7 @@
 ;;; Copyright 2017 Noel Chiappa and David Bridgham
 	
 
-start:	clr	hispd|hicap|vers2|rdy|csel|time
+start:	clr	hispd|hicap|vers2|devrdy|cmdrdy|csel|time
 	sete	0x01
 	nop			; do I need longer to let CS settle?
 	nocard	.		; wait for a card to appear
@@ -161,8 +161,7 @@ lowcap:	byte	.		; don't care
 	;; removed
 	
 idle:	sete	0x40
-	set	rdy|hispd
-;	set	rdy
+	set	devrdy|cmdrdy|hispd
 	sync		     ; delay to let Card Detect settle
 	sync
 	sync
@@ -177,7 +176,7 @@ idloop:	read	bread
 	;; 
 	;; Write out a block of data
 	;; 
-bwrite:	clr	rdy
+bwrite:	clr	cmdrdy
 	sete	0x41
 	sync,reset,imm	0x58	; CMD24 WRITE_BLOCK	
 	sync,crc7,addr3		; MSB of disk address
@@ -244,7 +243,7 @@ wrtmo:	clr	csel
 	;;
 	;; Read in a block of data
 	;;
-bread:	clr	rdy
+bread:	clr	cmdrdy
 	sete	0x21
 	sync,reset,imm	0x51	; CMD17 READ_SINGLE_BLOCK
 	sync,crc7,addr3		; MSB of disk address

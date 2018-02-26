@@ -73,6 +73,31 @@ module pmo
    inout [3:0] 	sd0_sddat
    );
 
+   //
+   // Wire up LEDs for testing
+   //
+
+   // blink some LEDs so we can see it's doing something
+
+   // divide clock down to human visible speeds
+   reg [23:0] 	count = 0;    
+   always @(posedge clk20)
+     count = count + 1;
+        
+   assign led_3_2 = count[21];
+   assign led_3_4 = rk_match;
+//   assign led_3_6 = 0;
+//   assign led_3_8 = TSYNC;
+   assign led_3_9 = sRDIN;
+//   assign led_3_10 = TDMR;
+
+   assign tp_b30 = ip_latch;
+
+   //  get an approx 100kHz clock for the indicator panels
+   wire 	clk100k = count[7];
+   
+
+
    // Turn the 48MHz clock into a 20MHz clock that will be used as the general QBUS clock
    // throughout the QSIC
    wire 	clk20, reset, locked;
@@ -204,7 +229,7 @@ module pmo
 
 //`define SW_REG 1
 `define RKV11 1
-//`define SD_CARD 1		// commenting this out switches over to a RAM Disk
+`define SD_CARD 1		// commenting this out switches over to a RAM Disk
 
 `ifdef SW_REG
    reg [17:0]  sr_addr = 18'o777570;
@@ -232,7 +257,7 @@ module pmo
    wire [12:0] sd_lba;		     // linear block address
    wire        sd_read;		     // initiate a block read
    wire        sd_write;	     // initiate a block write
-   wire        sd_ready;	     // selected disk is ready for a command
+   wire        sd_cmd_ready;	     // selected disk is ready for a command
    wire [15:0] sd_write_data;
    wire        sd_write_enable;	  // enables writing data to the write FIFO
    wire        sd_write_full;	  // write FIFO is full
@@ -240,7 +265,6 @@ module pmo
    wire        sd_read_enable;	  // enables reading data from the read FIFO
    wire        sd_read_empty;	  // no data in the read FIFO
    
-
    qmaster2908 
      rk_master(clk20, RSYNC, RRPLY, RDMR, RSACK, RINIT, RDMGI, sRDMGI, RREF,
 	       TSYNC, rk_wtbt, TDIN, TDOUT, TDMR, TSACK, TDMGO,
@@ -256,7 +280,8 @@ module pmo
 	       rk_match, rk_assert_vector, sRDOUTpulse, rk_read_pulse,
 	       rk_dma_read, rk_dma_write, rk_bus_master, rk_dma_complete, rk_nxm, 
 	       rk_irq, clk100k, rk_ip_latch, rk_ip_out,
-	       sd_loaded, sd_write_protect, sd_dev_sel, sd_lba, sd_read, sd_write, sd_ready,
+	       sd_loaded, sd_write_protect, sd_dev_sel, sd_lba, sd_read, sd_write, 
+	       sd_cmd_ready,
 	       sd_write_data, sd_write_enable, sd_write_full,
 	       sd_read_data, sd_read_enable, sd_read_empty);
 `endif
@@ -320,14 +345,14 @@ module pmo
    wire [31:0] sd0_lba;
    wire [15:0] sd0_write_data;
    wire        sd0_write_data_enable;
-   wire        sd0_ready, sd0_cd, sd0_v1, sd0_v2, sd0_SC, sd0_HC;
+   wire        sd0_dev_ready, sd0_cmd_ready, sd0_cd, sd0_v1, sd0_v2, sd0_SC, sd0_HC;
    wire [7:0]  sd0_err;
    wire [15:0] sd0_read_data;
    wire        sd0_read_data_enable;
    wire        sd0_fifo_clk;
    wire [35:0] sd0_debug;
    wire [7:0]  sd0_d8;
-   SD_spi SD0(.clk(clk20), .reset(0), .device_ready(sd0_ready),
+   SD_spi SD0(.clk(clk20), .reset(0), .device_ready(sd0_dev_ready), .cmd_ready(sd0_cmd_ready),
 	      .read_cmd(sd0_read), .write_cmd(sd0_write),
 	      .block_address(sd0_lba),
     	      .fifo_clk(sd0_fifo_clk),
@@ -350,7 +375,8 @@ module pmo
    // 16GB: h01ff
    // 32GB: h03ff
    assign sd0_lba = { 16'h0002, sd_dev_sel, sd_lba };
-   assign sd_ready = sd0_ready;
+//   assign sd_dev_ready = sd0_dev_ready;  // sd0_dev_ready needs to change sd_loaded[]
+   assign sd_cmd_ready = sd0_cmd_ready;
    assign sd0_read = sd_read;
    assign sd0_write = sd_write;
 
@@ -365,8 +391,8 @@ module pmo
       .dout(sd_read_data),
       .full(sd0_read_full),
       .empty(sd_read_empty),
-      .wr_rst_busy(sd0_rst_write_busy),
-      .rd_rst_busy(sd0_rst_read_busy));
+      .wr_rst_busy(sd0_read_rst_write_busy),
+      .rd_rst_busy(sd0_read_rst_read_busy));
 
    wire sd0_write_empty, sd0_write_rst_write_busy, sd0_write_rst_read_busy; // the SD card ignores these
    fifo_generator_0 sd_write_fifo
@@ -386,7 +412,7 @@ module pmo
    //
    // Interface a Block RAM RAMdisk
    //
-   wire        rd_read, rd_write;
+   wire        rd_read, rd_write, rd_cmd_ready;
    wire [31:0] rd_lba;
    wire [15:0] rd_write_data;
    wire        rd_write_data_enable;
@@ -396,7 +422,7 @@ module pmo
    wire        rd_fifo_clk;
    wire [15:0] rd_debug;
    ramdisk_block #(.BLOCKS(2 * 12 * 32)) // 32 cylinders uses up most of the Block RAM I have
-   RD (.clk(clk20), .reset(RINIT), .device_ready(rd_ready),
+   RD (.clk(clk20), .reset(RINIT), .command_ready(rd_cmd_ready),
        .read_cmd(rd_read), .write_cmd(rd_write),
        .block_address(rd_lba),
        .fifo_clk(rd_fifo_clk),
@@ -410,7 +436,7 @@ module pmo
    // Connect the RK11 to the RAM Disk
 
    assign rd_lba = { 19'b0, sd_lba };
-   assign sd_ready = rd_ready;
+   assign sd_cmd_ready = rd_cmd_ready;
    assign rd_read = sd_read;
    assign rd_write = sd_write;
    
@@ -441,38 +467,15 @@ module pmo
    
 
    //
-   // Wire up LEDs for testing
+   // Indicator Panels
    //
-
-   // blink some LEDs so we can see it's doing something
-
-   // divide clock down to human visible speeds
-   reg [23:0] 	count = 0;    
-   always @(posedge clk20)
-     count = count + 1;
-        
-   assign led_3_2 = count[21];
-   assign led_3_4 = 0;
-//   assign led_3_6 = 0;
-//   assign led_3_8 = TSYNC;
-   assign led_3_9 = TSACK;
-//   assign led_3_10 = TDMR;
-
-   assign tp_b30 = ip_latch;
-
-
-   //
-   // Hook up an indicator panel, now we're blinken lots of lights
-   //
-
-   // first get an approx 100kHz clock
-   wire 	clk100k = count[7];
 
    // panel driver (Are these inverted because I wired the PMo wrong? !!!)
    assign ip_latch = ~ip_done;
    assign ip_clk = ~clk100k;
    wire 	panel_out;
-`ifdef NOTDEF
+`define RKIP
+`ifdef RKIP
    assign ip_out = ~rk_ip_out;
 `else
    assign ip_out = ~panel_out;
@@ -500,7 +503,7 @@ module pmo
 `else
  `ifdef SD_CARD
 	     { DALtx, 1'b0, ZDAL, 3'b0,
-	       sd0_cd, sd0_v1, sd0_v2, sd0_SC, sd0_HC, sd0_ready, sd0_read, sd0_write, 1'b0 },
+	       sd0_cd, sd0_v1, sd0_v2, sd0_SC, sd0_HC, sd0_dev_ready, sd0_read, sd0_write, 1'b0 },
 	     { read_cycle, bs7_reg, addr_reg, 3'b0, 6'b0, rk_dma_read, rk_dma_write, 1'b0 },
  `else  // RAM Disk
 	     { DALtx, 1'b0, ZDAL, rd_debug[11:0] },

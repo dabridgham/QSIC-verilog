@@ -75,7 +75,7 @@ literal	none	0	8	lit	none
 # used with some, but not all, values of that field). 'yes' and 'no' are
 # the acceptable values for this token.
 
-44
+45
 
 wde	uwde	1	no
 rde	urde	1	no
@@ -122,8 +122,9 @@ hispd	literal	0200	no
 hicap	literal	0100	no
 vers2	literal	040	no
 time	literal	020	no
-rdy	literal	010	no
+devrdy	literal	010	no
 csel	literal	04	no
+cmdrdy	literal	02	no
 nop	literal	0	no
 
 .

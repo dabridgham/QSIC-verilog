@@ -66,7 +66,8 @@ module SD_spi
   (
    input 	     clk, // F_PP between 6.4 and 25 MHz
    input 	     reset,
-   output reg 	     device_ready, // ready to accept a read or write command
+   output reg 	     device_ready, // device is ready (card is plugged in and through init)
+   output reg 	     cmd_ready,	   // ready to accept a read or write command (not busy)
    input 	     read_cmd,
    input 	     write_cmd,
    input [31:0]      block_address,
@@ -152,9 +153,9 @@ module SD_spi
    wire 	literal_high_capacity = literal[6];
    wire 	literal_version_2 = literal[5];
    wire 	literal_timeout = literal[4];
-   wire 	literal_ready = literal[3];
+   wire 	literal_device_ready = literal[3];
    wire 	literal_cs = literal[2];
-
+   wire 	literal_cmd_ready = literal[1];
 
    
    // Generate the F_OD clock used in Card Identification Mode by dividing clk by 64.  This
@@ -169,7 +170,8 @@ module SD_spi
    wire 	clk400k = clk_div[5];
  `endif
    // normally this would be just clk, but that's causing problems so let's slow it down !!!
-   wire 	clk_fast = clk_div[2];
+//   wire 	clk_fast = clk_div[0];
+   wire 	clk_fast = clk;
 
    // control which clock goes to the SD card
    reg 		fpp = 0;
@@ -241,16 +243,18 @@ module SD_spi
 
    // run the device ready line back to the disk controller
    always @(negedge sd_clk)
-     if (clr_bits & literal_ready) begin
-`ifdef SIM
-	$display("Clear: Card Ready");
-`endif
+     if (clr_bits & literal_device_ready) begin
 	device_ready <= 0;
-     end else if (set_bits & literal_ready) begin
-`ifdef SIM
-	$display("Set: Card Ready");
-`endif
+     end else if (set_bits & literal_device_ready) begin
 	device_ready <= 1;
+     end
+
+   // run the command ready line back to the disk controller
+   always @(negedge sd_clk)
+     if (clr_bits & literal_cmd_ready) begin
+	cmd_ready <= 0;
+     end else if (set_bits & literal_cmd_ready) begin
+	cmd_ready <= 1;
      end
 
    // Set an error code
@@ -529,7 +533,7 @@ module SD_test();
 
    // wire up the SD controller
    reg reset, read_cmd, write_cmd, data_done;
-   wire ready_cmd, data_ready;
+   wire dev_ready, cmd_ready, data_ready, fifo_clk;
    reg [31:0]  block_address;
    wire [15:0] read_data;
    wire read_data_enable;
@@ -538,6 +542,8 @@ module SD_test();
    wire sd_clk, sd_cs, sd_di, sd_do, sd_nc1, sd_nc2;
    wire ip_cd, ip_v1, ip_v2, ip_SC, ip_HC;
    wire [7:0] ip_err;
+   wire [7:0] ip_d8;
+   wire [35:0] ip_debug;
    assign (weak1, weak0) sd_cs = 0;  // host has a 270k pull-down
    assign (pull1, weak0) sd_do = 1;  // host has a 50k pull-up
    assign (pull1, weak0) sd_nc1 = 1; // "
@@ -545,10 +551,10 @@ module SD_test();
    reg 	sd_cd = 0;
    assign (pull1, weak0) sd_cs = sd_cd; // 270k pull-down, card has a 50k pull-up
    
-   SD_spi sd(clk, reset, ready_cmd, read_cmd, write_cmd, block_address, 
-	     write_data, write_data_enable, read_data, read_data_enable,
+   SD_spi sd(clk, reset, dev_ready, cmd_ready, read_cmd, write_cmd, block_address, 
+	     fifo_clk, write_data, write_data_enable, read_data, read_data_enable,
 	     sd_clk, sd_di, { sd_cs, sd_nc2, sd_nc1, sd_do },
-	     ip_cd, ip_v1, ip_v2, ip_SC, ip_HC, ip_err);
+	     ip_cd, ip_v1, ip_v2, ip_SC, ip_HC, ip_err, ip_d8, ip_debug);
    
    // wire in the SD card
    SD_card card(sd_clk, sd_di, { sd_cs, sd_nc2, sd_nc1, sd_do });

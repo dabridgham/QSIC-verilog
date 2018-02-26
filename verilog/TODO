@@ -8,10 +8,9 @@
  o Restore RINIT reset to the RK11
  o check error returns when reading/writing SD card
  o optimize transfers to go directly when using QSIC memory (ENABLE+)
- o check overflow on WC_next rather than ==0
  o kick speed of SD card back up to 20MHz or even 25MHz
  o test that the RK11 handles NXM correctly
  o check for Disk Address overflow in RK11
- o replace the FIFO I got from the net with a Xilinx FIFO and see if
-   that partial block write problem gets better
  o make the RDY, RD, and WR lights for the RK05s on the RK11 indicator panel work better
+ o BINIT is reset, BPOK inhibits accepting new commands, BDCOK will be a hard reset to the FPGA
+ o Figure out how to disable the bus drivers until the FPGA is configured and running
