@@ -1,0 +1,314 @@
+EESchema Schematic File Version 2
+LIBS:power
+LIBS:device
+LIBS:transistors
+LIBS:conn
+LIBS:linear
+LIBS:regul
+LIBS:74xx
+LIBS:cmos4000
+LIBS:adc-dac
+LIBS:memory
+LIBS:xilinx
+LIBS:microcontrollers
+LIBS:dsp
+LIBS:microchip
+LIBS:analog_switches
+LIBS:motorola
+LIBS:texas
+LIBS:intel
+LIBS:audio
+LIBS:interface
+LIBS:digital-audio
+LIBS:philips
+LIBS:display
+LIBS:cypress
+LIBS:siliconi
+LIBS:opto
+LIBS:atmel
+LIBS:contrib
+LIBS:valves
+LIBS:myLib
+LIBS:adapter-cache
+EELAYER 25 0
+EELAYER END
+$Descr USLetter 8500 11000 portrait
+encoding utf-8
+Sheet 1 1
+Title "Adapater v2 -> v1"
+Date "2018-02-23"
+Rev "1.0"
+Comp "Vintage Computer Engineering"
+Comment1 ""
+Comment2 ""
+Comment3 ""
+Comment4 ""
+$EndDescr
+$Comp
+L BARREL_JACK J101
+U 1 1 56980F06
+P 3100 6050
+F 0 "J101" H 3100 6300 60  0000 C CNN
+F 1 "Power In" H 3100 5850 60  0000 C CNN
+F 2 "myMods.pretty:PJ-032B" H 3100 6050 60  0001 C CNN
+F 3 "" H 3100 6050 60  0000 C CNN
+F 4 "PJ-032B" H 3100 6050 60  0001 C CNN "manf#"
+	1    3100 6050
+	1    0    0    -1  
+$EndComp
+$Comp
+L GND #PWR01
+U 1 1 56CB8E63
+P 2400 7400
+F 0 "#PWR01" H 2400 7150 50  0001 C CNN
+F 1 "GND" H 2400 7250 50  0001 C CNN
+F 2 "" H 2400 7400 60  0000 C CNN
+F 3 "" H 2400 7400 60  0000 C CNN
+	1    2400 7400
+	1    0    0    -1  
+$EndComp
+$Comp
+L CONN_01X10 P101
+U 1 1 56CC6D79
+P 2000 4950
+F 0 "P101" H 2000 5500 50  0000 C CNN
+F 1 "Data in" V 2100 4950 50  0000 C CNN
+F 2 "Pin_Headers:Pin_Header_Straight_2x05" H 2000 4950 60  0001 C CNN
+F 3 "" H 2000 4950 60  0000 C CNN
+F 4 "68021-210HLF" H 2000 4950 60  0001 C CNN "manf#"
+	1    2000 4950
+	-1   0    0    -1  
+$EndComp
+$Comp
+L CONN_01X08 P103
+U 1 1 56CC6EC8
+P 2000 6800
+F 0 "P103" H 2000 7250 50  0000 C CNN
+F 1 "Power In" V 2100 6800 50  0000 C CNN
+F 2 "Pin_Headers:Pin_Header_Straight_2x04" H 2000 6800 60  0001 C CNN
+F 3 "" H 2000 6800 60  0000 C CNN
+F 4 "68021-208HLF" H 2000 6800 60  0001 C CNN "manf#"
+	1    2000 6800
+	-1   0    0    -1  
+$EndComp
+$Comp
+L CONN_01X10 P102
+U 1 1 56CC791A
+P 4350 6900
+F 0 "P102" H 4350 7450 50  0000 C CNN
+F 1 "Power Out" V 4450 6900 50  0000 C CNN
+F 2 "Socket_Strips:Socket_Strip_Straight_2x05" H 4350 6900 60  0001 C CNN
+F 3 "" H 4350 6900 60  0000 C CNN
+F 4 "68021-210HLF" H 4350 6900 60  0001 C CNN "manf#"
+	1    4350 6900
+	1    0    0    -1  
+$EndComp
+$Comp
+L CONN_01X08 P104
+U 1 1 56CC8882
+P 5700 5050
+F 0 "P104" H 5700 5500 50  0000 C CNN
+F 1 "Data Out" V 5800 5050 50  0000 C CNN
+F 2 "Socket_Strips:Socket_Strip_Straight_2x04" H 5700 5050 60  0001 C CNN
+F 3 "" H 5700 5050 60  0000 C CNN
+F 4 "68021-208HLF" H 5700 5050 60  0001 C CNN "manf#"
+	1    5700 5050
+	1    0    0    -1  
+$EndComp
+$Comp
+L R R105
+U 1 1 56CCA5D4
+P 2600 4850
+F 0 "R105" V 2680 4850 50  0000 C CNN
+F 1 "150Ω" V 2600 4850 50  0000 C CNN
+F 2 "Resistors_SMD:R_0805" V 2530 4850 50  0001 C CNN
+F 3 "" H 2600 4850 50  0000 C CNN
+	1    2600 4850
+	0    1    1    0   
+$EndComp
+$Comp
+L R R104
+U 1 1 56CCA809
+P 2600 4550
+F 0 "R104" V 2680 4550 50  0000 C CNN
+F 1 "150Ω" V 2600 4550 50  0000 C CNN
+F 2 "Resistors_SMD:R_0805" V 2530 4550 50  0001 C CNN
+F 3 "" H 2600 4550 50  0000 C CNN
+F 4 "RC0805JR-07150RL" V 2600 4550 60  0001 C CNN "manf#"
+	1    2600 4550
+	0    1    1    0   
+$EndComp
+$Comp
+L R R106
+U 1 1 56CCA903
+P 2600 5350
+F 0 "R106" V 2680 5350 50  0000 C CNN
+F 1 "150Ω" V 2600 5350 50  0000 C CNN
+F 2 "Resistors_SMD:R_0805" V 2530 5350 50  0001 C CNN
+F 3 "" H 2600 5350 50  0000 C CNN
+	1    2600 5350
+	0    1    1    0   
+$EndComp
+$Comp
+L R R107
+U 1 1 56CCA9FA
+P 2600 5050
+F 0 "R107" V 2680 5050 50  0000 C CNN
+F 1 "150Ω" V 2600 5050 50  0000 C CNN
+F 2 "Resistors_SMD:R_0805" V 2530 5050 50  0001 C CNN
+F 3 "" H 2600 5050 50  0000 C CNN
+	1    2600 5050
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	2200 6550 2200 6450
+Wire Wire Line
+	2200 7050 2200 7150
+Wire Wire Line
+	2200 7150 2400 7150
+Wire Wire Line
+	2200 6650 2200 6950
+Connection ~ 2200 6750
+Connection ~ 2200 6850
+Wire Wire Line
+	3650 5950 3650 6650
+Connection ~ 3650 6650
+Wire Wire Line
+	2400 6450 2400 7400
+Connection ~ 2400 6450
+Connection ~ 2400 7150
+Wire Wire Line
+	3400 5950 3650 5950
+Wire Wire Line
+	3400 6450 3400 6050
+Connection ~ 3400 6450
+Wire Wire Line
+	2200 4500 5300 4500
+Wire Wire Line
+	2200 4600 5200 4600
+Wire Wire Line
+	2200 5000 2750 5000
+Wire Wire Line
+	2200 5100 2450 5100
+Wire Wire Line
+	2450 4550 2450 4600
+Connection ~ 2450 4600
+Wire Wire Line
+	2750 4550 2750 4500
+Connection ~ 2750 4500
+Wire Wire Line
+	2750 5000 2750 5050
+Connection ~ 2750 5000
+Wire Wire Line
+	2750 5300 2750 5350
+Connection ~ 2750 5300
+Wire Wire Line
+	2450 5400 2450 5350
+Connection ~ 2450 5400
+Wire Wire Line
+	2450 5100 2450 5050
+Connection ~ 2450 5100
+Wire Wire Line
+	2450 4900 2450 4850
+Connection ~ 2450 4900
+Wire Wire Line
+	2200 5300 4850 5300
+Connection ~ 3400 6150
+Wire Wire Line
+	2200 6450 4150 6450
+Wire Wire Line
+	2200 6650 4150 6650
+Wire Wire Line
+	4050 6650 4050 7150
+Wire Wire Line
+	4050 6750 4150 6750
+Connection ~ 4050 6650
+Wire Wire Line
+	4050 6850 4150 6850
+Connection ~ 4050 6750
+Wire Wire Line
+	4050 6950 4150 6950
+Connection ~ 4050 6850
+Wire Wire Line
+	4050 7050 4150 7050
+Connection ~ 4050 6950
+Wire Wire Line
+	4050 7150 4150 7150
+Connection ~ 4050 7050
+Wire Wire Line
+	4050 6450 4050 6550
+Wire Wire Line
+	4050 6550 4150 6550
+Connection ~ 4050 6450
+Wire Wire Line
+	3950 6450 3950 7250
+Wire Wire Line
+	3950 7250 4150 7250
+Connection ~ 3950 6450
+Wire Wire Line
+	4050 7250 4050 7350
+Wire Wire Line
+	4050 7350 4150 7350
+Connection ~ 4050 7250
+Wire Wire Line
+	5300 4500 5300 5100
+Wire Wire Line
+	5200 4600 5200 5200
+Wire Wire Line
+	4850 5300 4850 4900
+Wire Wire Line
+	4850 4900 5500 4900
+NoConn ~ 5500 5400
+NoConn ~ 5500 5300
+Wire Wire Line
+	5300 5100 5500 5100
+Wire Wire Line
+	5200 5200 5500 5200
+Wire Wire Line
+	2200 5400 5000 5400
+Wire Wire Line
+	5000 5400 5000 5000
+Wire Wire Line
+	5000 5000 5500 5000
+Wire Wire Line
+	2200 4900 3400 4900
+Wire Wire Line
+	2200 4800 3300 4800
+Wire Wire Line
+	2750 4800 2750 4850
+Wire Wire Line
+	3300 4800 3300 4700
+Wire Wire Line
+	3300 4700 5500 4700
+Connection ~ 2750 4800
+Wire Wire Line
+	5500 4800 3400 4800
+Wire Wire Line
+	3400 4800 3400 4900
+$Comp
+L GND #PWR02
+U 1 1 5A905B4D
+P 2300 5500
+F 0 "#PWR02" H 2300 5250 50  0001 C CNN
+F 1 "GND" H 2300 5350 50  0001 C CNN
+F 2 "" H 2300 5500 60  0000 C CNN
+F 3 "" H 2300 5500 60  0000 C CNN
+	1    2300 5500
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	2300 4700 2300 5500
+Wire Wire Line
+	2300 4700 2200 4700
+Wire Wire Line
+	2200 5200 2300 5200
+Connection ~ 2300 5200
+Text Notes 3550 4600 0    60   ~ 0
+Data
+Text Notes 3550 4800 0    60   ~ 0
+LE
+Text Notes 3550 5400 0    60   ~ 0
+Clk
+Text Notes 2850 5100 0    60   ~ 0
+OE
+$EndSCHEMATC
