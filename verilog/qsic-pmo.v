@@ -26,7 +26,7 @@ module pmo
    
    // Interface to indicator panels
    output 	ip_clk,
-   output 	ip_latch,
+   output reg 	ip_latch,
    output 	ip_out,
 
    // The QBUS signals as seen by the FPGA
@@ -227,9 +227,12 @@ module pmo
 
    reg 	       assert_vector = 0;
 
+   // include these devices
 //`define SW_REG 1
 `define RKV11 1
-`define SD_CARD 1		// commenting this out switches over to a RAM Disk
+`define SD0 1
+//`define SD1 1
+`define RAM_DISK 1
 
 `ifdef SW_REG
    reg [17:0]  sr_addr = 18'o777570;
@@ -251,19 +254,19 @@ module pmo
    wire        rk_ip_out;
 
    // connection to the storage device
-   reg [7:0]   sd_loaded = 8'h03; // "disk" loaded and ready
-   reg [7:0]   sd_write_protect = 0; // the "disk" is write protected
-   wire [2:0]  sd_dev_sel;	     // "disk" drive select
-   wire [12:0] sd_lba;		     // linear block address
-   wire        sd_read;		     // initiate a block read
-   wire        sd_write;	     // initiate a block write
-   wire        sd_cmd_ready;	     // selected disk is ready for a command
-   wire [15:0] sd_write_data;
-   wire        sd_write_enable;	  // enables writing data to the write FIFO
-   wire        sd_write_full;	  // write FIFO is full
-   wire [15:0] sd_read_data;
-   wire        sd_read_enable;	  // enables reading data from the read FIFO
-   wire        sd_read_empty;	  // no data in the read FIFO
+   wire [7:0]  rk0_loaded;	     // "disk" loaded and ready
+   reg [7:0]   rk0_write_protect = 0; // the "disk" is write protected
+   wire [2:0]  rk0_dev_sel;	     // "disk" drive select
+   wire [12:0] rk0_lba;		     // linear block address
+   wire        rk0_read;	     // initiate a block read
+   wire        rk0_write;	     // initiate a block write
+   wire        rk0_cmd_ready;	     // selected disk is ready for a command
+   wire [15:0] rk0_write_data;
+   wire        rk0_write_enable;    // enables writing data to the write FIFO
+   wire        rk0_write_fifo_full; // write FIFO is full
+   wire [15:0] rk0_read_data;
+   wire        rk0_read_enable;	    // enables reading data from the read FIFO
+   wire        rk0_read_fifo_empty; // no data in the read FIFO
    
    qmaster2908 
      rk_master(clk20, RSYNC, RRPLY, RDMR, RSACK, RINIT, RDMGI, sRDMGI, RREF,
@@ -280,10 +283,41 @@ module pmo
 	       rk_match, rk_assert_vector, sRDOUTpulse, rk_read_pulse,
 	       rk_dma_read, rk_dma_write, rk_bus_master, rk_dma_complete, rk_nxm, 
 	       rk_irq, clk100k, rk_ip_latch, rk_ip_out,
-	       sd_loaded, sd_write_protect, sd_dev_sel, sd_lba, sd_read, sd_write, 
-	       sd_cmd_ready,
-	       sd_write_data, sd_write_enable, sd_write_full,
-	       sd_read_data, sd_read_enable, sd_read_empty);
+	       rk0_loaded, rk0_write_protect, rk0_dev_sel, rk0_lba, rk0_read, rk0_write, 
+	       rk0_cmd_ready,
+	       rk0_write_data, rk0_write_enable, rk0_write_fifo_full,
+	       rk0_read_data, rk0_read_enable, rk0_read_fifo_empty);
+
+
+   // The FIFOs between RK0 and the Storage Devices
+   wire [15:0] sd_write_data;
+   wire [15:0] sd_read_data;
+   wire        rk0_write_data_enable;
+   wire        rk0_read_data_enable;
+   wire        rk0_fifo_clk;
+   wire        rk0_read_fifo_full, rk0_write_fifo_empty; // ignore
+   fifo_generator_1 rk0_read_fifo
+     (.rst(RINIT),
+      .wr_clk(rk0_fifo_clk),
+      .rd_clk(clk20),
+      .din(sd_read_data),
+      .wr_en(rk0_read_data_enable),
+      .rd_en(rk0_read_enable),
+      .dout(rk0_read_data),
+      .full(rk0_read_fifo_full),
+      .empty(rk0_read_fifo_empty));
+
+   fifo_generator_1 rk0_write_fifo
+     (.rst(RINIT),
+      .wr_clk(clk20),
+      .rd_clk(rk0_fifo_clk),
+      .din(rk0_write_data),
+      .wr_en(rk0_write_enable),
+      .rd_en(rk0_write_data_enable),
+      .dout(sd_write_data),
+      .full(rk0_write_fifo_full),
+      .empty(rk0_write_fifo_empty));
+
 `endif
 
    // mix the control signals from the DMA controller(s) and the register controller
@@ -336,14 +370,14 @@ module pmo
    end
 
 
-`ifdef SD_CARD
    //
    // Interface an SD Card
    //
+   wire [31:0] LBA;		// Linear Block Address
 
-   wire sd0_read, sd0_write;
-   wire [31:0] sd0_lba;
-   wire [15:0] sd0_write_data;
+`ifdef SD0
+   wire        sd0_read, sd0_write;
+   wire [31:0] sd0_lba = LBA;
    wire        sd0_write_data_enable;
    wire        sd0_dev_ready, sd0_cmd_ready, sd0_cd, sd0_v1, sd0_v2, sd0_SC, sd0_HC;
    wire [7:0]  sd0_err;
@@ -356,7 +390,7 @@ module pmo
 	      .read_cmd(sd0_read), .write_cmd(sd0_write),
 	      .block_address(sd0_lba),
     	      .fifo_clk(sd0_fifo_clk),
-	      .write_data(sd0_write_data),
+	      .write_data(sd_write_data),
 	      .write_data_enable(sd0_write_data_enable),
 	      .read_data(sd0_read_data),
 	      .read_data_enable(sd0_read_data_enable),
@@ -364,60 +398,34 @@ module pmo
  	      .ip_cd(sd0_cd), .ip_v1(sd0_v1), .ip_v2(sd0_v2), .ip_SC(sd0_SC),
     	      .ip_HC(sd0_HC), .ip_err(sd0_err),
 	      .ip_d8(sd0_d8), .ip_debug(sd0_debug));
+`else
+   reg 	       sd0_dev_ready = 0;
+   reg 	       sd0_cmd_ready = 0;
+   reg 	       sd0_fifo_clk = 0;
+   reg 	       sd0_write_data_enable = 0;
+   reg 	       sd0_read_data_enable = 0;
+   reg [15:0]  sd0_read_data = 0;
+   wire        sd0_read, sd0_write;
+
+   reg 	       sd0_cd = 0;	// for the indicator panel
+   reg 	       sd0_v1 = 0;
+   reg 	       sd0_v2 = 0;
+   reg 	       sd0_SC = 0;
+   reg 	       sd0_HC = 0;
+   reg [7:0]   sd0_err = 0;
+`endif   
+
    
-   // Connections beween RK11 and SD card
-
-   // This is where the drive number and block address from the RK11 is mapped to the SD card.
-   // Eventually this mapping will be controlled by the pack load configuration. !!!
-   //
-   // The high 16 bits just offset the 8 RK05 disks into the SD card.  Largest values are:
-   //  8GB: h00ff
-   // 16GB: h01ff
-   // 32GB: h03ff
-   assign sd0_lba = { 16'h0002, sd_dev_sel, sd_lba };
-//   assign sd_dev_ready = sd0_dev_ready;  // sd0_dev_ready needs to change sd_loaded[]
-   assign sd_cmd_ready = sd0_cmd_ready;
-   assign sd0_read = sd_read;
-   assign sd0_write = sd_write;
-
-   wire        sd0_read_full, sd0_read_rst_write_busy, sd0_read_rst_read_busy; // the SD card ignores these
-   fifo_generator_0 sd_read_fifo
-     (.rst(RINIT),
-      .wr_clk(sd0_fifo_clk),
-      .rd_clk(clk20),
-      .din(sd0_read_data),
-      .wr_en(sd0_read_data_enable),
-      .rd_en(sd_read_enable),
-      .dout(sd_read_data),
-      .full(sd0_read_full),
-      .empty(sd_read_empty),
-      .wr_rst_busy(sd0_read_rst_write_busy),
-      .rd_rst_busy(sd0_read_rst_read_busy));
-
-   wire sd0_write_empty, sd0_write_rst_write_busy, sd0_write_rst_read_busy; // the SD card ignores these
-   fifo_generator_0 sd_write_fifo
-     (.rst(RINIT),
-      .wr_clk(clk20),
-      .rd_clk(sd0_fifo_clk),
-      .din(sd_write_data),
-      .wr_en(sd_write_enable),
-      .rd_en(sd0_write_data_enable),
-      .dout(sd0_write_data),
-      .full(sd_write_full),
-      .empty(sd0_write_empty),
-      .wr_rst_busy(sd0_write_rst_write_busy),
-      .rd_rst_busy(sd0_write_rst_read_busy));
    
-`else  // RAM Disk
    //
    // Interface a Block RAM RAMdisk
    //
+`ifdef RAM_DISK
+   reg 	       rd_dev_ready = 1;
    wire        rd_read, rd_write, rd_cmd_ready;
-   wire [31:0] rd_lba;
-   wire [15:0] rd_write_data;
-   wire        rd_write_data_enable;
+   wire [31:0] rd_lba = LBA;
    wire [15:0] rd_read_data;
-   wire        rd_write_fifo_empty;
+   wire        rd_write_data_enable;
    wire        rd_read_data_enable;
    wire        rd_fifo_clk;
    wire [15:0] rd_debug;
@@ -426,52 +434,124 @@ module pmo
        .read_cmd(rd_read), .write_cmd(rd_write),
        .block_address(rd_lba),
        .fifo_clk(rd_fifo_clk),
-       .write_data(rd_write_data),
+       .write_data(sd_write_data),
        .write_data_enable(rd_write_data_enable),
-       .write_fifo_empty(rd_write_fifo_empty),
        .read_data(rd_read_data),
-       .read_data_enable(rd_read_data_enable),
-       .debug(rd_debug));
-
-   // Connect the RK11 to the RAM Disk
-
-   assign rd_lba = { 19'b0, sd_lba };
-   assign sd_cmd_ready = rd_cmd_ready;
-   assign rd_read = sd_read;
-   assign rd_write = sd_write;
+       .read_data_enable(rd_read_data_enable));
+`else // !`ifdef RAM_DISK
+   reg 	       rd_dev_ready = 0;
+   reg 	       rd_cmd_ready = 0;
+   reg 	       rd_fifo_clk = 0;
+   reg 	       rd_write_data_enable = 0;
+   reg 	       rd_read_data_enable = 0;
+   reg [15:0]  rd_read_data = 0;
+   wire        rd_read, rd_write;
+`endif
    
-   wire        rd_full;	// the RAM Disk ignores this
-   fifo_generator_1 rd_read_fifo
-     (.rst(RINIT),
-      .wr_clk(rd_fifo_clk),
-      .rd_clk(clk20),
-      .din(rd_read_data),
-      .wr_en(rd_read_data_enable),
-      .rd_en(sd_read_enable),
-      .dout(sd_read_data),
-      .full(rd_full),
-      .empty(sd_read_empty));
+   // SD1 and USB devices aren't implemented yet so just stub out the signals
+   reg 	       sd1_dev_ready = 0;
+   reg 	       sd1_cmd_ready = 0;
+   reg 	       sd1_fifo_clk = 0;
+   reg 	       sd1_write_data_enable = 0;
+   reg 	       sd1_read_data_enable = 0;
+   reg [15:0]  sd1_read_data = 0;
+   wire        sd1_read, sd1_write;
 
-   fifo_generator_1 rd_write_fifo
-     (.rst(RINIT),
-      .wr_clk(clk20),
-      .rd_clk(rd_fifo_clk),
-      .din(sd_write_data),
-      .wr_en(sd_write_enable),
-      .rd_en(rd_write_data_enable),
-      .dout(rd_write_data),
-      .full(sd_write_full),
-      .empty(rd_write_fifo_empty));
-
-`endif // !`ifdef SD_CARD
+   reg 	       usb_dev_ready = 0;
+   reg 	       usb_cmd_ready = 0;
+   reg 	       usb_fifo_clk = 0;
+   reg 	       usb_write_data_enable = 0;
+   reg 	       usb_read_data_enable = 0;
+   reg [15:0]  usb_read_data = 0;
+   wire        usb_read, usb_write;
    
+
+
+   //
+   // Load Table - Just a start for now and needs to be configurable at runtime !!!
+   //
+
+   // The largest offset values (less the size of the disk pack) are:
+   //  8GB: h0100_0000
+   // 16GB: h0200_0000
+   // 32GB: h0400_0000
+   //
+   // Disk Pack Sizes:
+   // RK05: h0200 (rounded up)
+`define pack_enable 1'b1
+`define pack_disable 1'b0
+`define pack_sd0 2'o0
+`define pack_sd1 2'o1
+`define pack_ramdisk 2'o2
+`define pack_usb 2'o3
+   // { Enable, Storage Device, LBA Offset }
+   reg [34:0]  rk0_load_table [0:7] 
+     = {
+`ifdef SD0
+	{ `pack_enable, `pack_sd0, 32'h0002_0000 },
+ `ifdef RAM_DISK
+	{ `pack_enable, `pack_ramdisk, 32'h0000_0000 },
+ `else
+	{ `pack_enable, `pack_sd0, 32'h0002_2000 },
+ `endif
+`else
+	{ `pack_enable, `pack_ramdisk, 32'h0000_0000 },
+	{ `pack_disable, `pack_sd0, 32'h0002_2000 },
+`endif
+	{ `pack_disable, `pack_sd0, 32'h0002_4000 },
+	{ `pack_disable, `pack_sd0, 32'h0002_6000 },
+	{ `pack_disable, `pack_sd0, 32'h0002_8000 },
+	{ `pack_disable, `pack_sd0, 32'h0002_a000 },
+	{ `pack_disable, `pack_sd0, 32'h0002_c000 },
+	{ `pack_disable, `pack_sd0, 32'h0002_e000 }
+	};
+   wire        pack_enable = rk0_load_table[rk0_dev_sel][34];
+   wire [1:0]  pack_sd_select = rk0_load_table[rk0_dev_sel][33:32];
+   wire [31:0] pack_offset = rk0_load_table[rk0_dev_sel][31:0];
+   
+   assign LBA = rk0_lba + pack_offset; // offset into the selected disk pack
+
+   // Build the Loaded table - if a pack is loaded and the associated device is ready
+   wire [0:3]   sd_ready = { sd0_dev_ready, sd0_dev_ready, rd_dev_ready, usb_dev_ready };
+   genvar      i;
+   for (i=0; i<8; i=i+1)
+     assign rk0_loaded[i] = rk0_load_table[i][34] & sd_ready[rk0_load_table[i][33:32]];
+
+
+   //
+   // Link the Disk Controller to the Storage Devices
+   //
+
+   sdmux rk0_sdmux(.command_ready(rk0_cmd_ready),
+    		   .read_cmd(rk0_read),
+		   .write_cmd(rk0_write),
+		   .fifo_clk(rk0_fifo_clk), 
+		   .write_data_enable(rk0_write_data_enable),
+		   .read_data(sd_read_data),
+		   .read_data_enable(rk0_read_data_enable),
+		   .sd_select(pack_sd_select), // selects which Storage Device to use
+		   // Storage Devices
+    		   .sd_command_ready({ sd0_cmd_ready, sd1_cmd_ready, rd_cmd_ready, usb_cmd_ready }),
+		   .sd_read_cmd({ sd0_read, sd1_read, rd_read, usb_read }),
+		   .sd_write_cmd({ sd0_write, sd1_write, rd_write, usb_write }),
+ 		   .sd_fifo_clk({ sd0_fifo_clk, sd1_fifo_clk, rd_fifo_clk, usb_fifo_clk }),
+		   .sd_write_data_enable({ sd0_write_data_enable, sd1_write_data_enable,
+					   rd_write_data_enable, usb_write_data_enable }),
+		   .sd_read_data_enable({ sd0_read_data_enable, sd1_read_data_enable,
+					  rd_read_data_enable, usb_read_data_enable }),
+		   // read data lines
+		   .sd0_read_data(sd0_read_data),
+		   .sd1_read_data(sd1_read_data),
+		   .sd2_read_data(rd_read_data),
+		   .sd3_read_data(usb_read_data));
+
 
    //
    // Indicator Panels
    //
 
    // panel driver (Are these inverted because I wired the PMo wrong? !!!)
-   assign ip_latch = ~ip_done;
+//   assign ip_latch = ~ip_done;
    assign ip_clk = ~clk100k;
    wire 	panel_out;
 `define RKIP
@@ -484,13 +564,22 @@ module pmo
    
    reg [7:0] 	ip_count = 0;
    reg 		ip_done = 0;
+   wire 	ip_done_next;
+   wire [7:0] 	ip_count_next;
+   assign { ip_done_next, ip_count_next } = ip_count + 1;
+   
    always @(posedge clk100k) begin
       if (RINIT || ip_done) begin
 	 ip_count <= -143;
 	 ip_done <= 0;
       end else
-	{ ip_done, ip_count } <= ip_count + 1;
+	{ ip_done, ip_count } <= { ip_done_next, ip_count_next };
    end
+
+   // pulse ip_latch on the negative edge of the clock
+   always @(negedge clk100k)
+     ip_latch = ~ip_done_next;
+   
    
 //`define LAMPTEST 1
    indicator
@@ -501,27 +590,14 @@ module pmo
 	     { 36'o777_777_777_777 },
 	     { 36'o777_777_777_777 }
 `else
- `ifdef SD_CARD
 	     { DALtx, 1'b0, ZDAL, 3'b0,
 	       sd0_cd, sd0_v1, sd0_v2, sd0_SC, sd0_HC, sd0_dev_ready, sd0_read, sd0_write, 1'b0 },
 	     { read_cycle, bs7_reg, addr_reg, 3'b0, 6'b0, rk_dma_read, rk_dma_write, 1'b0 },
- `else  // RAM Disk
-	     { DALtx, 1'b0, ZDAL, rd_debug[11:0] },
-	     { read_cycle, bs7_reg, addr_reg, 3'b0, 9'b0 },
- `endif
- `ifdef SD_CARD
 	     { ZWTBT, ZBS7, RSYNC, RDIN, RDOUT, RRPLY, RREF, 1'b0, RIAKI, RIRQ7, RIRQ6, RIRQ5, RIRQ4,
 	       1'b0, RSACK, RDMGI, RDMR, 1'b0, RINIT, 1'b0, RDCOK, RPOK, 14'b0 },
 	     { DALtx & ZWTBT, DALtx & ZBS7, TSYNC, TDIN, TDOUT, TRPLY, TREF, 1'b0,
 	       TIAKO, TIRQ7, TIRQ6, TIRQ5, TIRQ4, 1'b0, TSACK, TDMGO, TDMR,
 	       10'b0, sd0_err, 1'b0 }
-`else
-	     { ZWTBT, ZBS7, RSYNC, RDIN, RDOUT, RRPLY, RREF, 1'b0, RIAKI, RIRQ7, RIRQ6, RIRQ5, RIRQ4,
-	       1'b0, RSACK, RDMGI, RDMR, 1'b0, RINIT, 1'b0, RDCOK, RPOK, rd_debug[13:0] },
-	     { DALtx & ZWTBT, DALtx & ZBS7, TSYNC, TDIN, TDOUT, TRPLY, TREF, 1'b0,
-	       TIAKO, TIRQ7, TIRQ6, TIRQ5, TIRQ4, 1'b0, TSACK, TDMGO, TDMR, 1'b0, 
-	       2'b0, rd_write_data }
-`endif
 `endif
 	     );
 
