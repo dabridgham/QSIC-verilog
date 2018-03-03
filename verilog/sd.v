@@ -170,8 +170,8 @@ module SD_spi
    wire 	clk400k = clk_div[5];
  `endif
    // normally this would be just clk, but that's causing problems so let's slow it down !!!
-//   wire 	clk_fast = clk_div[0];
-   wire 	clk_fast = clk;
+   wire 	clk_fast = clk_div[1];
+//   wire 	clk_fast = clk;
 
    // control which clock goes to the SD card
    reg 		fpp = 0;
