@@ -6,12 +6,12 @@ conjunction with the QSIC project to build a QBUS board to emulate the
 old DEC disk drives using more modern storage technology and we wanted
 to have blinkenlights to go with.
 
-indicator-panel-*::
+indicator-panel*::
    KiCad design for the indicator panel boards themselves.  Three
    boards make a full indicator panel.
 
-adapter-*:: A small adapter board to convert from the version 1 pinout
+adapter*:: A small adapter board to convert from the version 1 pinout
    to version 2.
 
-inlay-*:: Various inlay designs we've come up with to use with the
+inlay*:: Various inlay designs we've come up with to use with the
    QSIC.
