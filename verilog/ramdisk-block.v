@@ -21,15 +21,12 @@ module ramdisk_block
     output 	      fifo_clk, 
     input [15:0]      write_data,
     output reg 	      write_data_enable,
-    input 	      write_fifo_empty,
     output reg [15:0] read_data,
-    output reg 	      read_data_enable,
-    output [15:0]     debug
+    output reg 	      read_data_enable
    );
 
    wire 	      ramclk = clk;
    assign fifo_clk = ramclk;	// just pass the clock through to the FIFO
-   assign debug = 0;
 
    // The RAM for the RAM Disk
    localparam BLOCK_SIZE = 256;	// in words
@@ -140,12 +137,11 @@ module RD_test();
    always @(*)
      #25 clk <= ~clk; // 20MHz clock (50ns cycle)
    
-   reg reset, read_cmd, write_cmd, write_fifo_empty;
+   reg reset, read_cmd, write_cmd;
    wire command_ready, fifo_clk, write_data_enable, read_data_enable;
    reg [31:0] block_address = 0;
    reg [15:0] write_data = 16'o177000;
    wire [15:0] read_data;
-   wire [15:0] debug;
 
    ramdisk_block #(.BLOCKS(2 * 12 * 5))	// surfaces * sectors * cylinders (for RK05 but limited to
 				// ~32 cylinders because of the amount of Block RAM)
@@ -158,10 +154,8 @@ module RD_test();
 	.fifo_clk(fifo_clk), 
 	.write_data(write_data),
 	.write_data_enable(write_data_enable),
-	.write_fifo_empty(write_fifo_empty),
 	.read_data(read_data),
-	.read_data_enable(read_data_enable),
-	.debug(debug)
+	.read_data_enable(read_data_enable)
    );
 
    // A simple write FIFO, pre-filled with data
@@ -209,7 +203,6 @@ module RD_test();
       $dumpvars(0, RD_test);
 
       reset <= 0;
-      write_fifo_empty <= 0;
       read_cmd <= 0;
       write_cmd <= 0;
 
