@@ -255,6 +255,7 @@ module rkv11
 
    
    // State Machine
+   reg [15:0] WC_display;	// grab a copy of WC
    reg 	      WC_zero = 0;	// flag when the Word Count (WC) rolls over
    reg [7:0]  saddr = 0;	// word count within a sector
    reg 	      sector_done = 0;	// saddr overflow
@@ -343,6 +344,7 @@ module rkv11
 	       ID <= 0;
 	       { SCP, INH_BA, FMT, SSE, IDE, FUNC, GO } <= 0;
 	       WC <= 0;
+	       WC_display <= 0;
 	       WC_zero <= 0;
 	       RK_BAR <= 0;
 	       { DR_SEL, CYL_ADD, SUR, SA } <= 0;
@@ -374,6 +376,7 @@ module rkv11
 			 dma_read <= 1;
 			 saddr <= 0;
 			 sector_done <= 0;
+			 WC_display <= -WC;
 			 set_state(WRITE_LOOP);
 		      end
 		    READ:
@@ -384,6 +387,7 @@ module rkv11
 			 sector_done <= 0;
 			 sd_lba <= lba;
 			 sd_read <= 1; // start the first read from the storage device
+			 WC_display <= -WC;
 			 set_state(READ_START);
 		      end
 
@@ -585,7 +589,7 @@ module rkv11
 	     {
 `ifdef SHOW_STATE
 	      sector_done, 1'b0, WC_zero,
-	      WC, saddr,
+	      WC_display, saddr,
 `else
 	      3'b0,
 	      drive_ready[7], write_protect_flag[7], drive_read[7], drive_write[7],
