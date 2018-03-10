@@ -578,30 +578,21 @@ module rkv11
       assign drive_write[i] = (DR_SEL == i) ? dma_read : 0;
    end
 
-`define SHOW_STATE 1
    indicator
      rk11_ip(ip_clk, ip_latch, ip_out,
-	     { 1'b0, 1'b0, mode == `MODE_Q22, mode == `MODE_Q18, 1'b0, 3'b0, interrupt_request,
-	       1'b0, dma_read_req, dma_write_req, 1'b0, 1'b0, RK_BAR, 1'b0 },
+	     { ERROR, HE, INH_BA, SSE, RDY, IDE, 1'b0, FUNC, GO, 3'b0, RK_BAR, 1'b0 },
+	     { DRE, OVR, WLO, SKE, NXM, NXD, NXC, NXS, CSE, WCE, 1'b0, 3'b0, interrupt_request,
+	       1'b0, dma_read_req, dma_write_req, 1'b0, 1'b0, WC_display },
 	     { 2'b01, 2'b01, 1'b0, DR_SEL, 8'b0, CYL_ADD, 7'b0, SUR, SA },
-	     { state, 1'b0, DRE, OVR, WLO, SKE, NXM, NXD, NXC, NXS, CSE, WCE,
-	       1'b0, ERROR, HE, INH_BA, SSE, RDY, IDE, FUNC, GO, 1'b0 },
-	     {
-`ifdef SHOW_STATE
-	      sector_done, 1'b0, WC_zero,
-	      WC_display, saddr,
-`else
-	      3'b0,
+	     { mode == `MODE_Q22, mode == `MODE_Q18, 2'b0,
 	      drive_ready[7], write_protect_flag[7], drive_read[7], drive_write[7],
 	      drive_ready[6], write_protect_flag[6], drive_read[6], drive_write[6],
 	      drive_ready[5], write_protect_flag[5], drive_read[5], drive_write[5],
 	      drive_ready[4], write_protect_flag[4], drive_read[4], drive_write[4],
 	      drive_ready[3], write_protect_flag[3], drive_read[3], drive_write[3],
 	      drive_ready[2], write_protect_flag[2], drive_read[2], drive_write[2],
-`endif
 	      drive_ready[1], write_protect_flag[1], drive_read[1], drive_write[1],
-	      drive_ready[0], write_protect_flag[0], drive_read[0], drive_write[0],
-	      1'b0 }
+	      drive_ready[0], write_protect_flag[0], drive_read[0], drive_write[0] }
 	     );
 
 
