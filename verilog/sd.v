@@ -87,8 +87,7 @@ module SD_spi
    output 	     ip_SC, // Standard Capacity
    output 	     ip_HC, // High Capacity or Extended Capacity
    output reg [7:0]  ip_err, // saw an error
-   output reg [7:0]  ip_d8,
-   output reg [35:0] ip_debug
+   output reg [7:0]  ip_d8
    );
    
    // For SPI mode, the signals get different meanings
@@ -331,15 +330,9 @@ module SD_spi
    
 
    // data input shift register
-`ifdef NOT_TESTING  // !!!
    reg [7:0] 	rx_sr;
    always @(posedge sd_clk)	// read on posedge for SPI mode 0
      rx_sr <= { rx_sr[6:0], sd_do };
-`else
-   reg [35:0] 	rx_sr;
-   always @(posedge sd_clk)	// read on posedge for SPI mode 0
-     rx_sr <= { rx_sr[34:0], sd_do };
-`endif
 
    // on the byte strobe, transfer the RxSR to a receive register where it will remain stable
    // until the next byte is done.  this is what's used for comparison.
@@ -356,8 +349,6 @@ module SD_spi
 	   // this one is a little strange.  rx_sr is already being copied to rx_reg on the byte
 	   // strobe.  To do a compare, we save the literal here for branching later.
 	   literal_reg <= literal;
-	   // testing !!!
-	   ip_debug <= rx_sr;
 	   ip_d8 <= rx_reg;
 	end
 	RX_DATA_LOW: read_data[7:0] <= rx_reg;
@@ -543,7 +534,6 @@ module SD_test();
    wire ip_cd, ip_v1, ip_v2, ip_SC, ip_HC;
    wire [7:0] ip_err;
    wire [7:0] ip_d8;
-   wire [35:0] ip_debug;
    assign (weak1, weak0) sd_cs = 0;  // host has a 270k pull-down
    assign (pull1, weak0) sd_do = 1;  // host has a 50k pull-up
    assign (pull1, weak0) sd_nc1 = 1; // "
@@ -554,7 +544,7 @@ module SD_test();
    SD_spi sd(clk, reset, dev_ready, cmd_ready, read_cmd, write_cmd, block_address, 
 	     fifo_clk, write_data, write_data_enable, read_data, read_data_enable,
 	     sd_clk, sd_di, { sd_cs, sd_nc2, sd_nc1, sd_do },
-	     ip_cd, ip_v1, ip_v2, ip_SC, ip_HC, ip_err, ip_d8, ip_debug);
+	     ip_cd, ip_v1, ip_v2, ip_SC, ip_HC, ip_err, ip_d8);
    
    // wire in the SD card
    SD_card card(sd_clk, sd_di, { sd_cs, sd_nc2, sd_nc1, sd_do });
