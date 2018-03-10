@@ -12,7 +12,7 @@
 
 module pmo
   (
-   input 	clk48, // 48 MHz clock from the ZTEX module
+   input 	clk48_in, // 48 MHz clock from the ZTEX module
 
    // these LEDs on the debug board are on pins not being used for other things so they're open
    // for general use.  these need switches 5 and 6 turned on to enable the LEDs.
@@ -25,9 +25,9 @@ module pmo
    output 	tp_b30, // testpoint B30 (FPGA pin A11)
    
    // Interface to indicator panels
-   output 	ip_clk,
-   output reg 	ip_latch,
-   output 	ip_out,
+   output 	ip_clk_pin,
+   output 	ip_latch_pin,
+   output 	ip_out_pin,
 
    // The QBUS signals as seen by the FPGA
    output 	DALbe_L, // Enable transmitting on BDAL (active low)
@@ -73,6 +73,58 @@ module pmo
    inout [3:0] 	sd0_sddat
    );
 
+
+   //
+   // Clocking
+   //
+
+   wire 	pll_fb, clk200, clk400, uiclk, clk48, clk20;
+   
+   BUFG fxclk_buf (
+		   .I(clk48_in),
+ 		   .O(clk48) 
+		   );
+   
+   PLLE2_BASE #(.BANDWIDTH("LOW"),
+		.CLKFBOUT_MULT(25), // f_VCO = 1200 MHz (valid: 800 .. 1600 MHz)
+		.CLKFBOUT_PHASE(0.0),
+		.CLKIN1_PERIOD(0.0),
+		.CLKOUT0_DIVIDE(3),    // 400 MHz, memory clock
+		.CLKOUT1_DIVIDE(6),    // 200 MHz, reference clock
+		.CLKOUT2_DIVIDE(60),   // 20MHz, QBUS clock
+		.CLKOUT3_DIVIDE(1),    // unused
+		.CLKOUT4_DIVIDE(1),    // unused
+		.CLKOUT5_DIVIDE(1),    // unused
+		.CLKOUT0_DUTY_CYCLE(0.5),
+		.CLKOUT1_DUTY_CYCLE(0.5),
+		.CLKOUT2_DUTY_CYCLE(0.5),
+		.CLKOUT3_DUTY_CYCLE(0.5),
+		.CLKOUT4_DUTY_CYCLE(0.5),
+		.CLKOUT5_DUTY_CYCLE(0.5),
+		.CLKOUT0_PHASE(0.0),
+		.CLKOUT1_PHASE(0.0),
+		.CLKOUT2_PHASE(0.0),
+		.CLKOUT3_PHASE(0.0),
+		.CLKOUT4_PHASE(0.0),
+		.CLKOUT5_PHASE(0.0),
+		.DIVCLK_DIVIDE(1),
+		.REF_JITTER1(0.0),
+      		.STARTUP_WAIT("FALSE")
+		)
+   pmo_pll_inst (.CLKIN1(clk48),   // 48 MHz input clock
+      		 .CLKOUT0(clk400), // 400 MHz memory clock
+      		 .CLKOUT1(clk200), // 200 MHz reference clock
+      		 .CLKOUT2(clk20),   
+      		 .CLKOUT3(),   
+      		 .CLKOUT4(),
+      		 .CLKOUT5(),   
+      		 .CLKFBOUT(pll_fb),
+      		 .CLKFBIN(pll_fb),
+      		 .PWRDWN(1'b0),
+      		 .RST(1'b0),
+		 .LOCKED()
+		 );
+
    //
    // Wire up LEDs for testing
    //
@@ -96,14 +148,6 @@ module pmo
    //  get an approx 100kHz clock for the indicator panels
    wire 	clk100k = count[7];
    
-
-
-   // Turn the 48MHz clock into a 20MHz clock that will be used as the general QBUS clock
-   // throughout the QSIC
-   wire 	clk20, reset, locked;
-   assign reset = 0;
-   clk_wiz_0 clk(clk20, reset, locked, clk48);
-
    // The direction of the bi-directional lines are controlled with DALtx
    // -- moved to below
    assign ZDAL = DALtx ? TDAL : 22'bZ;
@@ -111,24 +155,7 @@ module pmo
    assign ZWTBT = DALtx ? rk_wtbt : 1'bZ;
 
    // all the QBUS signals that I'm not driving (yet)
-//   assign DALbe_L = 1;
-//   assign DALtx = 0;
-//   assign DALst = 0;
-
-//   assign TSYNC = 0;
-//   assign TDIN = 0;
-//   assign TDOUT = 0;
-//   assign TRPLY = 0;
    assign TREF = 0;
-//   assign TIRQ4 = 0;
-//   assign TIRQ5 = 0;
-//   assign TIRQ6 = 0;
-//   assign TIRQ7 = 0;
-//   assign TDMR = 0;
-//   assign TSACK = 0;
-//   assign TIAKO = 0;
-//   assign TDMGO = 0;
-   
 
    // Grab the addressing information when it comes by
    reg [21:0] 	addr_reg = 0;
@@ -250,6 +277,7 @@ module pmo
    wire        rk_wtbt, rk_irq, rk_assert_vector;
    wire [15:0] rk_tdl;
    wire [21:0] rk_tal;
+   wire        rk_ip_clk;
    wire        rk_ip_latch;
    wire        rk_ip_out;
 
@@ -282,7 +310,7 @@ module pmo
    rkv11 rkv11(clk20, addr_reg[12:0], bs7_reg, rk_tal, RDL, rk_tdl, RINIT,
 	       rk_match, rk_assert_vector, sRDOUTpulse, rk_read_pulse,
 	       rk_dma_read, rk_dma_write, rk_bus_master, rk_dma_complete, rk_nxm, 
-	       rk_irq, clk100k, rk_ip_latch, rk_ip_out,
+	       rk_irq, rk_ip_clk, rk_ip_latch, rk_ip_out,
 	       rk0_loaded, rk0_write_protect, rk0_dev_sel, rk0_lba, rk0_read, rk0_write, 
 	       rk0_cmd_ready,
 	       rk0_write_data, rk0_write_enable, rk0_write_fifo_full,
@@ -320,15 +348,24 @@ module pmo
 
 `endif
 
+`define CONFIG_REG 1
+`ifdef CONFIG_REG
+   wire        conf_match = (bs7_reg && (addr_reg[12:0] == 13'o17720));
+   always @(posedge clk20)
+     if (sRDOUTpulse && conf_match) begin
+	ip_list[0] <= RDL[1:0];
+	ip_list[1] <= RDL[4:3];
+	ip_list[2] <= RDL[7:6];
+	ip_list[3] <= RDL[10:9];
+	ip_count <= RDL[13:12];
+     end
+`endif
+   
+
    // mix the control signals from the DMA controller(s) and the register controller
    assign DALbe_L = ~rwDALbe & ~rk_DALbe;  // ~(rwDALbe | rk_DALbe);
    assign DALst = rwDALst | rk_DALst;
    assign DALtx = rwDALtx | rk_assert_addr | rk_assert_data;
-
-   reg [15:0]  test_reg = 16'o177777;
-   always @(posedge rwDALst) 
-     if (rk_assert_vector)
-       test_reg <= rk_tdl;
 
    // MUX for the data/address lines
    reg 	       addr_match;
@@ -346,8 +383,12 @@ module pmo
 	  // if RSYNC then we're doing a DATI or DATO cycle
 	  if (RSYNC)
 	    case (1'b1)
-	      (bs7_reg & (addr_reg[12:0] == 13'o17720)):
-					  { addr_match, TDAL } = { 1'b1, 6'b0, test_reg };
+`ifdef CONFIG_REG
+	      conf_match: begin
+		 addr_match = 1;
+		 TDAL = { 6'b0, 2'b0, ip_count, 1'b0, ip_list[3], 1'b0, ip_list[2], 1'b0, ip_list[1], 1'b0, ip_list[0] };
+	      end
+`endif
 `ifdef SW_REG
 	      sr_match: { addr_match, TDAL } = { 1'b1, 6'b0, sr_tdl };
 `endif
@@ -384,7 +425,6 @@ module pmo
    wire [15:0] sd0_read_data;
    wire        sd0_read_data_enable;
    wire        sd0_fifo_clk;
-   wire [35:0] sd0_debug;
    wire [7:0]  sd0_d8;
    SD_spi SD0(.clk(clk20), .reset(0), .device_ready(sd0_dev_ready), .cmd_ready(sd0_cmd_ready),
 	      .read_cmd(sd0_read), .write_cmd(sd0_write),
@@ -397,7 +437,7 @@ module pmo
  	      .sd_clk(sd0_sdclk), .sd_cmd(sd0_sdcmd), .sd_dat(sd0_sddat),
  	      .ip_cd(sd0_cd), .ip_v1(sd0_v1), .ip_v2(sd0_v2), .ip_SC(sd0_SC),
     	      .ip_HC(sd0_HC), .ip_err(sd0_err),
-	      .ip_d8(sd0_d8), .ip_debug(sd0_debug));
+	      .ip_d8(sd0_d8));
 `else
    reg 	       sd0_dev_ready = 0;
    reg 	       sd0_cmd_ready = 0;
@@ -550,46 +590,10 @@ module pmo
    // Indicator Panels
    //
 
-   // panel driver (Are these inverted because I wired the PMo wrong? !!!)
-//   assign ip_latch = ~ip_done;
-   assign ip_clk = ~clk100k;
-   wire 	panel_out;
-`define RKIP
-`ifdef RKIP
-   assign ip_out = ~rk_ip_out;
-`else
-   assign ip_out = ~panel_out;
-`endif
-   assign rk_ip_latch = ip_done;
-   
-   reg [7:0] 	ip_count = 0;
-   reg 		ip_done = 0;
-   wire 	ip_done_next;
-   wire [7:0] 	ip_count_next;
-   assign { ip_done_next, ip_count_next } = ip_count + 1;
-   
-   always @(posedge clk100k) begin
-      if (RINIT || ip_done) begin
-	 ip_count <= -143;
-	 ip_done <= 0;
-      end else
-	{ ip_done, ip_count } <= { ip_done_next, ip_count_next };
-   end
-
-   // pulse ip_latch on the negative edge of the clock
-   always @(negedge clk100k)
-     ip_latch = ~ip_done_next;
-   
-   
-//`define LAMPTEST 1
+   // QSIC/QBUS Indicator Panel
+   wire qsic_latch, qsic_clk, qsic_out;
    indicator
-     qsic_ip(clk100k, ip_done, panel_out,
-`ifdef LAMPTEST
-	     { 36'o777_777_777_777 },
-	     { 36'o777_777_777_777 },
-	     { 36'o777_777_777_777 },
-	     { 36'o777_777_777_777 }
-`else
+     qsic_ip(qsic_clk, qsic_latch, qsic_out,
 	     { DALtx, 1'b0, ZDAL, 3'b0,
 	       sd0_cd, sd0_v1, sd0_v2, sd0_SC, sd0_HC, sd0_dev_ready, sd0_read, sd0_write, 1'b0 },
 	     { read_cycle, bs7_reg, addr_reg, 3'b0, 6'b0, rk_dma_read, rk_dma_write, 1'b0 },
@@ -597,8 +601,49 @@ module pmo
 	       1'b0, RSACK, RDMGI, RDMR, 1'b0, RINIT, 1'b0, RDCOK, RPOK, 14'b0 },
 	     { DALtx & ZWTBT, DALtx & ZBS7, TSYNC, TDIN, TDOUT, TRPLY, TREF, 1'b0,
 	       TIAKO, TIRQ7, TIRQ6, TIRQ5, TIRQ4, 1'b0, TSACK, TDMGO, TDMR,
-	       10'b0, sd0_err, 1'b0 }
-`endif
-	     );
+	       10'b0, sd0_err, 1'b0 });
+
+   // Lamptest Indicator Panel - turn on all the lights
+   wire lt_latch, lt_clk, lt_out;
+   indicator
+     lamptest(lt_clk, lt_latch, lt_out,
+	      { 36'o777_777_777_777 },
+	      { 36'o777_777_777_777 },
+	      { 36'o777_777_777_777 },
+	      { 36'o777_777_777_777 });
+
+
+   // The configuration for what indicator panels to display
+   reg [1:0] ip_count = 1;
+   reg [1:0] ip_list [0:3] = { 2, 1, 0, 1 };
+   wire [1:0] ip_step;
+   wire ip_enable;		// this will get wired to an output pin once I make the move to
+				// the v2 indicator panels !!!
+   wire ip3_clk, ip3_latch, ip3_out; // unused
+   wire ip_clk, ip_out, ip_latch;
+   ip_mux #(.SEL_WIDTH(2), .COUNT_WIDTH(3))
+   ip_mux (.clk_in(clk100k),
+	   // connect to the external indicator panels
+    	   .clk_out(ip_clk),
+	   .data(ip_out),
+	   .latch(ip_latch),
+	   .enable(ip_enable), 
+	   // connect to the config RAM
+	   .ip_count(ip_count),
+	   .ip_step(ip_step),
+	   .ip_sel(ip_list[ip_step]),
+	   // connections to the internal indicator panels
+	   // 0 = lamptest
+	   // 1 = QBUS
+	   // 2 = RK12
+	   // 3 = RP12 (once I implement it)
+	   .ip_clk({ lt_clk, qsic_clk, rk_ip_clk, ip3_clk }),
+	   .ip_latch({ lt_latch, qsic_latch, rk_ip_latch, ip3_latch }),
+	   .ip_data({ lt_out, qsic_out, rk_ip_out, ip3_out }));
+
+   // not entirely sure why these have to be inverted.  I must have wired the PMo wrong. !!!
+   assign ip_clk_pin = ~ip_clk;
+   assign ip_out_pin = ~ip_out;
+   assign ip_latch_pin = ~ip_latch;
 
 endmodule // pmo
