@@ -38,7 +38,7 @@ r1:	byte	.
 	eq	notmemory	; no memory card should fail CMD0
 	cmp	0x08		; CRC error
 	eq	illcrc
-	clr	csel		; release the SD card
+	sync,clr	csel	; release the SD card
 
 	;; CMD8 - SEND_IF_COND
 cmd8:	sete	0x04
@@ -66,7 +66,7 @@ r2:	byte	.
 	jmp	initfail
 vltgd:	byte	.		; don't care
 	set	vers2		; it's a v2 card
-v1:	clr	csel		; release the SD card
+v1:	sync,clr	csel	; release the SD card
 
 	;; CMD58 - READ_OCR
 	sete	0x08
@@ -89,10 +89,10 @@ r3:	byte	.
 	byte	.		; don't care
 	byte	.		; don't care
 	byte	.		; don't care
-	clr	csel		; release the SD card
+	sync,clr	csel	; release the SD card
 
 	;; CMD55 - APP_CMD
-initloop: sete 0x10	
+initloop: sync,sete 0x10	
 	sync,reset,imm	0x77
 	sync,crc7,imm	0
 	sync,crc7,imm	0
@@ -107,7 +107,7 @@ r4:	byte	.
 	eq	r4
 	cmp	0x0C		; illegal command (0x04) or CRC error (0x08)
 	eq	illcrc
-	clr	csel		; release the SD card
+	sync,clr	csel	; release the SD card
 	
 	;; ACMD41 - SD_SEND_OP_COND
 	sync,reset,imm	0x69
@@ -289,5 +289,11 @@ cmdtimeout: jmp initfail
 illcrc:	sete	0x84
 	jmp	initfail
 initfail:	clr	csel
+
+	;; for testing !!!
+	clr	time
+dly3:	timer	start
+	jmp	dly3
+
 waitcd:	nocard	start		; when the card goes away, go back to start
 	jmp	waitcd
