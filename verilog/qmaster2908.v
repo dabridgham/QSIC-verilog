@@ -178,7 +178,7 @@ module qmaster2908
 		  bus_master_set = 1; // let the device know we're bus master
 		  assert_addr_set = 1; // send the addressing info towards the Am2908s
 		  TWTBT_set = dma_write; // if it's going to be a write cycle
-		  timeout_next = 1;  // !!! give 1 extra cycle of delay to let the signals on
+		  timeout_next = 2;  // !!! give 2 extra cycles of delay to let the signals on
 				     // the ribbon cable settle
 		  set_state(ADDR_SETUP);
 	       end else
