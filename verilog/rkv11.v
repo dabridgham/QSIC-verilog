@@ -50,7 +50,8 @@ module rkv11
    input 	     sd_write_full, // write FIFO is full
    input [15:0]      sd_read_data,
    output reg 	     sd_read_enable, // enables reading data from the read FIFO
-   input 	     sd_read_empty // no data in the read FIFO
+   input 	     sd_read_empty, // no data in the read FIFO
+   output reg 	     sd_fifo_rst    // clear both FIFOs
    );
 
 
@@ -307,6 +308,7 @@ module rkv11
       sd_read <= 0;
       interrupt_request <= 0;
       RDY <= 0;
+      sd_fifo_rst <= 0;
       
       // register writes from the host processor
       //
@@ -354,6 +356,7 @@ module rkv11
 	       dma_read <= 0;
 	       saddr <= 0;
 	       sector_done <= 0;
+	       sd_fifo_rst <= 1;
 	       set_state(READY);
 	    end
 
@@ -416,9 +419,12 @@ module rkv11
 		  sd_write_enable <= 1;
 	       end
 
-	       // Need a NXM check in here and then a way to flush the write FIFO !!!
-
-	       if (sector_done) begin
+	       // If we see a NXM, just bail out.  This may leave data in the write FIFO but NXM
+	       // is a hard error and requires reseting the RK11 which will reset the FIFOs.
+	       if (dma_nxm) begin
+		  NXM <= 1;
+		  set_state(CMD_DONE);
+	       end else if (sector_done) begin
 		  if (sd_ready) begin
 		     // when a sector finishes, issue the write command to the storage device
 		     sd_lba <= lba;
@@ -448,14 +454,6 @@ module rkv11
 	    end else begin
 	       // once the storage device accepts the command, bump the disk address
 	       sector_next();
-`define OVERLAP 1
-`ifdef OVERLAP
-	       // this section starts the next DMA before the storage device writes are
-	       // completed.  It should work but it doesn't (for certain values of partial block
-	       // writes) and letting the storage device finish makes it work.  current
-	       // suspicion is something weird is going on in the FIFOs but, for now, we're
-	       // leaving it as is.  !!!
-
 	       if (WC_zero)
 		 // a sector is finished, the words are all transferred, then we're done.
 		 set_state(WRITE_WAIT_DONE);
@@ -464,25 +462,18 @@ module rkv11
 		  sector_done <= 0;
 		  set_state(WRITE_LOOP);
 	       end
-`else
-	       set_state(WRITE_WAIT_DONE); // testing !!! wait for the SD to finish before restarting DMA
-`endif
 	    end // else: !if(sd_ready)
 
 	  state[WRITE_WAIT_DONE]:
 	    // wait for the write command to finish.  eventually I need to check for write
 	    // errors here
 	    if (sd_ready)
-`ifdef OVERLAP
 	      if (WC_zero)
 		set_state(CMD_DONE);
 	      else begin
 		 sector_done <= 0;
 		 set_state(WRITE_LOOP);
 	      end
-`else
-              set_state(CMD_DONE);
-`endif
 	    else
 	      set_state(WRITE_WAIT_DONE);
 
@@ -508,9 +499,10 @@ module rkv11
 	       end
 
 	       // If we see a NXM, then just abandon everything, flush the FIFO, and we're done
-	       if (dma_nxm)
-		 set_state(READ_FLUSH);
-	       else if (sector_done) // Four cases of { sector_done, WC_zero } ...
+	       if (dma_nxm) begin
+		  NXM <= 1;
+		  set_state(READ_FLUSH);
+	       end else if (sector_done) // Four cases of { sector_done, WC_zero } ...
 		 if (WC_zero)
 		   // if saddr and WC hit 0 together, then we're done
 		   set_state(CMD_DONE);
@@ -550,8 +542,6 @@ module rkv11
 	    begin
 	       dma_write <= 0;
 	       dma_read <= 0;
-	       if (dma_nxm)
-		 NXM <= 1;
 	       if (IDE)
 		 interrupt_request <= 1;
 	       ID <= DR_SEL;
@@ -584,7 +574,7 @@ module rkv11
 	     { DRE, OVR, WLO, SKE, NXM, NXD, NXC, NXS, CSE, WCE, 1'b0, 3'b0, interrupt_request,
 	       1'b0, dma_read_req, dma_write_req, 1'b0, 1'b0, WC_display },
 	     { 2'b01, 2'b01, 1'b0, DR_SEL, 8'b0, CYL_ADD, 7'b0, SUR, SA },
-	     { mode == `MODE_Q22, mode == `MODE_Q18, 2'b0,
+	     { mode == `MODE_Q22, mode == `MODE_Q18, WC_zero, sector_done, // 2'b0,
 	      drive_ready[7], write_protect_flag[7], drive_read[7], drive_write[7],
 	      drive_ready[6], write_protect_flag[6], drive_read[6], drive_write[6],
 	      drive_ready[5], write_protect_flag[5], drive_read[5], drive_write[5],
