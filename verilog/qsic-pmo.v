@@ -295,6 +295,7 @@ module pmo
    wire [15:0] rk0_read_data;
    wire        rk0_read_enable;	    // enables reading data from the read FIFO
    wire        rk0_read_fifo_empty; // no data in the read FIFO
+   wire        rk0_fifo_rst;	    // reset command to the FIFOs
    
    qmaster2908 
      rk_master(clk20, RSYNC, RRPLY, RDMR, RSACK, RINIT, RDMGI, sRDMGI, RREF,
@@ -314,8 +315,7 @@ module pmo
 	       rk0_loaded, rk0_write_protect, rk0_dev_sel, rk0_lba, rk0_read, rk0_write, 
 	       rk0_cmd_ready,
 	       rk0_write_data, rk0_write_enable, rk0_write_fifo_full,
-	       rk0_read_data, rk0_read_enable, rk0_read_fifo_empty);
-
+	       rk0_read_data, rk0_read_enable, rk0_read_fifo_empty, rk0_fifo_rst);
 
    // The FIFOs between RK0 and the Storage Devices
    wire [15:0] sd_write_data;
@@ -325,7 +325,7 @@ module pmo
    wire        rk0_fifo_clk;
    wire        rk0_read_fifo_full, rk0_write_fifo_empty; // ignore
    fifo_generator_1 rk0_read_fifo
-     (.rst(RINIT),
+     (.rst(RINIT|rk0_fifo_rst),
       .wr_clk(rk0_fifo_clk),
       .rd_clk(clk20),
       .din(sd_read_data),
@@ -336,7 +336,7 @@ module pmo
       .empty(rk0_read_fifo_empty));
 
    fifo_generator_1 rk0_write_fifo
-     (.rst(RINIT),
+     (.rst(RINIT|rk0_fifo_rst),
       .wr_clk(clk20),
       .rd_clk(rk0_fifo_clk),
       .din(rk0_write_data),
