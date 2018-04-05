@@ -16,7 +16,7 @@ module ip_mux
    (input 		    clk_in,  // Indicator Panel Clock, ~100kHz
     output 		       clk_out, // Clk out to Indicator Panels
     output 		       data, // output signals to the indicator panels
-    output 		       latch,
+    output reg 		       latch,
     output 		       enable, 
 
     // connection to the config RAM
@@ -53,10 +53,10 @@ module ip_mux
    // clk_out is masked off for one clock cycle at the end of each indicator panel
    reg clk_mask = 0;
    always @(negedge clk_in)
-     if (done)
-       clk_mask <= 1;
-     else
-       clk_mask <= 0;
+     begin
+	clk_mask <= done;
+	latch <= done & last_panel;
+     end
    assign clk_out = clk_in & ~clk_mask;
 
    genvar 		ig;
@@ -68,7 +68,6 @@ module ip_mux
       assign ip_latch[ig] = clk_mask;
    end
 
-   assign latch = clk_mask & last_panel; // latch the actual indicator panels just at the end
    assign data = ip_data[ip_sel];  // send the right data out
 
 endmodule // ip_mux
