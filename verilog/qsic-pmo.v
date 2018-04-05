@@ -614,7 +614,7 @@ module pmo
 
 
    // The configuration for what indicator panels to display
-   reg [1:0] ip_count = 1;
+   reg [1:0] ip_count = 2;
    reg [1:0] ip_list [0:3] = { 2, 1, 0, 1 };
    wire [1:0] ip_step;
    wire ip_enable;		// this will get wired to an output pin once I make the move to
