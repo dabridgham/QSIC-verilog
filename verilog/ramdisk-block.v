@@ -8,12 +8,12 @@
 
 module ramdisk_block
   #(parameter BLOCKS = 2 * 12 * 5) // surfaces * sectors * cylinders (for RK05 but limited to
-				    // ~32 cylinders because of the amount of Block RAM)
+				   // ~32 cylinders because of the amount of Block RAM)
    (
     input 	      clk, // 20MHz
     input 	      reset, 
 
-   // connection to the disk controller
+    // connection to the disk controller
     output reg 	      command_ready, // ready to accept a read or write command
     input 	      read_cmd,
     input 	      write_cmd,
