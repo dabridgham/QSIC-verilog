@@ -11,12 +11,51 @@ module tb_qm8();
    
    // QBUS signals
    reg RSYNC, RRPLY, RDMR, RSACK, RINIT, RDMGI, RREF;
-   wire TSYNC, TWTBT, TDIN, TDOUT, TDMR, TSACK,  TDMGO;
-   
+   wire TSYNC, TDIN, TDOUT, TDMR, TSACK,  TDMGO;
+   wire rk_TWTBT;
+   reg 	TWTBT;
+   reg [21:0] BDAL;		// not inverted for ease of reading in gtkwave
 
    // internal controls
    reg 	dma_read, dma_write;
-   wire assert_addr, assert_data, bus_master, dma_complete, DALst, DALbe, nxm;
+   wire assert_addr, assert_data, read_pulse, bus_master, dma_complete, DALst, DALbe, nxm;
+   reg [21:0] TDAL;
+   wire [21:0] rk_addr = 22'o777720;
+   wire [21:0] rk_data = 22'o1234321;
+   wire        DALtx = assert_addr || assert_data;
+
+   // simulate QSIC top-level
+   wire [21:0] ZDAL = DALtx ? TDAL : BDAL;
+   //   assign ZBS7 = DALtx ? 0 : 1'bZ;
+   wire        ZWTBT = DALtx ? rk_TWTBT : 1'bZ;
+
+   always @(*) begin
+      if (assert_addr)
+	TDAL <= rk_addr;
+      else if (assert_data)
+	TDAL <= rk_data;
+      else
+	TDAL <= 22'bX;
+   end
+
+   // simulate am2908s
+   reg [21:0] am2908_latch;
+   reg 	      am2908_wtbt;
+   always @(posedge DALst) begin
+      am2908_latch <= ZDAL;
+      am2908_wtbt <= ZWTBT;
+   end
+
+   always @(*) begin
+      if (DALbe) begin
+	 BDAL <= am2908_latch;
+	 TWTBT <= am2908_wtbt;
+      end else begin
+	 BDAL <= 22'oX;
+	 TWTBT <= 0;
+      end
+   end
+   
 
    reg 	       qclk = 1;
    always @(*)
@@ -65,8 +104,8 @@ module tb_qm8();
 
    qmaster2908 qm
      (qclk, RSYNC, RRPLY, RDMR, RSACK, RINIT, RDMGI, sRDMGI, RREF,
-      TSYNC, TWTBT, TDIN, TDOUT, TDMR, TSACK, TDMGO,
-      dma_read, dma_write, assert_addr, assert_data,
+      TSYNC, rk_TWTBT, TDIN, TDOUT, TDMR, TSACK, TDMGO,
+      dma_read, dma_write, assert_addr, assert_data, read_pulse,
       bus_master, dma_complete, DALst, DALbe, nxm);   
 
    initial begin
@@ -94,7 +133,7 @@ module tb_qm8();
       while (TSYNC)
 	#1 read_request <= 0;
 
-      #1200 $finish_and_return(0);
+      #600 $finish_and_return(0);
    end
 
 endmodule // tb_qm8

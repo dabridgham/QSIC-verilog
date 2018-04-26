@@ -58,7 +58,7 @@ module tb_dma();
    assign { iREAD_MATCH, iWRITE_MATCH } = 0;
 
    reg 	       dma_read, dma_write;
-   wire        assert_addr, assert_data, latch_read_data, nxm;
+   wire        assert_addr, assert_data, read_pulse, bus_master, dma_complete, DALst, DALbe, nxm;
 
    // the bus arbitrator
    sim_proc processor(BDMR, BSACK, BSYNC, BRPLY, BDMGI);
@@ -86,8 +86,9 @@ module tb_dma();
 
 
    // a bus master
-   master master(qclk, RSYNC, RRPLY, RDMR, RSACK, RINIT, RDMGI, TSYNC, TDIN, TDOUT, TDMR, TSACK, TDMGO,
-		 dma_read, dma_write, assert_addr, assert_data, latch_read_data, nxm);
+   master qmaster2908(qclk, RSYNC, RRPLY, RDMR, RSACK, RINIT, RDMGI, TSYNC, TDIN, TDOUT, TDMR, TSACK, TDMGO,
+		      dma_read, dma_write, assert_addr, assert_data, 
+		      read_pulse, bus_master, dma_complete, DALst, DALbe, nxm);
 
    always @(*)
      #25 qclk <= ~qclk;		// 20 MHz clock (50ns cycle time)
