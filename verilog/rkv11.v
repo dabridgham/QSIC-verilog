@@ -37,6 +37,9 @@ module rkv11
    input 	     ip_latch,
    output 	     ip_out,
 
+   // configuration information
+   input [15:0]      cylinders,	// number of cylinders for the current disk (from the load table)
+
    // connection to the storage device
    input [7:0] 	     sd_loaded, // "disk" loaded and ready
    input [7:0] 	     sd_write_protect, // the "disk" is write protected
@@ -146,7 +149,7 @@ module rkv11
 	 next_sector = 0;
 	 if (SUR == 1) begin
 	    next_surface = 0;
-	    next_cylinder = CYL_ADD + 1; // overrun is caught elsewhere
+	    next_cylinder = CYL_ADD + 1; // overrun is caught below
 	 end else begin
 	    next_surface = 1;
 	    next_cylinder = CYL_ADD;
@@ -158,7 +161,9 @@ module rkv11
       end
    end // always @ begin
    // Detect Overrun
-   wire overrun = (SA >= SECTORS) || (CYL_ADD >= CYLINDERS);
+   wire overrun_sectors = (SA >= SECTORS);
+   wire overrun_cylinders = (CYL_ADD >= cylinders);
+   wire overrun = overrun_sectors || overrun_cylinders;
    
    // Function Commands
    localparam
@@ -173,7 +178,7 @@ module rkv11
 
    // internal initialization signal
 //   wire init = RINIT || (GO && (FUNC == CONTROL_RESET));
-   wire init = (GO && (FUNC == CONTROL_RESET));	// !!! for testing
+//   wire init = (GO && (FUNC == CONTROL_RESET));	// !!! for testing
 
    // simulate the sectors flying by on the disk.  we only have a single sector counter,
    // not one for each disk.  it seems sufficient.
@@ -380,7 +385,14 @@ module rkv11
 			 saddr <= 0;
 			 sector_done <= 0;
 			 WC_display <= -WC;
-			 set_state(WRITE_LOOP);
+			 if (overrun) begin
+			    if (overrun_cylinders)
+			      NXC <= 1;
+			    else // overrun_sectors
+			      NXS <= 1;
+			    set_state(CMD_DONE);
+			 end else
+			   set_state(WRITE_LOOP);
 		      end
 		    READ:
 		      begin
@@ -388,10 +400,18 @@ module rkv11
 			 dma_write <= 1;
 			 saddr <= 0;
 			 sector_done <= 0;
-			 sd_lba <= lba;
-			 sd_read <= 1; // start the first read from the storage device
 			 WC_display <= -WC;
-			 set_state(READ_START);
+			 if (overrun) begin
+			    if (overrun_cylinders)
+			      NXC <= 1;
+			    else // overrun_sectors
+			      NXS <= 1;
+			    set_state(CMD_DONE);
+			 end else begin
+			    sd_lba <= lba;
+			    sd_read <= 1; // start the first read from the storage device
+			    set_state(READ_START);
+			 end
 		      end
 
 		    // gotta figure these out !!!
@@ -427,9 +447,14 @@ module rkv11
 	       end else if (sector_done) begin
 		  if (sd_ready) begin
 		     // when a sector finishes, issue the write command to the storage device
-		     sd_lba <= lba;
-		     sd_write <= 1;
-		     set_state(WRITE_WAIT);
+		     if (overrun) begin
+			OVR <= 1;
+			set_state(CMD_DONE);
+		     end else begin
+			sd_lba <= lba;
+			sd_write <= 1;
+			set_state(WRITE_WAIT);
+		     end
 		  end else
 		    // if the storage device isn't ready, just loop until it is.  sector_done
 		    // being set will pause DMA for now.
@@ -510,10 +535,15 @@ module rkv11
 		    if (sd_ready) begin
 		       // saddr has rolled over but there are still words to read so read the next
 		       // block from the storage device
-		       sd_lba <= lba;
-		       sd_read <= 1;
-		       sector_done <= 0;
-		       set_state(READ_START);
+		       if (overrun) begin
+			  OVR <= 1;
+			  set_state(CMD_DONE);
+		       end else begin
+			  sd_lba <= lba;
+			  sd_read <= 1;
+			  sector_done <= 0;
+			  set_state(READ_START);
+		       end
 		    end else
 		      set_state(READ_LOOP);
 		 end

@@ -282,7 +282,8 @@ module pmo
    wire        rk_ip_out;
 
    // connection to the storage device
-   wire [7:0]  rk0_loaded;	     // "disk" loaded and ready
+   wire [15:0] rk0_disk_cylinders;    // number of cylinders for this disk from the load table
+   wire [7:0]  rk0_loaded;	      // "disk" loaded and ready
    reg [7:0]   rk0_write_protect = 0; // the "disk" is write protected
    wire [2:0]  rk0_dev_sel;	     // "disk" drive select
    wire [12:0] rk0_lba;		     // linear block address
@@ -311,7 +312,7 @@ module pmo
    rkv11 rkv11(clk20, addr_reg[12:0], bs7_reg, rk_tal, RDL, rk_tdl, RINIT,
 	       rk_match, rk_assert_vector, sRDOUTpulse, rk_read_pulse,
 	       rk_dma_read, rk_dma_write, rk_bus_master, rk_dma_complete, rk_nxm, 
-	       rk_irq, rk_ip_clk, rk_ip_latch, rk_ip_out,
+	       rk_irq, rk_ip_clk, rk_ip_latch, rk_ip_out, rk0_disk_cylinders,
 	       rk0_loaded, rk0_write_protect, rk0_dev_sel, rk0_lba, rk0_read, rk0_write, 
 	       rk0_cmd_ready,
 	       rk0_write_data, rk0_write_enable, rk0_write_fifo_full,
@@ -524,28 +525,29 @@ module pmo
 `define pack_sd1 2'o1
 `define pack_ramdisk 2'o2
 `define pack_usb 2'o3
-   // { Enable, Storage Device, LBA Offset }
-   reg [34:0]  rk0_load_table [0:7] 
+   // { Enable, Cylinders, Storage Device, LBA Offset }
+   reg [50:0]  rk0_load_table [0:7] 
      = {
 `ifdef SD0
-	{ `pack_enable, `pack_sd0, 32'h0002_0000 },
+	{ `pack_enable, 16'd203, `pack_sd0, 32'h0002_0000 },
  `ifdef RAM_DISK
-	{ `pack_enable, `pack_ramdisk, 32'h0000_0000 },
+	{ `pack_enable, 16'd32, `pack_ramdisk, 32'h0000_0000 },
  `else
-	{ `pack_enable, `pack_sd0, 32'h0002_2000 },
+	{ `pack_enable, 16'd203, `pack_sd0, 32'h0002_2000 },
  `endif
 `else
-	{ `pack_enable, `pack_ramdisk, 32'h0000_0000 },
-	{ `pack_disable, `pack_sd0, 32'h0002_2000 },
+	{ `pack_enable, 16'd32, `pack_ramdisk, 32'h0000_0000 },
+	{ `pack_disable, 16'd203, `pack_sd0, 32'h0002_2000 },
 `endif
-	{ `pack_disable, `pack_sd0, 32'h0002_4000 },
-	{ `pack_disable, `pack_sd0, 32'h0002_6000 },
-	{ `pack_disable, `pack_sd0, 32'h0002_8000 },
-	{ `pack_disable, `pack_sd0, 32'h0002_a000 },
-	{ `pack_disable, `pack_sd0, 32'h0002_c000 },
-	{ `pack_disable, `pack_sd0, 32'h0002_e000 }
+	{ `pack_disable, 16'd203, `pack_sd0, 32'h0002_4000 },
+	{ `pack_disable, 16'd203, `pack_sd0, 32'h0002_6000 },
+	{ `pack_disable, 16'd203, `pack_sd0, 32'h0002_8000 },
+	{ `pack_disable, 16'd203, `pack_sd0, 32'h0002_a000 },
+	{ `pack_disable, 16'd203, `pack_sd0, 32'h0002_c000 },
+	{ `pack_disable, 16'd203, `pack_sd0, 32'h0002_e000 }
 	};
-   wire        pack_enable = rk0_load_table[rk0_dev_sel][34];
+   wire        pack_enable = rk0_load_table[rk0_dev_sel][50];
+   assign rk0_disk_cylinders = rk0_load_table[rk0_dev_sel][49:34];
    wire [1:0]  pack_sd_select = rk0_load_table[rk0_dev_sel][33:32];
    wire [31:0] pack_offset = rk0_load_table[rk0_dev_sel][31:0];
    
@@ -555,7 +557,7 @@ module pmo
    wire [0:3]   sd_ready = { sd0_dev_ready, sd0_dev_ready, rd_dev_ready, usb_dev_ready };
    genvar      i;
    for (i=0; i<8; i=i+1)
-     assign rk0_loaded[i] = rk0_load_table[i][34] & sd_ready[rk0_load_table[i][33:32]];
+     assign rk0_loaded[i] = rk0_load_table[i][50] & sd_ready[rk0_load_table[i][33:32]];
 
 
    //
@@ -612,6 +614,78 @@ module pmo
 	      { 36'o777_777_777_777 },
 	      { 36'o777_777_777_777 });
 
+   // !!! An experimental Indicator Panel for debugging the NXM problem !!!
+   wire ip3_clk, ip3_latch, ip3_out;
+
+   reg 	nxm_DALtx, nxm_read_cycle, nxm_bs7_reg;
+   reg 	nxm_ZWTBT, nxm_ZBS7, nxm_RSYNC, nxm_RDIN, nxm_RDOUT, nxm_RRPLY, nxm_RREF;
+   reg 	nxm_RIAKI, nxm_RIRQ7, nxm_RIRQ6, nxm_RIRQ5, nxm_RIRQ4;
+   reg 	nxm_RSACK, nxm_RDMGI, nxm_RDMR, nxm_RINIT, nxm_RDCOK, nxm_RPOK;
+   reg [21:0] nxm_ZDAL;
+   reg [21:0] nxm_addr_reg;
+   
+   always @(posedge clk20)
+     if (RINIT) begin
+ 	nxm_DALtx = 0;
+	nxm_read_cycle = 0;
+	nxm_bs7_reg = 0;
+ 	nxm_ZWTBT = 0;
+	nxm_ZBS7 = 0;
+	nxm_RSYNC = 0;
+	nxm_RDIN = 0;
+	nxm_RDOUT = 0;
+	nxm_RRPLY = 0;
+	nxm_RREF = 0;
+ 	nxm_RIAKI = 0;
+	nxm_RIRQ7 = 0;
+	nxm_RIRQ6 = 0;
+	nxm_RIRQ5 = 0;
+	nxm_RIRQ4 = 0;
+ 	nxm_RSACK = 0;
+	nxm_RDMGI = 0;
+	nxm_RDMR = 0;
+	nxm_RINIT = 0;
+	nxm_RDCOK = 0;
+	nxm_RPOK = 0;
+	nxm_ZDAL = 0;
+	nxm_addr_reg = 0;
+     end else if (rk_nxm) begin
+ 	nxm_DALtx = DALtx;
+	nxm_read_cycle = read_cycle;
+	nxm_bs7_reg = bs7_reg;
+ 	nxm_ZWTBT = ZWTBT;
+	nxm_ZBS7 = ZBS7;
+	nxm_RSYNC = RSYNC;
+	nxm_RDIN = RDIN;
+	nxm_RDOUT = RDOUT;
+	nxm_RRPLY = RRPLY;
+	nxm_RREF = RREF;
+ 	nxm_RIAKI = RIAKI;
+	nxm_RIRQ7 = RIRQ7;
+	nxm_RIRQ6 = RIRQ6;
+	nxm_RIRQ5 = RIRQ5;
+	nxm_RIRQ4 = RIRQ4;
+ 	nxm_RSACK = RSACK;
+	nxm_RDMGI = RDMGI;
+	nxm_RDMR = RDMR;
+	nxm_RINIT = RINIT;
+	nxm_RDCOK = RDCOK;
+	nxm_RPOK = RPOK;
+	nxm_ZDAL = ZDAL;
+	nxm_addr_reg = rk_tal;
+     end
+
+   indicator
+     nxm_catch(ip3_clk, ip3_latch, ip3_out,
+	       { nxm_DALtx, 1'b0, nxm_ZDAL, 3'b0,
+		 sd0_cd, sd0_v1, sd0_v2, sd0_SC, sd0_HC, sd0_dev_ready, sd0_read, sd0_write, 1'b0 },
+	       { nxm_read_cycle, nxm_bs7_reg, nxm_addr_reg, 3'b0, 6'b0, rk_dma_read, rk_dma_write, 1'b0 },
+	       { nxm_ZWTBT, nxm_ZBS7, nxm_RSYNC, nxm_RDIN, nxm_RDOUT, nxm_RRPLY, nxm_RREF, 1'b0, nxm_RIAKI, nxm_RIRQ7, nxm_RIRQ6, nxm_RIRQ5, nxm_RIRQ4,
+		 1'b0, nxm_RSACK, nxm_RDMGI, nxm_RDMR, 1'b0, nxm_RINIT, 1'b0, nxm_RDCOK, nxm_RPOK, 14'b0 },
+	       { DALtx & ZWTBT, DALtx & ZBS7, TSYNC, TDIN, TDOUT, TRPLY, TREF, 1'b0,
+		 TIAKO, TIRQ7, TIRQ6, TIRQ5, TIRQ4, 1'b0, TSACK, TDMGO, TDMR,
+		 10'b0, sd0_err, 1'b0 });
+
 
    // The configuration for what indicator panels to display
    reg [1:0] ip_count = 2;
@@ -619,7 +693,6 @@ module pmo
    wire [1:0] ip_step;
    wire ip_enable;		// this will get wired to an output pin once I make the move to
 				// the v2 indicator panels !!!
-   wire ip3_clk, ip3_latch, ip3_out; // unused
    wire ip_clk, ip_out, ip_latch;
    ip_mux #(.SEL_WIDTH(2), .COUNT_WIDTH(3))
    ip_mux (.clk_in(clk100k),
