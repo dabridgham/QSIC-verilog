@@ -3,8 +3,8 @@
 ;;; Copyright 2017 Noel Chiappa and David Bridgham
 	
 
-start:	clr	hispd|hicap|vers2|devrdy|cmdrdy|csel|time
-	sete	0x01
+start:	nop	; sete	0x01
+start2:	clr	hispd|hicap|vers2|devrdy|cmdrdy|csel|time
 	nop			; do I need longer to let CS settle?
 	nocard	.		; wait for a card to appear
 	clr	time		; reset the timer
@@ -170,7 +170,7 @@ idle:	sete	0x40
 	sync
 idloop:	read	bread
 	write	bwrite
-	nocard	start
+	nocard	start2
 	jmp	idloop
 
 	;; 
@@ -284,7 +284,7 @@ rderr:	clr	csel
 	;; in any error, just wait for the card to be removed and reset
 crcer:	sete	0x95
 	jmp	initfail
-notmemory:	jmp	initfail
+notmemory: jmp	initfail
 cmdtimeout: jmp initfail
 illcrc:	sete	0x84
 	jmp	initfail
@@ -292,7 +292,7 @@ initfail:	clr	csel
 
 	;; for testing !!!
 	clr	time
-dly3:	timer	start
+dly3:	timer	start2
 	jmp	dly3
 
 waitcd:	nocard	start		; when the card goes away, go back to start

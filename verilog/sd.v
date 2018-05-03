@@ -67,7 +67,7 @@ module SD_spi
    input 	     clk, // F_PP between 6.4 and 25 MHz
    input 	     reset,
    output reg 	     device_ready, // device is ready (card is plugged in and through init)
-   output reg 	     cmd_ready,	   // ready to accept a read or write command (not busy)
+   output reg 	     cmd_ready, // ready to accept a read or write command (not busy)
    input 	     read_cmd,
    input 	     write_cmd,
    input [31:0]      block_address,
@@ -87,7 +87,7 @@ module SD_spi
    output 	     ip_SC, // Standard Capacity
    output 	     ip_HC, // High Capacity or Extended Capacity
    output reg [7:0]  ip_err, // saw an error
-   output reg [7:0]  ip_d8
+   output [7:0]      ip_d8
    );
    
    // For SPI mode, the signals get different meanings
@@ -195,16 +195,21 @@ module SD_spi
    wire 	card_detect = cdra[1];
    assign ip_cd = card_detect;	// send the card detect to the indicator panel
 
-   // countdown timer - from clear to cd_timout is about 200ms with a 20MHz clock (when using
-   // the slower clock F_OD).  could probably shorten that considerably.
-   reg [17:0] 	cd_timer;
-   always @(negedge sd_clk)
-     cd_timer <= (clr_bits & literal_timeout) ? 0 : cd_timer+1;
-`ifdef SIM
-   wire 	cd_timeout = cd_timer[6];   // shorten timeout when simulating
-`else
-   wire 	cd_timeout = cd_timer[17];
-`endif
+   // countdown timer - from clear to cd_timout is about 200ms with a 20MHz clock
+   reg [21:0] 	cd_timer = 0;
+   wire [21:0] 	cd_timer_next;
+   wire 	cd_overflow;
+   assign { cd_overflow, cd_timer_next } = cd_timer + 1;
+   reg 		cd_timeout = 0;
+   always @(posedge clk)
+     if (clr_bits && literal_timeout) begin
+	cd_timer <= 0;
+	cd_timeout <= 0;
+     end else begin
+	cd_timer <= cd_timer_next;
+	if (cd_overflow)
+	  cd_timeout <= 1;
+     end
    
    // keep track of whether the card is standard or high capacity
    reg 		high_capacity = 0;
@@ -349,7 +354,7 @@ module SD_spi
 	   // this one is a little strange.  rx_sr is already being copied to rx_reg on the byte
 	   // strobe.  To do a compare, we save the literal here for branching later.
 	   literal_reg <= literal;
-	   ip_d8 <= rx_reg;
+//	   ip_d8 <= rx_reg;
 	end
 	RX_DATA_LOW: read_data[7:0] <= rx_reg;
 	RX_DATA_HIGH: read_data[15:8] <= rx_reg;
