@@ -1,37 +1,6 @@
-EESchema Schematic File Version 2
-LIBS:qsic-rescue
-LIBS:power
-LIBS:device
-LIBS:transistors
-LIBS:conn
-LIBS:linear
-LIBS:regul
-LIBS:74xx
-LIBS:cmos4000
-LIBS:adc-dac
-LIBS:memory
-LIBS:xilinx
-LIBS:microcontrollers
-LIBS:dsp
-LIBS:microchip
-LIBS:analog_switches
-LIBS:motorola
-LIBS:texas
-LIBS:intel
-LIBS:audio
-LIBS:interface
-LIBS:digital-audio
-LIBS:philips
-LIBS:display
-LIBS:cypress
-LIBS:siliconi
-LIBS:opto
-LIBS:atmel
-LIBS:contrib
-LIBS:valves
-LIBS:myLib
+EESchema Schematic File Version 4
 LIBS:qsic-cache
-EELAYER 25 0
+EELAYER 26 0
 EELAYER END
 $Descr A 11000 8500
 encoding utf-8
@@ -46,7 +15,7 @@ Comment3 ""
 Comment4 ""
 $EndDescr
 $Comp
-L PWR_FLAG #FLG01
+L power:PWR_FLAG #FLG01
 U 1 1 56137D79
 P 5000 7500
 F 0 "#FLG01" H 5000 7595 50  0001 C CNN
@@ -57,7 +26,7 @@ F 3 "" H 5000 7500 60  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L PWR_FLAG #FLG02
+L power:PWR_FLAG #FLG02
 U 1 1 56137D87
 P 5400 7500
 F 0 "#FLG02" H 5400 7595 50  0001 C CNN
@@ -68,7 +37,7 @@ F 3 "" H 5400 7500 60  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L +5V #PWR03
+L power:+5V #PWR03
 U 1 1 56137DA4
 P 5000 7500
 F 0 "#PWR03" H 5000 7350 50  0001 C CNN
@@ -79,7 +48,7 @@ F 3 "" H 5000 7500 60  0000 C CNN
 	-1   0    0    1   
 $EndComp
 $Comp
-L GND #PWR04
+L power:GND #PWR04
 U 1 1 56137DB2
 P 5400 7500
 F 0 "#PWR04" H 5400 7250 50  0001 C CNN
@@ -90,7 +59,7 @@ F 3 "" H 5400 7500 60  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L GND #PWR05
+L power:GND #PWR05
 U 1 1 58814E97
 P 900 5000
 F 0 "#PWR05" H 900 4750 50  0001 C CNN
@@ -101,7 +70,7 @@ F 3 "" H 900 5000 60  0000 C CNN
 	-1   0    0    -1  
 $EndComp
 $Comp
-L +5V #PWR06
+L power:+5V #PWR06
 U 1 1 58814E9D
 P 850 4000
 F 0 "#PWR06" H 850 3850 50  0001 C CNN
@@ -125,7 +94,7 @@ NoConn ~ 1000 2000
 NoConn ~ 1000 1900
 NoConn ~ 1000 1800
 $Comp
-L QBUS B101
+L myLib:QBUS B101
 U 1 1 58814EB8
 P 1200 3600
 F 0 "B101" H 600 3500 60  0000 C CNN
@@ -136,7 +105,7 @@ F 3 "" H 1200 3450 60  0000 C CNN
 	-1   0    0    -1  
 $EndComp
 $Comp
-L +12V #PWR07
+L power:+12V #PWR07
 U 1 1 58814ECD
 P 850 3600
 F 0 "#PWR07" H 850 3450 50  0001 C CNN
@@ -147,7 +116,7 @@ F 3 "" H 850 3600 50  0000 C CNN
 	0    -1   1    0   
 $EndComp
 $Comp
-L PWR_FLAG #FLG08
+L power:PWR_FLAG #FLG08
 U 1 1 58814F6A
 P 5800 7500
 F 0 "#FLG08" H 5800 7595 50  0001 C CNN
@@ -158,7 +127,7 @@ F 3 "" H 5800 7500 60  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L +12V #PWR09
+L power:+12V #PWR09
 U 1 1 58814F79
 P 5800 7500
 F 0 "#PWR09" H 5800 7350 50  0001 C CNN
@@ -239,7 +208,7 @@ F0 "Memory" 60
 F1 "memory.sch" 60
 $EndSheet
 $Comp
-L XC7A75T-CSG324 U401
+L myLib:XC7A75T-CSG324 U401
 U 4 1 58C75923
 P 7900 5800
 F 0 "U401" H 8100 6000 60  0000 C CNN
@@ -250,7 +219,7 @@ F 3 "" V 8600 5500 60  0001 C CNN
 	-1   0    0    1   
 $EndComp
 $Comp
-L XC7A75T-CSG324 U401
+L myLib:XC7A75T-CSG324 U401
 U 5 1 58C75986
 P 10300 5800
 F 0 "U401" H 10500 6000 60  0000 C CNN
@@ -366,7 +335,7 @@ $EndSheet
 Wire Wire Line
 	1000 4300 900  4300
 Wire Wire Line
-	900  4300 900  5000
+	900  4300 900  4400
 Wire Wire Line
 	1000 4900 900  4900
 Connection ~ 900  4900
@@ -386,16 +355,16 @@ Wire Wire Line
 	1000 4400 900  4400
 Connection ~ 900  4400
 Wire Wire Line
-	850  4000 1000 4000
+	850  4000 900  4000
 Wire Wire Line
 	1000 4100 900  4100
 Wire Wire Line
-	900  4000 900  4200
+	900  4000 900  4100
 Wire Wire Line
 	900  4200 1000 4200
 Connection ~ 900  4100
 Wire Wire Line
-	850  3600 1000 3600
+	850  3600 900  3600
 Wire Wire Line
 	1000 3700 900  3700
 Wire Wire Line
@@ -446,8 +415,6 @@ Wire Wire Line
 	2650 3500 3000 3500
 Wire Wire Line
 	2650 3600 3000 3600
-Wire Bus Line
-	3100 1350 3100 3700
 Wire Bus Line
 	3650 1350 3100 1350
 Wire Wire Line
@@ -602,4 +569,24 @@ U 58C5D743
 F0 "I/O" 60
 F1 "io.sch" 60
 $EndSheet
+Wire Wire Line
+	900  4900 900  5000
+Wire Wire Line
+	900  4800 900  4900
+Wire Wire Line
+	900  4700 900  4800
+Wire Wire Line
+	900  4600 900  4700
+Wire Wire Line
+	900  4500 900  4600
+Wire Wire Line
+	900  4400 900  4500
+Wire Wire Line
+	900  4100 900  4200
+Wire Wire Line
+	900  3600 1000 3600
+Wire Wire Line
+	900  4000 1000 4000
+Wire Bus Line
+	3100 1350 3100 3700
 $EndSCHEMATC
