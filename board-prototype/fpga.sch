@@ -1,36 +1,6 @@
-EESchema Schematic File Version 2
-LIBS:power
-LIBS:device
-LIBS:transistors
-LIBS:conn
-LIBS:linear
-LIBS:regul
-LIBS:74xx
-LIBS:cmos4000
-LIBS:adc-dac
-LIBS:memory
-LIBS:xilinx
-LIBS:microcontrollers
-LIBS:dsp
-LIBS:microchip
-LIBS:analog_switches
-LIBS:motorola
-LIBS:texas
-LIBS:intel
-LIBS:audio
-LIBS:interface
-LIBS:digital-audio
-LIBS:philips
-LIBS:display
-LIBS:cypress
-LIBS:siliconi
-LIBS:opto
-LIBS:atmel
-LIBS:contrib
-LIBS:valves
-LIBS:myLib
+EESchema Schematic File Version 4
 LIBS:proto-cache
-EELAYER 25 0
+EELAYER 26 0
 EELAYER END
 $Descr USLetter 8500 11000 portrait
 encoding utf-8
@@ -45,7 +15,7 @@ Comment3 ""
 Comment4 ""
 $EndDescr
 $Comp
-L +5V #PWR0127
+L power:+5V #PWR0127
 U 1 1 56BE91DF
 P 3400 1400
 F 0 "#PWR0127" H 3400 1250 50  0001 C CNN
@@ -56,7 +26,7 @@ F 3 "" H 3400 1400 60  0000 C CNN
 	0    1    -1   0   
 $EndComp
 $Comp
-L +5V #PWR0128
+L power:+5V #PWR0128
 U 1 1 56BE91E5
 P 2800 1400
 F 0 "#PWR0128" H 2800 1250 50  0001 C CNN
@@ -67,7 +37,7 @@ F 3 "" H 2800 1400 60  0000 C CNN
 	0    -1   -1   0   
 $EndComp
 $Comp
-L GND #PWR0129
+L power:GND #PWR0129
 U 1 1 56BE91EB
 P 2800 1500
 F 0 "#PWR0129" H 2800 1250 50  0001 C CNN
@@ -78,7 +48,7 @@ F 3 "" H 2800 1500 60  0000 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L GND #PWR0130
+L power:GND #PWR0130
 U 1 1 56BE91F1
 P 4350 1500
 F 0 "#PWR0130" H 4350 1250 50  0001 C CNN
@@ -89,7 +59,7 @@ F 3 "" H 4350 1500 60  0000 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L GND #PWR0131
+L power:GND #PWR0131
 U 1 1 56BE91F7
 P 3400 1500
 F 0 "#PWR0131" H 3400 1250 50  0001 C CNN
@@ -100,7 +70,7 @@ F 3 "" H 3400 1500 60  0000 C CNN
 	0    -1   1    0   
 $EndComp
 $Comp
-L GND #PWR0132
+L power:GND #PWR0132
 U 1 1 56BE91FD
 P 4950 1500
 F 0 "#PWR0132" H 4950 1250 50  0001 C CNN
@@ -111,7 +81,7 @@ F 3 "" H 4950 1500 60  0000 C CNN
 	0    -1   1    0   
 $EndComp
 $Comp
-L GND #PWR0133
+L power:GND #PWR0133
 U 1 1 56BE9203
 P 3400 2900
 F 0 "#PWR0133" H 3400 2650 50  0001 C CNN
@@ -122,7 +92,7 @@ F 3 "" H 3400 2900 60  0000 C CNN
 	0    -1   1    0   
 $EndComp
 $Comp
-L GND #PWR0134
+L power:GND #PWR0134
 U 1 1 56BE9209
 P 2800 2900
 F 0 "#PWR0134" H 2800 2650 50  0001 C CNN
@@ -133,7 +103,7 @@ F 3 "" H 2800 2900 60  0000 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L GND #PWR0135
+L power:GND #PWR0135
 U 1 1 56BE9215
 P 4350 3000
 F 0 "#PWR0135" H 4350 2750 50  0001 C CNN
@@ -144,7 +114,7 @@ F 3 "" H 4350 3000 60  0000 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L GND #PWR0136
+L power:GND #PWR0136
 U 1 1 56BE921B
 P 3400 4500
 F 0 "#PWR0136" H 3400 4250 50  0001 C CNN
@@ -155,7 +125,7 @@ F 3 "" H 3400 4500 60  0000 C CNN
 	0    -1   1    0   
 $EndComp
 $Comp
-L GND #PWR0137
+L power:GND #PWR0137
 U 1 1 56BE9227
 P 4350 4500
 F 0 "#PWR0137" H 4350 4250 50  0001 C CNN
@@ -166,7 +136,7 @@ F 3 "" H 4350 4500 60  0000 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L CONN_ZTEX_AB P1
+L myLib:CONN_ZTEX_AB P1
 U 1 1 56BE923A
 P 3050 2950
 F 0 "P1" H 3150 4600 50  0000 L CNN
@@ -177,7 +147,7 @@ F 3 "" H 3050 2550 60  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L CONN_ZTEX_CD P2
+L myLib:CONN_ZTEX_CD P2
 U 1 1 56BE9241
 P 4600 2950
 F 0 "P2" H 4700 4600 50  0000 L CNN
@@ -305,7 +275,7 @@ IPlatch_P
 Text GLabel 4750 7550 2    60   Output ~ 0
 IPlatch_N
 $Comp
-L +12V #PWR0138
+L power:+12V #PWR0138
 U 1 1 56BE94C0
 P 5750 7150
 F 0 "#PWR0138" H 5750 7000 50  0001 C CNN
@@ -316,7 +286,7 @@ F 3 "" H 5750 7150 60  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L +12V #PWR0139
+L power:+12V #PWR0139
 U 1 1 56BE94C6
 P 6350 7150
 F 0 "#PWR0139" H 6350 7000 50  0001 C CNN
@@ -327,7 +297,7 @@ F 3 "" H 6350 7150 60  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L GND #PWR0140
+L power:GND #PWR0140
 U 1 1 56BE94CC
 P 5650 7650
 F 0 "#PWR0140" H 5650 7400 50  0001 C CNN
@@ -338,7 +308,7 @@ F 3 "" H 5650 7650 60  0000 C CNN
 	-1   0    0    -1  
 $EndComp
 $Comp
-L GND #PWR0141
+L power:GND #PWR0141
 U 1 1 56BE94D2
 P 6450 7650
 F 0 "#PWR0141" H 6450 7400 50  0001 C CNN
@@ -365,7 +335,7 @@ IPlatch_N
 NoConn ~ 5800 6200
 NoConn ~ 6300 6200
 Wire Wire Line
-	5650 7300 5650 7650
+	5650 7300 5650 7600
 Wire Wire Line
 	5650 7600 5800 7600
 Wire Wire Line
@@ -373,11 +343,11 @@ Wire Wire Line
 Wire Wire Line
 	6450 7600 6300 7600
 Wire Wire Line
-	6450 7300 6450 7650
+	6450 7300 6450 7600
 Wire Wire Line
 	6300 7300 6450 7300
 Wire Wire Line
-	6350 7150 6350 7500
+	6350 7150 6350 7400
 Wire Wire Line
 	6350 7400 6300 7400
 Wire Wire Line
@@ -385,7 +355,7 @@ Wire Wire Line
 Wire Wire Line
 	5800 7400 5750 7400
 Wire Wire Line
-	5750 7150 5750 7500
+	5750 7150 5750 7400
 Wire Wire Line
 	5750 7500 5800 7500
 Wire Notes Line
@@ -397,7 +367,7 @@ Wire Notes Line
 Wire Notes Line
 	3300 5550 3300 8300
 $Comp
-L CONN_02X16 P103
+L conn:CONN_02X16 P103
 U 1 1 56BF62BD
 P 1950 7000
 F 0 "P103" H 1950 7850 50  0000 C CNN
@@ -408,9 +378,11 @@ F 3 "" H 1950 5900 50  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L MAX3033E U401
+L proto-rescue:MAX3033E U401
 U 1 1 56CCED40
 P 3950 6800
+AR Path="/56CCED40" Ref="U401"  Part="1" 
+AR Path="/56BE8FCD/56CCED40" Ref="U401"  Part="1" 
 F 0 "U401" H 4500 7050 60  0000 C CNN
 F 1 "MAX3033E" H 4050 7050 60  0000 C CNN
 F 2 "Housings_SOIC:SOIC-16_3.9x9.9mm_Pitch1.27mm" H 3950 6800 60  0001 C CNN
@@ -421,12 +393,12 @@ $EndComp
 Wire Wire Line
 	3650 6800 3750 6800
 Wire Wire Line
-	3650 6600 3650 6800
+	3650 6600 3650 6700
 Wire Wire Line
 	3750 6700 3650 6700
 Connection ~ 3650 6700
 $Comp
-L +3V3 #PWR0142
+L power:+3V3 #PWR0142
 U 1 1 56CCF177
 P 3650 6600
 F 0 "#PWR0142" H 3650 6450 50  0001 C CNN
@@ -437,7 +409,7 @@ F 3 "" H 3650 6600 50  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L CONN_02X04 P102
+L conn:CONN_02X04 P102
 U 1 1 56CCF1EB
 P 6050 7450
 F 0 "P102" H 6050 7700 50  0000 C CNN
@@ -448,7 +420,7 @@ F 3 "" H 6050 6250 60  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L CONN_02X05 P101
+L conn:CONN_02X05 P101
 U 1 1 56CCF25D
 P 6050 6200
 F 0 "P101" H 6050 6500 50  0000 C CNN
@@ -473,7 +445,7 @@ IPblank_P
 Text GLabel 4750 7800 2    60   Output ~ 0
 IPblank_N
 $Comp
-L GND #PWR0143
+L power:GND #PWR0143
 U 1 1 56CE3906
 P 4950 3000
 F 0 "#PWR0143" H 4950 2750 50  0001 C CNN
@@ -484,7 +456,7 @@ F 3 "" H 4950 3000 60  0000 C CNN
 	0    -1   1    0   
 $EndComp
 $Comp
-L GND #PWR0144
+L power:GND #PWR0144
 U 1 1 56CE3926
 P 4950 4500
 F 0 "#PWR0144" H 4950 4250 50  0001 C CNN
@@ -592,4 +564,14 @@ RBS7
 Text GLabel 2800 4300 0    60   Input ~ 0
 RWTBT
 NoConn ~ 4350 1400
+Wire Wire Line
+	3650 6700 3650 6800
+Wire Wire Line
+	5750 7400 5750 7500
+Wire Wire Line
+	6350 7400 6350 7500
+Wire Wire Line
+	5650 7600 5650 7650
+Wire Wire Line
+	6450 7600 6450 7650
 $EndSCHEMATC
