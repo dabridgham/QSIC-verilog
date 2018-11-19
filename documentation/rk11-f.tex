@@ -283,17 +283,19 @@ configurable.\footnote{Assuming we include two RK11s by default, I
 \regaddr{777414}
 
 \bigskip
-This register is an incompatible extension to the RK11, available on
-the QSIC only\footnote{Potentially we could have 22-bit addressing
-  with the USIC if using the Able ENABLE functionality.  Definitely an
-  incompatible extension.}, in order to give full 22-bit addressing.
-On the RK11-C it was a maintenance register and on the RK11-D and
-RK11-E it was unused.  If addressing is set to 18-bits, this register
-reads as 0 and writing has no effect.
+On the RK11-C this register was a maintenance register and on the
+RK11-D it was unused.  If addressing is set to 18-bits, this register
+reads as 0 and writing has no effect, like on the RK11-D.
+
+If addressing is set to 22-bits, this register extends the Bus
+Address register to a full 22-bits.  On the Unibus, this only makes
+sense in the presence of the ENABLE+ and the address is then a
+physical address rather than being mapped by the ENABLE+.  On the QBUS
+it's always a physical address anyway.
 
 \begin{register16}
   \bits{0}{5}{\scriptsize BAE}
-  \bits{6}{15}{\scriptsize ---}
+  \bits{6}{15}{\scriptsize 0}
 \end{register16}
 
 \begin{bittable}
