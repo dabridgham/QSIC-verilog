@@ -1,0 +1,22 @@
+% -*- LaTeX -*-
+%
+% RP11-D Programming Manual for the QSIC/USIC
+
+\chapter{RP11-D}
+\section{Intro}
+The RP11-D is the implementation of the RP11 disk controller inside
+the QSIC and USIC.  The RP11 never existed on the QBUS at all and
+we've extended it to support 22-bit addressing.
+
+More than that, we've extended it further to allow for much larger
+disks.  This is done by the simple expedient of allowing the sector,
+head, and cylinder fields of the disk address to take on any value
+that fits.  The result is 28 bits of linear block address or a maximum
+disk size of $2^{37}$ bytes or 128GiBytes.  Obviously you'll need the
+ability to modify your disk driver to take advantage of this.
+
+\section{Programming}
+
+\begin{center}
+  $\ll$ To Be Written $\gg$
+\end{center}

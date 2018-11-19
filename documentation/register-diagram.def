@@ -1,0 +1,95 @@
+% -*- LaTeX -*-
+%
+% For building register diagrams
+
+\newenvironment{register36}
+  { \noindent
+    \setlength{\dimen0}{0.0272\textwidth}
+    \setlength{\unitlength}{\dimen0}
+    \begin{picture}(36, 3)
+      % make the box outline
+      \put(0, 2){\line(1, 0){36}}
+      \put(0, 0){\line(1, 0){36}}
+      \put(0,0){\line(0,1){2}}
+      \put(36,0){\line(0,1){2}}
+      % put the numbers on top
+      \count255 = 0
+      \loop
+        \put(\the\count255, 2.3){\makebox[\dimen0][c]
+	  {\tiny\number\count255}}
+	\ifnum\count255 < 35
+	\advance\count255 by 1
+	\repeat
+
+      \newcommand{\bit}[2] {
+	\put(##1,0){\line(0,1){2}}
+	\put(##1,0)
+	    {\parbox[b][2\dimen0][c]{\dimen0}
+	      {\begin{center} \tiny ##2 \end{center}}}
+	    \count255 = ##1
+	    \advance\count255 by 1
+	    \put(\the\count255,0){\line(0,1){2}}  
+      }
+      	
+    \newcommand{\bits}[3] {
+      \put(##1,0){\line(0,1){2}}
+      \count255 = ##2
+      \advance\count255 by 1
+      \put(\the\count255,0){\line(0,1){2}}
+      \advance\count255 by -##1 % get the width of the field
+      \put(##1,0)
+	  {\parbox[b][2\dimen0][c]{\the\count255\dimen0}
+	    {\centering \tiny ##3 }}
+    }
+  }
+  {\end{picture} \smallskip}
+	 
+\newenvironment{register16}
+  { \noindent
+    \setlength{\dimen0}{0.0605\textwidth}
+    \setlength{\unitlength}{\dimen0}
+    \newcount\pos
+    \begin{picture}(16, 2)
+      % make the box outline
+      \put(0, 1.1){\line(1,0){16}}
+      \put(0, 0){\line(1,0){16}}
+      \put(0, 0){\line(0,1){1.1}}
+      \put(16,0){\line(0,1){1.1}}
+      % put the numbers on top
+      \count255 = 15
+      \loop
+        \pos = 15
+        \advance\pos by -\count255
+        \put(\pos, 1.2){\makebox[\dimen0][c]
+	  {\tiny\number\count255}}
+	\ifnum\count255 > 0
+	\advance\count255 by -1
+	\repeat
+
+    \newcommand{\bit}[2] {
+      \pos = 15
+      \advance\pos by -##1
+      \put(\pos,0){\line(0,1){1.1}}
+      \put(\pos,0)
+	  {\parbox[b][1.1\dimen0][c]{\dimen0}
+	    {\begin{center} ##2 \end{center}}}
+      \advance\pos by 1
+      \put(\pos,0){\line(0,1){1.1}}  
+    }
+      	
+    \newcommand{\bits}[3] {
+      \pos = 15
+      \advance\pos by -##2
+      \put(\pos,0){\line(0,1){1.1}}
+      \count255 = 15
+      \advance\count255 by -##1
+      \advance\count255 by 1
+      \put(\the\count255,0){\line(0,1){1.1}}
+      \advance\count255 by -\pos % get the width of the field
+      \put(\pos,0)
+	  {\parbox[b][1.1\dimen0][c]{\the\count255\dimen0}
+	    {\centering \tiny ##3 }}
+    }
+  }
+  {\end{picture} \smallskip}
+

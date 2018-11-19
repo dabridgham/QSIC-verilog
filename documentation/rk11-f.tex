@@ -1,0 +1,319 @@
+% -*- LaTeX -*-
+%
+% RK11-F Programming Manual for the QSIC/USIC
+
+\chapter{RK11-F}
+\section{Intro}
+
+The RK11-F is the implementation of the RK11 disk controller inside
+the QSIC and USIC.  It is substantially compatible with the RK11-D
+with extensions for extended addressing on the QBUS and some different
+meanings to error bits to better match the flash media the QSIC/USIC
+uses for storage devices.
+
+\section{Programming}
+
+The address shown for each register is the default address for the
+first RK11 controller.  The default interrupt vector is $220_8$ and
+the interrupt priority (on the QBUS) is 4.  These are all
+configurable.\footnote{Assuming we include two RK11s by default, I
+  should add the default values for the second RK11 too.}
+
+\subsection{Drive Status Register (RKDS)}
+\regaddr{777400}
+
+\begin{register16}
+  \bits{0}{3}{\scriptsize Sector Counter}
+  \bit{4}{\scriptsize SC=\\SA}
+  \bit{5}{\scriptsize WPS}
+  \bit{6}{\tiny R/W/S\\RDY}
+  \bit{7}{\scriptsize DRY}
+  \bit{8}{\scriptsize SOK}
+  \bit{9}{\scriptsize SIN}
+  \bit{10}{\scriptsize DRU}
+  \bit{11}{\scriptsize RK05}
+  \bit{12}{\scriptsize DPL}
+  \bits{13}{15}{\scriptsize Drive Ident}
+\end{register16}
+
+\begin{bittable}
+  00-03 & Sector Counter (SC) & The current sector address of the
+  selected drive. On the QSIC/USIC, this is just a free-running
+  counter clocked at 312.5kHz ($3.2\mu s$).\footnote{Check me that
+    this is about the right speed.}  All disks share a single Sector
+  Counter. \\
+  
+  04 & Sector Counter Equals Sector Address (SC=SA) & Set when the
+  Sector Counter is equal to the Sector Address (RKDA 3-0). \\
+
+  05 & Write Protect Status (WPS) & Set when the selected disk is in
+  the write-protected mode. \\
+
+  06 & Read/Write/Seek Ready\newline (R/W/S RDY) & Indicates a storage
+  device is loaded and ready to accept commands.  In the QSIC/USIC, a
+  storage device may be serving multiple disks at once and so unable
+  to accept commands right now because it's otherwise busy.  However,
+  the disk controller can still accept a command and it will wait
+  until the storage device is ready.\footnote{This is a description of
+    what it does right now.  As I wrote this, I realized that another
+    possible implementation, perhaps better, would for it to be the
+    AND of DRY (Drive Ready) and RDY (Control Ready).} \\
+
+  07 & Drive Ready (DRY) & A storage device is loaded for the selected
+  disk. \\
+
+  08 & Sector Counter OK (SOK) & Unused, set to 1. \\
+
+  09 & Seek Incomplete (SIN) & Set to 0.  Seeks always complete. \\
+
+  10 & Drive Unsafe (DRU) & Unused, set to 0.\footnote{Could be used to
+    indicate storage device initialization failure, perhaps.} \\
+
+  11 & RK05 & Set to 1 to indicate this is an RK05. \\
+
+  12 & Drive Power Low (DPL) & Unused, set to 0. \\
+
+  13-15 & Identification of Drive (ID) & Set to the drive number that
+  caused an interrupt.\footnote{Currently I set this from state
+    CMD\_DONE regardless of whether I generate an interrupt or not.
+    Also, I should check that it sets ID for all commands that could
+    generate an interrupt.} \\
+\end{bittable}
+
+\subsection{Error Register (RKER)}
+\regaddr{777402}
+
+\begin{register16}
+  \bit{15}{\scriptsize DRE}
+  \bit{14}{\scriptsize OVR}
+  \bit{13}{\scriptsize WLO}
+  \bit{12}{\scriptsize SKE}
+  \bit{11}{\scriptsize PGE}
+  \bit{10}{\scriptsize NXM}
+  \bit{9}{\scriptsize DLT}
+  \bit{8}{\scriptsize TE}
+  \bit{7}{\scriptsize NXD}
+  \bit{6}{\scriptsize NXC}
+  \bit{5}{\scriptsize NXS}
+  \bits{2}{4}{\scriptsize Unused}
+  \bit{1}{\scriptsize CSE}
+  \bit{0}{\scriptsize WCE}
+\end{register16}
+
+\begin{bittable}
+  00 & Write Check Error (WCE) & Indicates that the data comparison
+  didn't match during a Write Check function.\footnote{Not yet
+    implemented.} \\
+
+  01 & Checksum Error (CSE) & Indicates a checksum error while reading
+  data during a Read Check or Read function.  The RK05-F does not do
+  its own checksums on the data and this bit reflects the checksum
+  from the SD Card or USB checksum.\footnote{Not yet implemented.} \\
+
+  02-04 & Unused  \\
+
+  05 & Nonexistent Sector (NXS) & Indicates that an attempt was made
+  to initiate a transfer to a sector larger than $13_8$. \\
+
+  06 & Nonexistent Cylinder (NXC) & Indicates that an attempt was made
+  to initiate a transfer to a cylinder larger than $312_8$. \\
+
+  07 & Nonexistent Disk (NXD) & Indicates that an attempt was made to
+  initiate a function on a nonexistent drive.\footnote{Not yet
+    implemented.} \\
+
+  08 & Timing Error (TE) & Unused, set to 0. \\
+
+  09 & Data Late (DLT) & Unused, set to 0. \\
+
+  10 & Nonexistent Memory (NXM) & Set if memory does not respond
+  within the but timeout on the memory cycle. \\
+
+  11 & Programming Error (PGE) & Unused, set to 0. \\
+
+  12 & Seek Error (SKE) & Unused, set to 0. \\
+
+  13 & Write Lockout Violation (WLO) & Set if an attempt is made to
+  write to a disk that is currently write-protected.\footnote{Not
+    yet implemented.} \\
+
+  14 & Overrun (OVR) & Indicates that, during a Read, Write, Read
+  Check, or Write Check function, operations on sector $13_8$, surface
+  1, and cylinder address $312_8$ were finished, and the RKWC has not
+  yet overflowed.  This is essentially an attempt to overflow out of a
+  disk drive. \\
+
+  15 & Drive Error (DRE) & Unused, set to 0. \\
+\end{bittable}
+
+\subsection{Control Status Register (RKCS)}
+\regaddr{777404}
+
+\begin{register16}
+  \bit{15}{\scriptsize ERR}
+  \bit{14}{\scriptsize HE}
+  \bit{13}{\scriptsize SCP}
+  \bit{12}{\scriptsize ---}
+  \bit{11}{\scriptsize IBA}
+  \bit{10}{\scriptsize FMT}
+  \bit{9}{\scriptsize EXB}
+  \bit{8}{\scriptsize SSE}
+  \bit{7}{\scriptsize RDY}
+  \bit{6}{\scriptsize IDE}
+  \bits{4}{5}{\scriptsize MEX}
+  \bits{1}{3}{\scriptsize FUNC}
+  \bit{0}{\scriptsize GO}
+\end{register16}
+
+\begin{bittable}
+  00 & GO & When set, causes the RK11-F to act on the function
+  contained in bits 01 through 03 of the RKCS.\footnote{The RK11-D and
+    RK11-E manual lists GO as write-only.  The RK11-F currently allows
+    it to be read.  Oh wait, I know why they did that.  I need to fix
+    the code.} \\
+
+  01-03 & Function & The function to be executed when GO is
+  set.\newline
+  \begin{tabular}{cccl}
+    {\bf Bit 3} & {\bf Bit 2} & {\bf Bit 1} & {\bf Operation} \\
+     0 & 0 & 0 & Control Reset \\
+     0 & 0 & 1 & Write \\
+     0 & 1 & 0 & Read \\
+     0 & 1 & 1 & Write Check \\
+     1 & 0 & 0 & Seek \\
+     1 & 0 & 1 & Read Check \\
+     1 & 1 & 0 & Drive Reset \\
+     1 & 1 & 1 & Write Lock \\
+  \end{tabular} \\
+
+  04-05 & Memory Extension (MEX) & A 2-bit extension to RKBA giving an
+  18-bit bus address.  If 22-bit addresses are enabled (QSIC only),
+  these two bits are replicated as bits 00 and 01 of RKXA. \\
+
+  06 & Interrupt on Done Enable (IDE) & When set, causes an interrupt
+  to be issued on various condition.\footnote{Should audit the code
+    and list all the conditions that can generate an interrupt.}  The
+  interrupt priority and vector are configurable. \\
+
+  07 & Control Ready (RDY) & Control is ready to perform a function. \\
+
+  08 & Stop on Soft Error & Currently not implemented. \\
+
+  09 & Extra bit (EXB) & Unused. \\
+
+  10 & Format (FMT) & Not applicable to the
+  QSIC/USIC.\footnote{Currently the FMT bit is ignored but it probably
+    should generate some sort of error.} \\
+
+  11 & Inhibit Incrementing the RKBA (IBA) & Inhibits the RKBA from
+  incrementing during a normal transfer.  This allows data transfers
+  to occur to or from the same memory location throughout the entire
+  transfer operation. \\
+
+  12 & Unused \\
+
+  13 & Search Complete (SCP) & Indicates that the previous interrupt
+  was the result of some previous Seek or Drive Reset function.
+  Cleared at the initiation of any new function.\footnote{Not yet
+    implemented.} \\
+
+  14 & Hard Error & Set when any of RKER 05-15 are set. \\
+
+  15 & Error (ERR) & Set when any of RKER is set. \\
+\end{bittable}
+
+\subsection{Word Count Register (RKWC)}
+\regaddr{777406}
+
+\begin{register16}
+  \bits{0}{15}{\scriptsize Word Count}
+\end{register16}
+
+\begin{bittable}
+  00-15 & Word Count & The 2's complement of the number of words to be
+  transferred by a function.  The register increments by one after
+  each word transfer.  When the register overflows to 0, the transfer
+  is completed and the RK11 function is terminated. \\
+\end{bittable}
+
+\subsection{Current Bus Address Register (RKBA)}
+\regaddr{777410}
+
+\begin{register16}
+  \bits{1}{15}{\scriptsize Bus Address}
+  \bit{0}{\scriptsize 0}
+\end{register16}
+
+\begin{bittable}
+  00-15 & BA00-BA15 & The low 16-bits of the bus address to be used
+  for data transfers.  The MEX bits (bits 04 and 05 of RKCS) extend
+  the address to 18-bits and, if enabled, the BAE bits (bits 00-05 of
+  RKXA) extend the address to 22-bits (QSIC only).  Bit 00 is always 0
+  as all transfers are a full word. \\
+\end{bittable}
+
+\subsection{Disk Address Register (RKDA)}
+\regaddr{777412}
+
+\begin{register16}
+  \bits{0}{3}{\scriptsize Sector Address}
+  \bit{4}{\scriptsize SUR}
+  \bits{5}{12}{\scriptsize Cylinder Address}
+  \bits{13}{15}{\scriptsize Drive Select}
+\end{register16}
+
+\begin{bittable}
+  00-03 & Sector Address (SA) & The disk sector to be addressed for
+  the next function. \\
+
+  04 & Surface (SUR) & Upper or lower surface has no meaning for SD
+  cards or USB flash drives so this maps to just another bit of
+  cylinder addressing. \\
+
+  05-12 & Cylinder Address\newline (CYL ADDR) & The cylinder address
+  currently being selection.  The largest valid cylinder is
+  $312_8$. \\
+
+  13-15 & Drive Select (DR SEL) & The logical drive number currently
+  being selected. \\
+\end{bittable}
+
+
+\subsection{Extended Address Register (RKXA)}
+\regaddr{777414}
+
+\bigskip
+This register is an incompatible extension to the RK11, available on
+the QSIC only\footnote{Potentially we could have 22-bit addressing
+  with the USIC if using the Able ENABLE functionality.  Definitely an
+  incompatible extension.}, in order to give full 22-bit addressing.
+On the RK11-C it was a maintenance register and on the RK11-D and
+RK11-E it was unused.  If addressing is set to 18-bits, this register
+reads as 0 and writing has no effect.
+
+\begin{register16}
+  \bits{0}{5}{\scriptsize BAE}
+  \bits{6}{15}{\scriptsize ---}
+\end{register16}
+
+\begin{bittable}
+  00-05 & Bus Address Extension (BAE) & If 22-bit addressing is
+  enabled, these bits extend the Bus Address Register to 22-bits.
+  Bits 00 and 01 are duplicates of MEX (bits 04 and 05 of RKCS) and
+  may be read or written through either register. \\
+\end{bittable}
+
+
+\subsection{Data Buffer Register (RKDB)}
+\regaddr{777416}
+
+\begin{register16}
+  \bits{0}{15}{\scriptsize Data Buffer}
+\end{register16}
+
+\begin{bittable}
+  00-15 & Data Buffer (DB00-DB15) & This register reads from the read
+  end of the FIFO connecting the RK11-F to its storage device.
+  Writing to the Data Buffer has no effect. \\
+\end{bittable}
+

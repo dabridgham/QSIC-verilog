@@ -1,0 +1,49 @@
+% -*- LaTeX -*-
+%
+% QSIC/USIC Manual
+
+\documentclass[12pt]{book}
+
+\usepackage{array}
+\usepackage{longtable}
+%\usepackage{graphicx}
+\usepackage[hidelinks=true]{hyperref}
+
+\input{register-diagram.def}
+
+\newcommand{\code}[1]{\textsf{#1}}
+\newcommand{\regaddr}[1]{{\small\tt\hspace{3em} Address = #1}}
+
+% Gives me a non-justified paragraph inside a table
+\newcolumntype{P}[1]{>{\raggedright\arraybackslash}p{#1}}
+
+% The table used throughout for describing bits in registers.
+\newenvironment{bittable}
+               { \begin{longtable}{lP{0.22\textwidth}p{0.6\textwidth}}
+                   {\bf Bit} & {\bf Designation} & {\bf Description
+                     and Operation}  \endhead }
+               { \end {longtable}}
+                 
+\includeonly{
+  qsic,
+  rk11-f,
+  rp11-d
+}
+
+\title{QBUS/Unibus Storage Interface Card \\ (QSIC/USIC) \\ Programming Manual}
+\author{David Bridgham \\ \textless dab@froghouse.org\textgreater}
+
+\begin{document}
+%\pagestyle{empty}
+\maketitle
+\pagenumbering{roman}
+\tableofcontents\newpage
+
+\pagenumbering{arabic}
+\pagestyle{headings}
+
+\include{qsic}
+\include{rk11-f}
+\include{rp11-d}
+
+\end{document}
