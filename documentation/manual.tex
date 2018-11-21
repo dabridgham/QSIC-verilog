@@ -12,14 +12,16 @@
 \input{register-diagram.def}
 
 \newcommand{\code}[1]{\textsf{#1}}
-\newcommand{\regaddr}[1]{{\small\tt\hspace{3em} Address = #1}}
+\newcommand{\regaddr}[1]{{\hspace{3em} \small\tt Address = #1}}
 
 % Gives me a non-justified paragraph inside a table
 \newcolumntype{P}[1]{>{\raggedright\arraybackslash}p{#1}}
+% Gives me a \tt field inside a table
+\newcolumntype{B}[1]{>{\tt\arraybackslash}l{#1}}
 
 % The table used throughout for describing bits in registers.
 \newenvironment{bittable}
-               { \begin{longtable}{lP{0.22\textwidth}p{0.6\textwidth}}
+               { \begin{longtable}{BP{0.22\textwidth}p{0.6\textwidth}}
                    {\bf Bit} & {\bf Designation} & {\bf Description
                      and Operation}  \endhead }
                { \end {longtable}}

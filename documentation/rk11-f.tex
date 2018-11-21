@@ -174,17 +174,17 @@ configurable.\footnote{Assuming we include two RK11s by default, I
 
   01-03 & Function & The function to be executed when GO is
   set.\newline
-  \begin{tabular}{cccl}
-    {\bf Bit 3} & {\bf Bit 2} & {\bf Bit 1} & {\bf Operation} \\
-     0 & 0 & 0 & Control Reset \\
-     0 & 0 & 1 & Write \\
-     0 & 1 & 0 & Read \\
-     0 & 1 & 1 & Write Check \\
-     1 & 0 & 0 & Seek \\
-     1 & 0 & 1 & Read Check \\
-     1 & 1 & 0 & Drive Reset \\
-     1 & 1 & 1 & Write Lock \\
-  \end{tabular} \\
+  {\tt
+    \begin{tabular}{ll}
+      Control Reset & 000 \\
+      Write & 001 \\
+      Read & 010 \\
+      Write Check & 011 \\
+      Seek & 100 \\
+      Read Check & 101 \\
+      Drive Reset & 110 \\
+      Write Lock & 111 \\
+  \end{tabular}}  \\
 
   04-05 & Memory Extension (MEX) & A 2-bit extension to RKBA giving an
   18-bit bus address.  If 22-bit addresses are enabled (QSIC only),
