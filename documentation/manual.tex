@@ -16,8 +16,8 @@
 
 % Gives me a non-justified paragraph inside a table
 \newcolumntype{P}[1]{>{\raggedright\arraybackslash}p{#1}}
-% Gives me a \tt field inside a table
-\newcolumntype{B}[1]{>{\tt\arraybackslash}l{#1}}
+% Gives me a \tt column inside a table
+\newcolumntype{B}[0]{>{\tt\arraybackslash}l}
 
 % The table used throughout for describing bits in registers.
 \newenvironment{bittable}
