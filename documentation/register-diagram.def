@@ -74,7 +74,7 @@
       \put(\pos,0){\line(0,1){1.1}}
       \put(\pos,0)
 	  {\parbox[b][1.1\dimen0][c]{\dimen0}
-	    {\begin{center} ##2 \end{center}}}
+	    {\begin{center} \scriptsize ##2 \end{center}}}
       \advance\pos by 1
       \put(\pos,0){\line(0,1){1.1}}  
     }
@@ -90,7 +90,7 @@
       \advance\count255 by -\pos % get the width of the field
       \put(\pos,0)
 	  {\parbox[b][1.1\dimen0][c]{\the\count255\dimen0}
-	    {\centering \tiny ##3 }}
+	    {\centering \scriptsize ##3 }}
     }
   }
   {\end{picture} \smallskip}
