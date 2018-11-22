@@ -23,17 +23,17 @@ configurable.\footnote{Assuming we include two RK11s by default, I
 \regaddr{777400}
 
 \begin{register16}
-  \bits{0}{3}{\scriptsize Sector Counter}
-  \bit{4}{\scriptsize SC=\\SA}
-  \bit{5}{\scriptsize WPS}
+  \bits{0}{3}{Sector Counter}
+  \bit{4}{SC=\\SA}
+  \bit{5}{WPS}
   \bit{6}{\tiny R/W/S\\RDY}
-  \bit{7}{\scriptsize DRY}
-  \bit{8}{\scriptsize SOK}
-  \bit{9}{\scriptsize SIN}
-  \bit{10}{\scriptsize DRU}
-  \bit{11}{\scriptsize RK05}
-  \bit{12}{\scriptsize DPL}
-  \bits{13}{15}{\scriptsize Drive Ident}
+  \bit{7}{DRY}
+  \bit{8}{SOK}
+  \bit{9}{SIN}
+  \bit{10}{DRU}
+  \bit{11}{RK05}
+  \bit{12}{DPL}
+  \bits{13}{15}{Drive Ident}
 \end{register16}
 
 \begin{bittable}
@@ -84,20 +84,20 @@ configurable.\footnote{Assuming we include two RK11s by default, I
 \regaddr{777402}
 
 \begin{register16}
-  \bit{15}{\scriptsize DRE}
-  \bit{14}{\scriptsize OVR}
-  \bit{13}{\scriptsize WLO}
-  \bit{12}{\scriptsize SKE}
-  \bit{11}{\scriptsize PGE}
-  \bit{10}{\scriptsize NXM}
-  \bit{9}{\scriptsize DLT}
-  \bit{8}{\scriptsize TE}
-  \bit{7}{\scriptsize NXD}
-  \bit{6}{\scriptsize NXC}
-  \bit{5}{\scriptsize NXS}
-  \bits{2}{4}{\scriptsize Unused}
-  \bit{1}{\scriptsize CSE}
-  \bit{0}{\scriptsize WCE}
+  \bit{15}{DRE}
+  \bit{14}{OVR}
+  \bit{13}{WLO}
+  \bit{12}{SKE}
+  \bit{11}{PGE}
+  \bit{10}{NXM}
+  \bit{9}{DLT}
+  \bit{8}{TE}
+  \bit{7}{NXD}
+  \bit{6}{NXC}
+  \bit{5}{NXS}
+  \bits{2}{4}{Unused}
+  \bit{1}{CSE}
+  \bit{0}{WCE}
 \end{register16}
 
 \begin{bittable}
@@ -106,7 +106,7 @@ configurable.\footnote{Assuming we include two RK11s by default, I
     implemented.} \\
 
   01 & Checksum Error (CSE) & Indicates a checksum error while reading
-  data during a Read Check or Read function.  The RK05-F does not do
+  data during a Read Check or Read function.  The RK11-F does not do
   its own checksums on the data and this bit reflects the checksum
   from the SD Card or USB checksum.\footnote{Not yet implemented.} \\
 
@@ -150,19 +150,19 @@ configurable.\footnote{Assuming we include two RK11s by default, I
 \regaddr{777404}
 
 \begin{register16}
-  \bit{15}{\scriptsize ERR}
-  \bit{14}{\scriptsize HE}
-  \bit{13}{\scriptsize SCP}
-  \bit{12}{\scriptsize ---}
-  \bit{11}{\scriptsize IBA}
-  \bit{10}{\scriptsize FMT}
-  \bit{9}{\scriptsize EXB}
-  \bit{8}{\scriptsize SSE}
-  \bit{7}{\scriptsize RDY}
-  \bit{6}{\scriptsize IDE}
-  \bits{4}{5}{\scriptsize MEX}
-  \bits{1}{3}{\scriptsize FUNC}
-  \bit{0}{\scriptsize GO}
+  \bit{15}{ERR}
+  \bit{14}{HE}
+  \bit{13}{SCP}
+  \bit{12}{---}
+  \bit{11}{IBA}
+  \bit{10}{FMT}
+  \bit{9}{EXB}
+  \bit{8}{SSE}
+  \bit{7}{RDY}
+  \bit{6}{IDE}
+  \bits{4}{5}{MEX}
+  \bits{1}{3}{FUNC}
+  \bit{0}{GO}
 \end{register16}
 
 \begin{bittable}
@@ -226,7 +226,7 @@ configurable.\footnote{Assuming we include two RK11s by default, I
 \regaddr{777406}
 
 \begin{register16}
-  \bits{0}{15}{\scriptsize Word Count}
+  \bits{0}{15}{Word Count}
 \end{register16}
 
 \begin{bittable}
@@ -240,8 +240,8 @@ configurable.\footnote{Assuming we include two RK11s by default, I
 \regaddr{777410}
 
 \begin{register16}
-  \bits{1}{15}{\scriptsize Bus Address}
-  \bit{0}{\scriptsize 0}
+  \bits{1}{15}{Bus Address}
+  \bit{0}{0}
 \end{register16}
 
 \begin{bittable}
@@ -256,10 +256,10 @@ configurable.\footnote{Assuming we include two RK11s by default, I
 \regaddr{777412}
 
 \begin{register16}
-  \bits{0}{3}{\scriptsize Sector Address}
-  \bit{4}{\scriptsize SUR}
-  \bits{5}{12}{\scriptsize Cylinder Address}
-  \bits{13}{15}{\scriptsize Drive Select}
+  \bits{0}{3}{Sector Address}
+  \bit{4}{SUR}
+  \bits{5}{12}{Cylinder Address}
+  \bits{13}{15}{Drive Select}
 \end{register16}
 
 \begin{bittable}
@@ -294,8 +294,8 @@ physical address rather than being mapped by the ENABLE+.  On the QBUS
 it's always a physical address anyway.
 
 \begin{register16}
-  \bits{0}{5}{\scriptsize BAE}
-  \bits{6}{15}{\scriptsize 0}
+  \bits{0}{5}{BAE}
+  \bits{6}{15}{0}
 \end{register16}
 
 \begin{bittable}
@@ -310,7 +310,7 @@ it's always a physical address anyway.
 \regaddr{777416}
 
 \begin{register16}
-  \bits{0}{15}{\scriptsize Data Buffer}
+  \bits{0}{15}{Data Buffer}
 \end{register16}
 
 \begin{bittable}
