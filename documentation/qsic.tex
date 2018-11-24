@@ -1,24 +1,210 @@
 % -*- LaTeX -*-
 %
 % QSIC/USIC Programming and Configuration
+% I checked, it was "Storage-I/O"
 
-\chapter{QBUS/Unibus Storage Interface Card}
-\section{Intro}
-The QSIC is a dual-height QBUS card that provides emulation of disk
-controllers and disks using SD cards or USB disks as the storage
-media.
+\chapter{QBUS/UNIBUS Storage and Input/Output Card}
+\section{Introduction}
 
-The USIC is the same in a quad-height SPC card for the Unibus.  The
-USIC also adds the Able ENABLE functionality in letting processors
-with 18-bit addressing have access to $2^{22}$ bytes of memory like a
-PDP-11/70.
+The QSIC and USIC are cards which provide emulation of various QBUS and
+UNIBUS controllers and disks, using MicroSD cards or (eventually) USB disks
+as the actual storage media. They use NOS original bus drivers (DS8641's),
+and then level converters to interface to a modern FPGA.
 
-Both cards have provision for adding indicator panels to display
-internal state and functioning that invoke the feel of the older
-machines.  They might even be useful for debugging from time to time.
+Eventually, they are likely be extended to allow emulation of other
+controllers, e.g. the Interlan NI1010 and NI2010 Ethernet, via devices
+plugged into the USB port.
+
+They currently implement upwardly compatible, but extended, versions of the
+old DEC RK11 and RP11 disk controllers. Although the emulation is not exact,
+it is good enough that un-modified operating system images (UNIX V6) are able
+to boot and run.
+
+The emulation limitations are in part because many of the control register
+bits only make sense with an actual physical drive; also, exact emulation,
+including delays (e.g. for now non-existent seeks) would limit the
+performance obtainable. (It is possible some systems that will not work
+without better emulation of such delays; if so, an option could be added to
+better emulate them.)
+
+The QSIC is a dual-height QBUS card; it can hold two uSD cards, allowing
+direct card->card backup. The controllers are denominated as the RKV11-F and
+RPV11-D; the extension is allowing DMA to the entire $2^{22}$ byte QBUS
+address space.
+
+The USIC is the same functionality, in a quad-height SPC card for the UNIBUS.
+The USIC will optionally adds the Able ENABLE functionality, which allows
+processors with only 18-bit addressing to have access to $2^{22}$ bytes of
+memory.
+
+When this is enabled, the RK11-F and RP11-D (as they are denominated here)
+can be set to be 'MASSBUS' controllers (notionally), with full direct access
+to the entire memory (which is on the USIC), without going through a UNIBUS
+Map. With that turned off, they emulate the originals; i.e. they do DMA
+cycles on the UNIBUS.
+
+Both cards have provision for adding indicator panels, as close as possible
+to the DEC originals, to display internal state and datal; this will help
+invoke the feel of the older machines. They might even be useful for
+debugging from time to time!
+
+\section{Basic operation}
+
+The space on the uSD cards ('storage devices') is divided into 'packs',
+described by a 'pack table' on the card (because it applies only to that
+card), which gives their location and size. Packs can be 'loaded' on
+'drives'; in other words, everything works much like the original hardware.
+
+(The term 'mount' is reserved for the operation of letting the operating
+system add a pack to the visible file system - again, like the existing UNIX,
+etc, terminology.)
+
+There are also 'load tables', which record which packs are loaded on which
+drives; a non-volatile instance of these allows a system to be cold-booted
+without going through a pack loading phase.
+
+A storage device is 'inserted' into a uSD slot; removing one without
+previously un-mounting (and un-loading) the packs is an error which can
+damage storage contents, just as switching a physical pack without
+un-mounting it would have on the original hardware.
+
+Removing a storage device will auto-unload any packs still loaded. Before any
+further disk operations can happen, any packs on a new storage device which
+are to be used have to be loaded; attempting to use them without that step
+will produce 'disk not loaded' faults (e.g. clears 'Drive Ready' on the RK11).
+
+Each controller supports the maximum 8 drives of the original. It will be
+possible to configure more than one instance of each controller, should
+simultaneous access to more packs/drives be needed.
 
 \section{Configuration}
 
 \begin{center}
-  $\ll$ To Be Written $\gg$
+  $\ll$ To Be Written. $\gg$
 \end{center}
+
+(The means for setting up the pack table, loading packs onto drives, etc are
+not yet defined.) 
+
+\section{RAM disks}
+
+In addition to storing pack images on removable media, the QSIC/USIC also
+supports 'RAM drives' - packs which are kept in on-board RAM on the card. The
+contents do not survive power cycles, but RAM drives are desirable for uses
+which do a lot of writing, none of which needs to survive a system re-boot,
+e.g. swapping and paging.
+
+The reason is that uSD cards (unlike the original magnetic media) cannot
+perform un-limited write cycles; they wear out after a finite number of
+writes. So, if there is no need to keep writes over re-boots (e.g. swapping
+or paging data), those operations should be assigned to a RAM disk for
+long-term use. On most operating systems, it is fairly easy to configure them
+to do swapping/paging to particular devices.
+
+\subsection{uSD card selection}
+
+There have been reports of cheap commodity uSD cards failing after relatively
+small numbers of writes. So, these should be avoided; also, backups of the
+data on uSD cards should be kept fairly meticulously. There are "industrial
+grade" uSD cards available, which are more robust than good consumer-grade
+cards, so those are perhaps worth using.
+
+\subsection{UNIX pipes}
+
+The UNIX pipe device can also generate lots of "temporary" writes.
+Unfortunately, on the early versions of UNIX, pipes are created on the root
+device - probably the last place you want them, if there are uSD card issues!
+
+This is simple to fix, though; in pipe(), in pipe.c, change the line:
+
+	ip = ialloc(rootdev);
+
+to
+
+	ip = ialloc(pipedev);
+
+and then go into c.c and add a line underneath the declaration of "rootdev"
+to add a "pipedev".
+
+Don't forget that you will need to create a file system on any RAM pack you
+are using to hold pipes, before you can use a pipe, though! Probably the
+safest thing is to start the system with pipedev set to the root device, and
+then reset pipedev once the pipe pack has a filesystem on it. (This is quite
+OK, because once a pipe is created, it stays on the device it was created on,
+and it's possible to have open pipes on more than one device.) A program to
+set 'pipedev' is available for V6.
+
+\section{Upgrading drivers}
+
+The devices on QSIC, and USIC with Enable+ on, can do DMA to all 22 bits of
+address space, but are program compatible for 18 bits (i.e. existing software
+will run, but can only use the low $2^{18}$ bytes of memory). To use more
+than $2^{18}$bytes - generally only needed to use the QSIC/USIC devices for
+swapping/paging - the device driver will have to be fixed - not too
+complicated, but only if one has the capability!
+
+The 18-bit program compatability is, however, useful for extending operating
+systems to use the 22-bit capability. (For systems like UNIX, which restrict
+block device I/O to buffers in the low $2^{16}$ bytes of memory, the
+22-capability is not needed if they are not being used for swapping/paging.)
+Just simply boot the OS with only $2^{18}$ bytes of memory; modify the device
+driver to be able to use the 22-bit addressing capability; and restart. (This
+technique was used to give Unix V6 access to the 22-bit capability.)
+
+NOTE: On OSs that auto-size memory, if you boot the system with more than
+256KB of memory, if it tries to swap to high memory with the existing 18-bit
+driver, either i) the system will crash if it knows that RK11's and/or RP11's
+are 18-bit only (well, technically, RKV11-D's are actually only 16 bits), or
+ii) the transfer will go someplace else in memory from where the OS thought
+it was going to go. (E.g. UNIX V6 would do this - although the address in the
+I/O request is 22 bits long, the existing RK11/RP11 drivers only look at the
+low 18.) The solution is to boot the system with only 256KB of memory
+installed; then update the driver to be able to do 22 bit DMA; then the rest
+of the memory can be added back.
+
+\chapter{Indicator Panels}
+
+The QSIC and USIC support indicator panels which look exactly like the old
+DEC ones. These comprise (like the originals) a bezel, a captioned inlay, a
+light shield, and a PCB holding the lamps ("warm white" LEDs, which look
+identical to the original units, when seen through the inlay); the whole
+mounts to a 19" rack.
+
+As on the originals, the bezel and inlay go on the standard "latch moldings"
+(the flat plastic units with the two posts with a spherical ball on the top)
+mounted to the rack; the light shield ("Benelex" in DEC parts jargon) mounts
+to the rack with a pair of brackets, and the lamp PCB mounts to that.
+
+Although the new panels are mechanically compatible with the originals (so
+that original bezels, inlays, etc can be used, and vice versa), the hardware
+interface to the lamp PCB is totally different (bit-serial via a 4-wire
+interface - data, clock, latch and ground), rather than 'wire per bulb', as
+in the originals. As a result, the PCBs are also completely different. The
+new PCBs are limited in size (for ease of fabrication); each only holds 12
+columns of lamps, and a set of 3 plug together to make the full 36-wide array
+of the originals.
+
+The maximum number of panels a single QSIC/USIC can support is not yet
+determined, but should be at least 4.
+
+We can supply complete units (mostly newly-fabricated), but we have only a
+limited supply of original bezels.
+
+\section{Inlays}
+
+Although we could do exact duplicates of original panels, the old DEC panels
+have lots of lights that don't make sense without an actual physical disk
+(e.g. 'write current on'), and also leave off other ones that would be useful
+(e.g. memory address). So, we default to a new layout we have designed, which
+makes the best use of the available set of lamps.
+
+The new layout works with both the RK11 and RP11; the RK11 does not drive all
+the disk address lights, but is otherwise identical.
+
+We might be able to provide exact copies of the old ones for people who are
+crazy for authenticity; it will require custom FPGA loads to drive their
+lamps correctly, though.
+
+In addition to the RK/RP inlays, there is also an inlay to monitor QBUS
+activity.
+
