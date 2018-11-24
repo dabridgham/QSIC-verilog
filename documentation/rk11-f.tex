@@ -3,21 +3,46 @@
 % RK11-F Programming Manual for the QSIC/USIC
 
 \chapter{RK11-F}
-\section{Intro}
 
 The RK11-F is the implementation of the RK11 disk controller inside
 the QSIC and USIC.  It is substantially compatible with the RK11-D
-with extensions for extended addressing on the QBUS and some different
-meanings to error bits to better match the flash media the QSIC/USIC
-uses for storage devices.
+with extensions for extended addressing on the QBUS and some
+reinterpretations of some of the error bits to better match the flash
+media the QSIC/USIC uses for storage devices.
+
+To provide 22-bit addressing, the RK11-F has recycled the maintenance
+register from the RK11-C (which was unused in the RK11-D) to hold the
+extra address bits.  On the Unibus, the RK11-F with extended
+addressing is notionally a MASSBUS device, giving direct access to the
+full $2^{22}$ byte physical address space supported by the ENABLE+
+functionality.
+
+On the QBUS, the RK11-F only has 22-bit mode though if you ignore the
+extended address register it will act mostly like an 18-bit
+device.\footnote{The exception has to do with the address register
+  wrapping around at the end of the address space.  This shouldn't be
+  an issue in practice as it would involve DMA operations into the I/O
+  page which would almost certainly generate NXM errors.}
+
+DEC did build an RKV11-D that was an RK11-D modified to work on the
+QBUS.  For some reason, it only support 16-bit addresses even though
+the RK11-D supported 18-bit addresses on the Unibus.  We think the
+RK11-F, even though in 22-bit mode, ought to work with legacy software
+but if this turns out to not be the case we'll return to this issue.
+
+
+\section{Configuration}
+
+By default, eight I/O registers begin at $777400_8$.  The default
+interrupt vector is $220_8$ and the interrupt priority is 4.  The USIC
+can be configured for 18-bit or 22-bit addresses.  The RK11-F as a
+whole may be disabled if it's not wanted.
 
 \section{Programming}
 
 The address shown for each register is the default address for the
-first RK11 controller.  The default interrupt vector is $220_8$ and
-the interrupt priority (on the QBUS) is 4.  These are all
-configurable.\footnote{Assuming we include two RK11s by default, I
-  should add the default values for the second RK11 too.}
+first RK11 controller.\footnote{Assuming we include two RK11s by
+  default, I should add the default values for the second RK11 too.}
 
 \subsection{Drive Status Register (RKDS)}
 \regaddr{777400}
@@ -44,7 +69,7 @@ configurable.\footnote{Assuming we include two RK11s by default, I
   Counter. \\
   
   04 & Sector Counter Equals Sector Address (SC=SA) & Set when the
-  Sector Counter is equal to the Sector Address (RKDA 3-0). \\
+  Sector Counter is equal to the Sector Address (RKDA 03-00). \\
 
   05 & Write Protect Status (WPS) & Set when the selected disk is in
   the write-protected mode. \\
