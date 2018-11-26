@@ -38,7 +38,7 @@ processors with only 18-bit addressing to have access to $2^{22}$ bytes of
 memory.
 
 When this is enabled, the RK11-F and RP11-D (as they are denominated here)
-can be set to be 'MASSBUS' controllers (notionally), with full direct access
+can be set to be `MASSBUS' controllers (notionally), with full direct access
 to the entire memory (which is on the USIC), without going through a UNIBUS
 Map. With that turned off, they emulate the originals; i.e. they do DMA
 cycles on the UNIBUS.
@@ -50,20 +50,20 @@ debugging from time to time!
 
 \section{Basic operation}
 
-The space on the uSD cards ('storage devices') is divided into 'packs',
-described by a 'pack table' on the card (because it applies only to that
-card), which gives their location and size. Packs can be 'loaded' on
-'drives'; in other words, everything works much like the original hardware.
+The space on the uSD cards (`storage devices') is divided into `packs',
+described by a `pack table' on the card (because it applies only to that
+card), which gives their location and size. Packs can be `loaded' on
+`drives'; in other words, everything works much like the original hardware.
 
-(The term 'mount' is reserved for the operation of letting the operating
+(The term `mount' is reserved for the operation of letting the operating
 system add a pack to the visible file system - again, like the existing UNIX,
 etc, terminology.)
 
-There are also 'load tables', which record which packs are loaded on which
+There are also `load tables', which record which packs are loaded on which
 drives; a non-volatile instance of these allows a system to be cold-booted
 without going through a pack loading phase.
 
-A storage device is 'inserted' into a uSD slot; removing one without
+A storage device is `inserted' into a uSD slot; removing one without
 previously un-mounting (and un-loading) the packs is an error which can
 damage storage contents, just as switching a physical pack without
 un-mounting it would have on the original hardware.
@@ -71,7 +71,7 @@ un-mounting it would have on the original hardware.
 Removing a storage device will auto-unload any packs still loaded. Before any
 further disk operations can happen, any packs on a new storage device which
 are to be used have to be loaded; attempting to use them without that step
-will produce 'disk not loaded' faults (e.g. clears 'Drive Ready' on the RK11).
+will produce `disk not loaded' faults (e.g. clears `Drive Ready' on the RK11).
 
 Each controller supports the maximum 8 drives of the original. It will be
 possible to configure more than one instance of each controller, should
@@ -89,7 +89,7 @@ not yet defined.)
 \section{RAM disks}
 
 In addition to storing pack images on removable media, the QSIC/USIC also
-supports 'RAM drives' - packs which are kept in on-board RAM on the card. The
+supports `RAM drives' - packs which are kept in on-board RAM on the card. The
 contents do not survive power cycles, but RAM drives are desirable for uses
 which do a lot of writing, none of which needs to survive a system re-boot,
 e.g. swapping and paging.
@@ -105,13 +105,13 @@ to do swapping/paging to particular devices.
 
 There have been reports of cheap commodity uSD cards failing after relatively
 small numbers of writes. So, these should be avoided; also, backups of the
-data on uSD cards should be kept fairly meticulously. There are "industrial
-grade" uSD cards available, which are more robust than good consumer-grade
+data on uSD cards should be kept fairly meticulously. There are ``industrial
+grade'' uSD cards available, which are more robust than good consumer-grade
 cards, so those are perhaps worth using.
 
 \subsection{UNIX pipes}
 
-The UNIX pipe device can also generate lots of "temporary" writes.
+The UNIX pipe device can also generate lots of ``temporary'' writes.
 Unfortunately, on the early versions of UNIX, pipes are created on the root
 device - probably the last place you want them, if there are uSD card issues!
 
@@ -123,8 +123,8 @@ to
 
 	ip = ialloc(pipedev);
 
-and then go into c.c and add a line underneath the declaration of "rootdev"
-to add a "pipedev".
+and then go into c.c and add a line underneath the declaration of ``rootdev''
+to add a ``pipedev''.
 
 Don't forget that you will need to create a file system on any RAM pack you
 are using to hold pipes, before you can use a pipe, though! Probably the
@@ -132,14 +132,14 @@ safest thing is to start the system with pipedev set to the root device, and
 then reset pipedev once the pipe pack has a filesystem on it. (This is quite
 OK, because once a pipe is created, it stays on the device it was created on,
 and it's possible to have open pipes on more than one device.) A program to
-set 'pipedev' is available for V6.
+set `pipedev' is available for V6.
 
 \section{Upgrading drivers}
 
 The devices on QSIC, and USIC with Enable+ on, can do DMA to all 22 bits of
 address space, but are program compatible for 18 bits (i.e. existing software
 will run, but can only use the low $2^{18}$ bytes of memory). To use more
-than $2^{18}$bytes - generally only needed to use the QSIC/USIC devices for
+than $2^{18}$ bytes - generally only needed to use the QSIC/USIC devices for
 swapping/paging - the device driver will have to be fixed - not too
 complicated, but only if one has the capability!
 
@@ -166,19 +166,19 @@ of the memory can be added back.
 
 The QSIC and USIC support indicator panels which look exactly like the old
 DEC ones. These comprise (like the originals) a bezel, a captioned inlay, a
-light shield, and a PCB holding the lamps ("warm white" LEDs, which look
+light shield, and a PCB holding the lamps (``warm white'' LEDs, which look
 identical to the original units, when seen through the inlay); the whole
-mounts to a 19" rack.
+mounts to a $19''$ rack.
 
-As on the originals, the bezel and inlay go on the standard "latch moldings"
+As on the originals, the bezel and inlay go on the standard ``latch moldings''
 (the flat plastic units with the two posts with a spherical ball on the top)
-mounted to the rack; the light shield ("Benelex" in DEC parts jargon) mounts
+mounted to the rack; the light shield (``Benelex'' in DEC parts jargon) mounts
 to the rack with a pair of brackets, and the lamp PCB mounts to that.
 
 Although the new panels are mechanically compatible with the originals (so
 that original bezels, inlays, etc can be used, and vice versa), the hardware
 interface to the lamp PCB is totally different (bit-serial via a 4-wire
-interface - data, clock, latch and ground), rather than 'wire per bulb', as
+interface - data, clock, latch and ground), rather than `wire per bulb', as
 in the originals. As a result, the PCBs are also completely different. The
 new PCBs are limited in size (for ease of fabrication); each only holds 12
 columns of lamps, and a set of 3 plug together to make the full 36-wide array
@@ -194,7 +194,7 @@ limited supply of original bezels.
 
 Although we could do exact duplicates of original panels, the old DEC panels
 have lots of lights that don't make sense without an actual physical disk
-(e.g. 'write current on'), and also leave off other ones that would be useful
+(e.g. `write current on'), and also leave off other ones that would be useful
 (e.g. memory address). So, we default to a new layout we have designed, which
 makes the best use of the available set of lamps.
 
