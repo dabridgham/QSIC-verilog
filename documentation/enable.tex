@@ -1,0 +1,18 @@
+% -*- LaTeX -*-
+%
+% Enable+ Programming Manual for the QSIC/USIC
+
+\chapter{Enable+}
+
+The Enable+ is an implementation of the Able ENABLE board inside the
+USIC.  The ENABLE board gave access to $2^{22}$ bytes of main memory
+much like the PDP-11/70 for processors that only had 18 bits of
+addressing.
+
+The Able ENABLE board worked by having three bus connections, one
+UNIBUS coming in, one UNIBUS out, and a memory bus.  The USIC
+simplifies this by having all memory on-board and doesn't actually
+need a UNIBUS out.
+
+There are two maps in the Enable+, one for accesses from the processor
+and the other used when devices are doing DMA operations.
