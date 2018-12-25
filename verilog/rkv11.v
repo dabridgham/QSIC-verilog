@@ -600,8 +600,8 @@ module rkv11
 
    indicator
      rk11_ip(ip_clk, ip_latch, ip_out,
-	     { ERROR, HE, INH_BA, SSE, RDY, IDE, 1'b0, FUNC, GO, 3'b0, RK_BAR, 1'b0 },
-	     { DRE, OVR, WLO, SKE, NXM, NXD, NXC, NXS, CSE, WCE, 1'b0, 3'b0, interrupt_request,
+	     { ERROR, HE, SCP, INH_BA, SSE, RDY, IDE, 1'b0, FUNC, 1'b0, GO, 1'b0, RK_BAR, 1'b0 },
+	     { DRE, OVR, WLO, NXM, NXD, NXC, 1'b0, NXS, CSE, WCE, 1'b0, 3'b0, interrupt_request,
 	       1'b0, dma_read_req, dma_write_req, 1'b0, 1'b0, WC_display },
 	     { 2'b01, 2'b01, 1'b0, DR_SEL, 8'b0, CYL_ADD, 7'b0, SUR, SA },
 	     { mode == `MODE_Q22, mode == `MODE_Q18, WC_zero, sector_done, // 2'b0,
