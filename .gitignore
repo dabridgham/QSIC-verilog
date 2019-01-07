@@ -10,7 +10,9 @@
 *.png
 *.pdf
 *.ps
+*.eps
 *.bit
+*.html
 vivado*.jou
 vivado*.log
 vivado*.str
@@ -24,3 +26,11 @@ vivado_pid*.zip
 /documentation/*.log
 /documentation/*.out
 /documentation/*.toc
+/builds
+/docs
+/tmp
+/uas
+/diag
+/jnc
+/xilinx
+/bus-xcvr
