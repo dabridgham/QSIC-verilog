@@ -139,7 +139,7 @@ module rkv11
      SURFACES = 2,
      SECTORS = 12;
    // Convert cylinder/surface/sector into linear block address
-   wire [12:0] lba = SA + (SECTORS * (SUR + (SURFACES * CYL_ADD)));
+   wire [12:0] lba = { 9'b0, SA } + (SECTORS * ({ 12'b0, SUR } + (SURFACES * { 4'b0, CYL_ADD })));
    // Calculate the next disk address
    reg [3:0]   next_sector;
    reg 	       next_surface;
@@ -162,7 +162,7 @@ module rkv11
    end // always @ begin
    // Detect Overrun
    wire overrun_sectors = (SA >= SECTORS);
-   wire overrun_cylinders = (CYL_ADD >= cylinders);
+   wire overrun_cylinders = ({ 8'b0, CYL_ADD } >= cylinders);
    wire overrun = overrun_sectors || overrun_cylinders;
    
    // Function Commands

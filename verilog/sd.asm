@@ -69,7 +69,7 @@ vltgd:	byte	.		; don't care
 v1:	sync,clr	csel	; release the SD card
 
 	;; CMD58 - READ_OCR
-	sete	0x08
+waitdone:	sete	0x08
 	sync,reset,imm	0x7A
 	sync,crc7,imm	0
 	sync,crc7,imm	0
@@ -82,8 +82,10 @@ r3:	byte	.
 	timer	cmdtimeout
 	cmp	0x80		; look for a response
 	eq	r3
-	cmp	0x0C		; illegal command (0x04) or CRC error (0x08)
+	cmp	0x08		; illegal command (0x04) or CRC error (0x08)
 	eq	illcrc
+	cmp	0x04		; illegal command
+	eq	illcmd
 	;; somewhere in here tells me the voltage range and I should check it again!!
 	byte	.		; don't care
 	byte	.		; don't care
@@ -286,7 +288,9 @@ crcer:	sete	0x95
 	jmp	initfail
 notmemory: jmp	initfail
 cmdtimeout: jmp initfail
-illcrc:	sete	0x84
+illcrc: nop ;	sete	0x84
+	jmp	initfail
+illcmd:	sete	0x96
 	jmp	initfail
 initfail:	clr	csel
 

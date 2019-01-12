@@ -96,7 +96,7 @@ module SD_spi
    wire 	sd_do;		// data out (from the SD card)
    wire 	sd_cd;		// card detect
    assign sd_do = sd_dat[0];
-   assign sd_dat[3] = sd_cs ? 0 : 'bZ; // pull-down to select the card and let float to look for card detect
+   assign sd_dat[3] = sd_cs ? 1'b0 : 1'bZ; // pull-down to select the card and let float to look for card detect
    assign sd_cd = sd_dat[3];	// for watching the card detect signal
    assign sd_cmd = sd_di;
    // sd_dat[1] and sd_dat[2] are reserved (unused by memory cards) in SPI mode and sd_clk is

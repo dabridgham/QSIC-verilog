@@ -551,7 +551,7 @@ module pmo
    wire [1:0]  pack_sd_select = rk0_load_table[rk0_dev_sel][33:32];
    wire [31:0] pack_offset = rk0_load_table[rk0_dev_sel][31:0];
    
-   assign LBA = rk0_lba + pack_offset; // offset into the selected disk pack
+   assign LBA = { 19'b0, rk0_lba } + pack_offset; // offset into the selected disk pack
 
    // Build the Loaded table - if a pack is loaded and the associated device is ready
    wire [0:3]   sd_ready = { sd0_dev_ready, sd0_dev_ready, rd_dev_ready, usb_dev_ready };
@@ -689,7 +689,7 @@ module pmo
 
    // The configuration for what indicator panels to display
    reg [1:0] ip_count = 2;
-   reg [1:0] ip_list [0:3] = { 2, 1, 0, 1 };
+   reg [1:0] ip_list [0:3] = { 2'd2, 2'd1, 2'd0, 2'd1 };
    wire [1:0] ip_step;
    wire ip_enable;		// this will get wired to an output pin once I make the move to
 				// the v2 indicator panels !!!

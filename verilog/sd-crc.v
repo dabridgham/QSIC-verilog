@@ -21,7 +21,7 @@ module crc7
    reg [6:0] 	sr;
    always @(posedge clk) begin
       if (reset)
-	sr <= 6'b0;
+	sr <= 7'b0;
       else if (enable) begin
 	 sr[6] <= sr[5];
 	 sr[5] <= sr[4];

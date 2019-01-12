@@ -9,6 +9,9 @@ BG_FILES = tb_bg.v bus-grant-mux.v
 
 ALL: tb_qbus.check
 
+lint:
+	verilator --lint-only -Wno-LITENDIAN qsic-pmo.v qinterrupt.v sd.v ramdisk-block.v sd-crc.v
+
 tb_qbus.check: $(INCLUDES) $(QBUS_FILES)
 	iverilog -tnull $(ICOPTS) $(QBUS_FILES)
 
