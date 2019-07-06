@@ -338,6 +338,8 @@ module rkv11
 	     // be set either through RKCS or through RKXA.  Again, this is like the RLV12.
 	     if (mode == `MODE_Q22)
 	       RK_BAR[21:16] <= RDL[5:0];
+	   default:
+	     ;			// silently ignore writes to other registers
 	 endcase // case (RAL[3:1])
       end
 

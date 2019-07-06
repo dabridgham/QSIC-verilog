@@ -526,26 +526,29 @@ module pmo
 `define pack_ramdisk 2'o2
 `define pack_usb 2'o3
    // { Enable, Cylinders, Storage Device, LBA Offset }
-   reg [50:0]  rk0_load_table [0:7] 
-     = {
-`ifdef SD0
-	{ `pack_enable, 16'd203, `pack_sd0, 32'h0002_0000 },
- `ifdef RAM_DISK
-	{ `pack_enable, 16'd32, `pack_ramdisk, 32'h0000_0000 },
+   // Eventually this load table will be initialized entirely from the soft-11 and not
+   // statically like this !!!
+   reg [50:0]  rk0_load_table [0:7];
+   initial begin
+ `ifdef SD0
+      rk0_load_table[0] = { `pack_enable, 16'd203, `pack_sd0, 32'h0002_0000 };
+  `ifdef RAM_DISK
+      rk0_load_table[1] = { `pack_enable, 16'd32, `pack_ramdisk, 32'h0000_0000 };
+  `else
+      rk0_load_table[1] = { `pack_enable, 16'd203, `pack_sd0, 32'h0002_2000 };
+  `endif
  `else
-	{ `pack_enable, 16'd203, `pack_sd0, 32'h0002_2000 },
+      rk0_load_table[0] = { `pack_enable, 16'd32, `pack_ramdisk, 32'h0000_0000 };
+      rk0_load_table[1] = { `pack_disable, 16'd203, `pack_sd0, 32'h0002_2000 };
  `endif
-`else
-	{ `pack_enable, 16'd32, `pack_ramdisk, 32'h0000_0000 },
-	{ `pack_disable, 16'd203, `pack_sd0, 32'h0002_2000 },
-`endif
-	{ `pack_disable, 16'd203, `pack_sd0, 32'h0002_4000 },
-	{ `pack_disable, 16'd203, `pack_sd0, 32'h0002_6000 },
-	{ `pack_disable, 16'd203, `pack_sd0, 32'h0002_8000 },
-	{ `pack_disable, 16'd203, `pack_sd0, 32'h0002_a000 },
-	{ `pack_disable, 16'd203, `pack_sd0, 32'h0002_c000 },
-	{ `pack_disable, 16'd203, `pack_sd0, 32'h0002_e000 }
-	};
+      rk0_load_table[2] = { `pack_disable, 16'd203, `pack_sd0, 32'h0002_4000 };
+      rk0_load_table[3] = { `pack_disable, 16'd203, `pack_sd0, 32'h0002_6000 };
+      rk0_load_table[4] = { `pack_disable, 16'd203, `pack_sd0, 32'h0002_8000 };
+      rk0_load_table[5] = { `pack_disable, 16'd203, `pack_sd0, 32'h0002_a000 };
+      rk0_load_table[6] = { `pack_disable, 16'd203, `pack_sd0, 32'h0002_c000 };
+      rk0_load_table[7] = { `pack_disable, 16'd203, `pack_sd0, 32'h0002_e000 };
+   end
+
    wire        pack_enable = rk0_load_table[rk0_dev_sel][50];
    assign rk0_disk_cylinders = rk0_load_table[rk0_dev_sel][49:34];
    wire [1:0]  pack_sd_select = rk0_load_table[rk0_dev_sel][33:32];
@@ -689,7 +692,14 @@ module pmo
 
    // The configuration for what indicator panels to display
    reg [1:0] ip_count = 2;
-   reg [1:0] ip_list [0:3] = { 2'd2, 2'd1, 2'd0, 2'd1 };
+   reg [1:0] ip_list [0:3];
+   // eventually this table will be initilized by the soft-11 rather than statically !!!
+   initial begin
+      ip_list[0] = 2;
+      ip_list[1] = 1;
+      ip_list[2] = 0;
+      ip_list[3] = 1;
+   end
    wire [1:0] ip_step;
    wire ip_enable;		// this will get wired to an output pin once I make the move to
 				// the v2 indicator panels !!!
@@ -701,15 +711,15 @@ module pmo
 	   .data(ip_out),
 	   .latch(ip_latch),
 	   .enable(ip_enable), 
-	   // connect to the config RAM
+	   // connect to the config registers
 	   .ip_count(ip_count),
 	   .ip_step(ip_step),
 	   .ip_sel(ip_list[ip_step]),
 	   // connections to the internal indicator panels
 	   // 0 = lamptest
-	   // 1 = QBUS
-	   // 2 = RK12
-	   // 3 = RP12 (once I implement it)
+	   // 1 = QBUS monitor
+	   // 2 = RK11 #1
+	   // 3 = testing
 	   .ip_clk({ lt_clk, qsic_clk, rk_ip_clk, ip3_clk }),
 	   .ip_latch({ lt_latch, qsic_latch, rk_ip_latch, ip3_latch }),
 	   .ip_data({ lt_out, qsic_out, rk_ip_out, ip3_out }));

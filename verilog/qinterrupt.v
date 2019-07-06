@@ -41,19 +41,19 @@ module qint
    // line(s).  Once we're asserting the interrupt vector, it's time to remove the request (this
    // may end up being more properly handled by clearing the interrupt condition in the device).
    always @(*) begin
-      TIRQ <= 0;		// default off
+      TIRQ = 0;			// default off
 
       if (irql && !assert_vector) begin
 	 // IRQ4 is always asserted for those devices that only work on a single interrupt level
-	 TIRQ[4] <= 1;
+	 TIRQ[4] = 1;
 	 
 	 case (int_priority)
-	   `INTP_4: TIRQ[4] <= 1;
-	   `INTP_5: TIRQ[5] <= 1;
-	   `INTP_6: TIRQ[6] <= 1;
+	   `INTP_4: TIRQ[4] = 1;
+	   `INTP_5: TIRQ[5] = 1;
+	   `INTP_6: TIRQ[6] = 1;
 	   `INTP_7: begin
-	      TIRQ[6] <= 1;	// Level 7 devices also assert IRQ6
-	      TIRQ[7] <= 1;
+	      TIRQ[6] = 1;	// Level 7 devices also assert IRQ6
+	      TIRQ[7] = 1;
 	   end
 	 endcase // case (int_priority)
       end
@@ -64,10 +64,10 @@ module qint
       case (int_priority)
 	// Since level 7 devices always assert IRQ6 as well, level 4 and 5 devices don't have to
 	// check IRQ7.
-	`INTP_4: irq_higher <= RIRQ[5] | RIRQ[6];
-	`INTP_5: irq_higher <= RIRQ[6];
-	`INTP_6: irq_higher <= RIRQ[7];
-	`INTP_7: irq_higher <= 0;
+	`INTP_4: irq_higher = RIRQ[5] | RIRQ[6];
+	`INTP_5: irq_higher = RIRQ[6];
+	`INTP_6: irq_higher = RIRQ[7];
+	`INTP_7: irq_higher = 0;
       endcase
    end // always @ begin
 

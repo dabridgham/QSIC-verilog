@@ -2,6 +2,7 @@ ICOPTS = -DSIM -Wall -Wno-implicit-dimensions
 #ICOPTS = -DSIM -Wall
 #ICOPTS = -DSIM
 SIMOPTS = -N
+LINTOPTS = --lint-only -Wno-LITENDIAN -I/opt/Xilinx/Vivado/2017.3/ids_lite/ISE/verilog/xeclib/unisims
 INCLUDES = qsic.vh
 QBUS_FILES = tb_qbus.v qdrv.v qsic-pmo.v switch-register.v rkv11.v qmaster2908.v qinterrupt.v indicator.v sd.v
 DMA_FILES = tb_dma.v qdrv.v master.v sim_proc.v
@@ -10,7 +11,7 @@ BG_FILES = tb_bg.v bus-grant-mux.v
 ALL: tb_qbus.check
 
 lint:
-	verilator --lint-only -Wno-LITENDIAN qsic-pmo.v qinterrupt.v sd.v ramdisk-block.v sd-crc.v
+	verilator $(LINTOPTS) qsic-pmo.v qinterrupt.v sd.v ramdisk-block.v sd-crc.v
 
 tb_qbus.check: $(INCLUDES) $(QBUS_FILES)
 	iverilog -tnull $(ICOPTS) $(QBUS_FILES)
