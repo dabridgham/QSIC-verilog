@@ -7,11 +7,11 @@ available for those who want the blinkenlights.
 
 [horizontal]
 board-prototype:: KiCAD designs for a prototype board with 8641 bus transceivers
-board-qsic:: KiCAD for the QSIC hardware
+board-qsic:: KiCAD design for the QSIC hardware
 board-smt:: KiCAD design where I've been experimenting with discrete bus drivers
 board-wirewrap:: KiCAD designs for the wire-wrap prototype board
 documentation:: Users Manual for the QSIC/USIC
-indicator-panel:: This directory is old as the indicator panel has
-		  been moved to its own project.	 
+indicator-panel:: This directory is obsolete as the indicator panel has
+		  been moved to its own project
 papers:: A paper on QBUS and Unibus arbitration
 verilog:: The FPGA code to implement the QSIC
