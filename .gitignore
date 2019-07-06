@@ -3,6 +3,7 @@
 *.gtkw
 /board-smt/output
 /indicator-panel/output
+*/rescue-backup/
 *.bak
 *.kicad_pcb-bak
 *.net

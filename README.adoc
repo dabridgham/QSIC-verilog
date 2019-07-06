@@ -7,6 +7,7 @@ available for those who want the blinkenlights.
 
 [horizontal]
 board-prototype:: KiCAD designs for a prototype board with 8641 bus transceivers
+board-qsic:: KiCAD for the QSIC hardware
 board-smt:: KiCAD design where I've been experimenting with discrete bus drivers
 board-wirewrap:: KiCAD designs for the wire-wrap prototype board
 documentation:: Users Manual for the QSIC/USIC
