@@ -47,7 +47,7 @@ module rkv11
    output reg [12:0] sd_lba, // linear block address
    output reg 	     sd_read, // initiate a block read
    output reg 	     sd_write, // initiate a block write
-   input 	     sd_ready, // selected disk is ready for a command
+   input 	     sd_ready_u, // selected disk is ready for a command (unsynchronized)
    output [15:0]     sd_write_data,
    output reg 	     sd_write_enable, // enables writing data to the write FIFO
    input 	     sd_write_full, // write FIFO is full
@@ -63,6 +63,11 @@ module rkv11
    wire [8:0]  int_vec = 9'o220;
    wire [1:0]  mode = `MODE_Q22;
 
+
+   // synchronize the device ready signal from the storage device
+   reg [1:0]   sdrdy;
+   wire        sd_ready = sdrdy[1];
+   always @(posedge clk) sdrdy <= { sdrdy[0], sd_ready_u };
 
    //
    // All the bits in the various device registers.  Device register addresses are shown as addr[3:1]
