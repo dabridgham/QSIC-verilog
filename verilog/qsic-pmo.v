@@ -12,65 +12,81 @@
 
 module pmo
   (
-   input 	clk48_in, // 48 MHz clock from the ZTEX module
+   input 	 clk48_in, // 48 MHz clock from the ZTEX module
 
    // these LEDs on the debug board are on pins not being used for other things so they're open
    // for general use.  these need switches 5 and 6 turned on to enable the LEDs.
-   output 	led_3_2, // D8
-   output 	led_3_4, // D9
+   output 	 led_3_2, // D8
+   output 	 led_3_4, // D9
 //   output 	led_3_6, // D10
 //   output 	led_3_8, // D11
-   output 	led_3_9, // C12
+   output 	 led_3_9, // C12
 //   output 	led_3_10, // D12
-   output 	tp_b30, // testpoint B30 (FPGA pin A11)
+   output 	 tp_b30, // testpoint B30 (FPGA pin A11)
    
    // Interface to indicator panels
-   output 	ip_clk_pin,
-   output 	ip_latch_pin,
-   output 	ip_out_pin,
+   output 	 ip_clk_pin,
+   output 	 ip_latch_pin,
+   output 	 ip_out_pin,
 
    // The QBUS signals as seen by the FPGA
-   output 	DALbe_L, // Enable transmitting on BDAL (active low)
-   output 	DALtx, // set level-shifters to output and disable input from Am2908s
-   output 	DALst, // latch the BDAL output
-   inout [21:0] ZDAL,
-   inout 	ZBS7,
-   inout 	ZWTBT,
+   output 	 DALbe_L, // Enable transmitting on BDAL (active low)
+   output 	 DALtx, // set level-shifters to output and disable input from Am2908s
+   output 	 DALst, // latch the BDAL output
+   inout [21:0]  ZDAL,
+   inout 	 ZBS7,
+   inout 	 ZWTBT,
 
-   input 	RSYNC,
-   input 	RDIN,
-   input 	RDOUT,
-   input 	RRPLY,
-   input 	RREF, // option for DMA block-mode when acting as memory
-   input 	RIRQ4,
-   input 	RIRQ5,
-   input 	RIRQ6,
-   input 	RIRQ7,
-   input 	RDMR,
-   input 	RSACK,
-   input 	RINIT,
-   input 	RIAKI,
-   input 	RDMGI,
-   input 	RDCOK,
-   input 	RPOK,
+   input 	 RSYNC,
+   input 	 RDIN,
+   input 	 RDOUT,
+   input 	 RRPLY,
+   input 	 RREF, // option for DMA block-mode when acting as memory
+   input 	 RIRQ4,
+   input 	 RIRQ5,
+   input 	 RIRQ6,
+   input 	 RIRQ7,
+   input 	 RDMR,
+   input 	 RSACK,
+   input 	 RINIT,
+   input 	 RIAKI,
+   input 	 RDMGI,
+   input 	 RDCOK,
+   input 	 RPOK,
 
-   output 	TSYNC,
-   output 	TDIN,
-   output 	TDOUT,
-   output reg 	TRPLY,
-   output 	TREF,
-   output 	TIRQ4,
-   output 	TIRQ5,
-   output 	TIRQ6,
-   output 	TIRQ7,
-   output 	TDMR,
-   output 	TSACK,
-   output 	TIAKO,
-   output 	TDMGO,
+   output 	 TSYNC,
+   output 	 TDIN,
+   output 	 TDOUT,
+   output reg 	 TRPLY,
+   output 	 TREF,
+   output 	 TIRQ4,
+   output 	 TIRQ5,
+   output 	 TIRQ6,
+   output 	 TIRQ7,
+   output 	 TDMR,
+   output 	 TSACK,
+   output 	 TIAKO,
+   output 	 TDMGO,
 
-   output 	sd0_sdclk,
-   output 	sd0_sdcmd,
-   inout [3:0] 	sd0_sddat
+   output 	 sd0_sdclk,
+   output 	 sd0_sdcmd,
+   inout [3:0] 	 sd0_sddat,
+
+   // Memory interface ports
+   output [13:0] ddr3_addr,
+   output [2:0]  ddr3_ba,
+   output 	 ddr3_cas_n,
+   output [0:0]  ddr3_ck_n,
+   output [0:0]  ddr3_ck_p,
+   output [0:0]  ddr3_cke,
+   output 	 ddr3_ras_n,
+   output 	 ddr3_reset_n,
+   output 	 ddr3_we_n,
+   inout [15:0]  ddr3_dq,
+   inout [1:0] 	 ddr3_dqs_n,
+   inout [1:0] 	 ddr3_dqs_p,
+   output [1:0]  ddr3_dm,
+   output [0:0]  ddr3_odt
    );
 
 
@@ -260,6 +276,7 @@ module pmo
 `define SD0 1
 //`define SD1 1
 `define RAM_DISK 1
+`define SDRAM 1
 
 `ifdef SW_REG
    reg [17:0]  sr_addr = 18'o777570;
@@ -462,6 +479,125 @@ module pmo
    // Interface a Block RAM RAMdisk
    //
 `ifdef RAM_DISK
+ `ifdef SDRAM
+   wire [3:0]  s_axi_awid;
+   wire [27:0] s_axi_awaddr;
+   wire [7:0]  s_axi_awlen;
+   wire [2:0]  s_axi_awsize;
+   wire [1:0]  s_axi_awburst;
+   wire [0:0]  s_axi_awlock;
+   wire [3:0]  s_axi_awcache;
+   wire [2:0]  s_axi_awprot;
+   wire [3:0]  s_axi_awqos;
+   wire        s_axi_awvalid;
+   wire        s_axi_awready;
+   wire [31:0] s_axi_wdata;
+   wire [3:0]  s_axi_wstrb;
+   wire        s_axi_wlast;
+   wire        s_axi_wvalid;
+   wire        s_axi_wready;
+   wire [3:0]  s_axi_bid;
+   wire [1:0]  s_axi_bresp;
+   wire        s_axi_bvalid;
+   wire        s_axi_bready;
+   wire [3:0]  s_axi_arid;
+   wire [27:0] s_axi_araddr;
+   wire [7:0]  s_axi_arlen;
+   wire [2:0]  s_axi_arsize;
+   wire [1:0]  s_axi_arburst;
+   wire [0:0]  s_axi_arlock;
+   wire [3:0]  s_axi_arcache;
+   wire [2:0]  s_axi_arprot;
+   wire [3:0]  s_axi_arqos;
+   wire        s_axi_arvalid;
+   wire        s_axi_arready;
+   wire [3:0]  s_axi_rid;
+   wire [31:0] s_axi_rdata;
+   wire [1:0]  s_axi_rresp;
+   wire        s_axi_rlast;
+   wire        s_axi_rvalid;
+   wire        s_axi_rready;
+   wire        ui_clk, ui_clk_sync_rst;
+
+   ztex_sdram u_ztex_sdram
+     (
+      // Memory interface ports
+      .ddr3_addr                      (ddr3_addr),     // output [13:0]	ddr3_addr
+      .ddr3_ba                        (ddr3_ba),       // output [2:0]	ddr3_ba
+      .ddr3_cas_n                     (ddr3_cas_n),    // output	ddr3_cas_n
+      .ddr3_ck_n                      (ddr3_ck_n),     // output [0:0]	ddr3_ck_n
+      .ddr3_ck_p                      (ddr3_ck_p),     // output [0:0]	ddr3_ck_p
+      .ddr3_cke                       (ddr3_cke),      // output [0:0]	ddr3_cke
+      .ddr3_ras_n                     (ddr3_ras_n),    // output	ddr3_ras_n
+      .ddr3_reset_n                   (ddr3_reset_n),  // output	ddr3_reset_n
+      .ddr3_we_n                      (ddr3_we_n),     // output	ddr3_we_n
+      .ddr3_dq                        (ddr3_dq),       // inout [15:0]	ddr3_dq
+      .ddr3_dqs_n                     (ddr3_dqs_n),    // inout [1:0]	ddr3_dqs_n
+      .ddr3_dqs_p                     (ddr3_dqs_p),    // inout [1:0]	ddr3_dqs_p
+      .init_calib_complete            (),	       // output	init_calib_complete
+      .ddr3_dm                        (ddr3_dm),       // output [1:0]	ddr3_dm
+      .ddr3_odt                       (ddr3_odt),      // output [0:0]	ddr3_odt
+      // Application interface ports
+      .ui_clk                         (ui_clk),	       // output	ui_clk
+      .ui_clk_sync_rst                (ui_clk_sync_rst), // output	ui_clk_sync_rst
+      .mmcm_locked                    (),	       // output	mmcm_locked
+      .aresetn                        (1),	       // input		aresetn
+      .app_sr_req                     (0),	       // input		app_sr_req
+      .app_ref_req                    (0),	       // input		app_ref_req
+      .app_zq_req                     (0),	       // input		app_zq_req
+      .app_sr_active                  (),	       // output	app_sr_active
+      .app_ref_ack                    (),	       // output	app_ref_ack
+      .app_zq_ack                     (),	       // output	app_zq_ack
+      // Slave Interface Write Address Ports
+      .s_axi_awid                     (s_axi_awid),    // input [3:0]	s_axi_awid
+      .s_axi_awaddr                   (s_axi_awaddr),  // input [27:0]	s_axi_awaddr
+      .s_axi_awlen                    (s_axi_awlen),   // input [7:0]	s_axi_awlen
+      .s_axi_awsize                   (s_axi_awsize),  // input [2:0]	s_axi_awsize
+      .s_axi_awburst                  (s_axi_awburst), // input [1:0]	s_axi_awburst
+      .s_axi_awlock                   (s_axi_awlock),  // input [0:0]	s_axi_awlock
+      .s_axi_awcache                  (s_axi_awcache), // input [3:0]	s_axi_awcache
+      .s_axi_awprot                   (s_axi_awprot),  // input [2:0]	s_axi_awprot
+      .s_axi_awqos                    (s_axi_awqos),   // input [3:0]	s_axi_awqos
+      .s_axi_awvalid                  (s_axi_awvalid), // input		s_axi_awvalid
+      .s_axi_awready                  (s_axi_awready), // output	s_axi_awready
+      // Slave Interface Write Data Ports
+      .s_axi_wdata                    (s_axi_wdata),   // input [31:0]	s_axi_wdata
+      .s_axi_wstrb                    (s_axi_wstrb),   // input [3:0]	s_axi_wstrb
+      .s_axi_wlast                    (s_axi_wlast),   // input		s_axi_wlast
+      .s_axi_wvalid                   (s_axi_wvalid),  // input		s_axi_wvalid
+      .s_axi_wready                   (s_axi_wready),  // output	s_axi_wready
+      // Slave Interface Write Response Ports
+      .s_axi_bid                      (s_axi_bid),     // output [3:0]	s_axi_bid
+      .s_axi_bresp                    (s_axi_bresp),   // output [1:0]	s_axi_bresp
+      .s_axi_bvalid                   (s_axi_bvalid),  // output	s_axi_bvalid
+      .s_axi_bready                   (s_axi_bready),  // input		s_axi_bready
+      // Slave Interface Read Address Ports
+      .s_axi_arid                     (s_axi_arid),    // input [3:0]	s_axi_arid
+      .s_axi_araddr                   (s_axi_araddr),  // input [27:0]	s_axi_araddr
+      .s_axi_arlen                    (s_axi_arlen),   // input [7:0]	s_axi_arlen
+      .s_axi_arsize                   (s_axi_arsize),  // input [2:0]	s_axi_arsize
+      .s_axi_arburst                  (s_axi_arburst), // input [1:0]	s_axi_arburst
+      .s_axi_arlock                   (s_axi_arlock),  // input [0:0]	s_axi_arlock
+      .s_axi_arcache                  (s_axi_arcache), // input [3:0]	s_axi_arcache
+      .s_axi_arprot                   (s_axi_arprot),  // input [2:0]	s_axi_arprot
+      .s_axi_arqos                    (s_axi_arqos),   // input [3:0]	s_axi_arqos
+      .s_axi_arvalid                  (s_axi_arvalid), // input		s_axi_arvalid
+      .s_axi_arready                  (s_axi_arready), // output	s_axi_arready
+      // Slave Interface Read Data Ports
+      .s_axi_rid                      (s_axi_rid),    // output [3:0]	s_axi_rid
+      .s_axi_rdata                    (s_axi_rdata),  // output [31:0]	s_axi_rdata
+      .s_axi_rresp                    (s_axi_rresp),  // output [1:0]	s_axi_rresp
+      .s_axi_rlast                    (s_axi_rlast),  // output		s_axi_rlast
+      .s_axi_rvalid                   (s_axi_rvalid), // output		s_axi_rvalid
+      .s_axi_rready                   (s_axi_rready), // input		s_axi_rready
+      // System Clock Ports
+      .sys_clk_i                      (clk400),
+      // Reference Clock Ports
+      .clk_ref_i                      (clk200),
+      .sys_rst                        (0), // input sys_rst
+      .device_temp		      ()
+      );
+
    reg 	       rd_dev_ready = 1;
    wire        rd_read, rd_write, rd_cmd_ready;
    wire [31:0] rd_lba = LBA;
@@ -469,7 +605,72 @@ module pmo
    wire        rd_write_data_enable;
    wire        rd_read_data_enable;
    wire        rd_fifo_clk;
-   wire [15:0] rd_debug;
+
+   ramdisk_sdram ramdisk
+     (// AXI4 connection to the SDRAM
+      // user interface signals
+      .ui_clk(ui_clk),
+      .ui_clk_sync_rst(ui_clk_sync_rst),
+      .s_axi_awid(s_axi_awid),
+      .s_axi_awaddr(s_axi_awaddr),
+      .s_axi_awlen(s_axi_awlen),
+      .s_axi_awsize(s_axi_awsize),
+      .s_axi_awburst(s_axi_awburst),
+      .s_axi_awlock(s_axi_awlock),
+      .s_axi_awcache(s_axi_awcache),
+      .s_axi_awprot(s_axi_awprot),
+      .s_axi_awqos(s_axi_awqos),
+      .s_axi_awvalid(s_axi_awvalid),
+      .s_axi_awready(s_axi_awready),
+      .s_axi_wdata(s_axi_wdata),
+      .s_axi_wstrb(s_axi_wstrb),
+      .s_axi_wlast(s_axi_wlast),
+      .s_axi_wvalid(s_axi_wvalid),
+      .s_axi_wready(s_axi_wready),
+      .s_axi_bready(s_axi_bready),
+      .s_axi_bid(s_axi_bid),
+      .s_axi_bresp(s_axi_bresp),
+      .s_axi_bvalid(s_axi_bvalid),
+      .s_axi_arid(s_axi_arid),
+      .s_axi_araddr(s_axi_araddr),
+      .s_axi_arlen(s_axi_arlen),
+      .s_axi_arsize(s_axi_arsize),
+      .s_axi_arburst(s_axi_arburst),
+      .s_axi_arlock(s_axi_arlock),
+      .s_axi_arcache(s_axi_arcache),
+      .s_axi_arprot(s_axi_arprot),
+      .s_axi_arqos(s_axi_arqos),
+      .s_axi_arvalid(s_axi_arvalid),
+      .s_axi_arready(s_axi_arready),
+      .s_axi_rready(s_axi_rready),
+      .s_axi_rid(s_axi_rid),
+      .s_axi_rdata(s_axi_rdata),
+      .s_axi_rresp(s_axi_rresp),
+      .s_axi_rlast(s_axi_rlast),
+      .s_axi_rvalid(s_axi_rvalid),
+
+      // connection from the disk controller
+      .command_ready(rd_cmd_ready),
+      .read_cmd(rd_read),
+      .write_cmd(rd_write),
+      .block_address(rd_lba),
+      .fifo_clk(rd_fifo_clk), 
+      .write_data(sd_write_data),
+      .write_data_enable(rd_write_data_enable),
+      .read_data(rd_read_data),
+      .read_data_enable(rd_read_data_enable));
+
+
+
+
+ `else
+   reg 	       rd_dev_ready = 1;
+   wire        rd_read, rd_write, rd_cmd_ready;
+   wire [31:0] rd_lba = LBA;
+   wire [15:0] rd_read_data;
+   wire        rd_write_data_enable;
+   wire        rd_read_data_enable;
+   wire        rd_fifo_clk;
    ramdisk_block #(.BLOCKS(2 * 12 * 32)) // 32 cylinders uses up most of the Block RAM I have
    RD (.clk(clk20), .reset(RINIT), .command_ready(rd_cmd_ready),
        .read_cmd(rd_read), .write_cmd(rd_write),
@@ -479,6 +680,7 @@ module pmo
        .write_data_enable(rd_write_data_enable),
        .read_data(rd_read_data),
        .read_data_enable(rd_read_data_enable));
+ `endif
 `else // !`ifdef RAM_DISK
    reg 	       rd_dev_ready = 0;
    reg 	       rd_cmd_ready = 0;
@@ -617,6 +819,8 @@ module pmo
 	      { 36'o777_777_777_777 },
 	      { 36'o777_777_777_777 });
 
+//`define NXM_CATCHER 1
+ `ifdef NXM_CATCHER
    // !!! An experimental Indicator Panel for debugging the NXM problem !!!
    wire ip3_clk, ip3_latch, ip3_out;
 
@@ -676,7 +880,7 @@ module pmo
 	nxm_RPOK = RPOK;
 	nxm_ZDAL = ZDAL;
 	nxm_addr_reg = rk_tal;
-     end
+     end // if (rk_nxm)
 
    indicator
      nxm_catch(ip3_clk, ip3_latch, ip3_out,
@@ -688,6 +892,12 @@ module pmo
 	       { DALtx & ZWTBT, DALtx & ZBS7, TSYNC, TDIN, TDOUT, TRPLY, TREF, 1'b0,
 		 TIAKO, TIRQ7, TIRQ6, TIRQ5, TIRQ4, 1'b0, TSACK, TDMGO, TDMR,
 		 10'b0, sd0_err, 1'b0 });
+ `else // !`ifdef NXM_CATCHER
+   wire ip3_clk = lt_clk;
+   wire ip3_latch = lt_latch;
+   wire ip3_out = lt_out;
+ `endif // !`ifdef NXM_CATCHER
+   
 
 
    // The configuration for what indicator panels to display
