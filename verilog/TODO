@@ -14,3 +14,5 @@
  o make the RDY, RD, and WR lights for the RK05s on the RK11 indicator panel work better
  o BINIT is reset, BPOK inhibits accepting new commands, BDCOK will be a hard reset to the FPGA
  o Figure out how to disable the bus drivers until the FPGA is configured and running
+ o look into using the Xilinx AXI crossbar between controllers and storage devices
+ o remove FIFO from most storage devices, only SD writes need it.  redesign flow control
