@@ -1,0 +1,1474 @@
+EESchema Schematic File Version 4
+LIBS:qsic-cache
+EELAYER 30 0
+EELAYER END
+$Descr A 11000 8500
+encoding utf-8
+Sheet 6 53
+Title "QBUS Interface"
+Date "2019-09-30"
+Rev "0.2"
+Comp "QSIC - QBUS Storage & I/O Card"
+Comment1 ""
+Comment2 ""
+Comment3 ""
+Comment4 ""
+$EndDescr
+$Comp
+L Device:R R?
+U 1 1 58859D26
+P 7800 3000
+AR Path="/5D8BBF40/58859D26" Ref="R?"  Part="1" 
+AR Path="/5DCB8CA6/5DCBEAC7/58859D26" Ref="R602"  Part="1" 
+F 0 "R602" V 7880 3000 50  0000 C CNN
+F 1 "330" V 7800 3000 50  0000 C CNN
+F 2 "Resistor_SMD:R_0603_1608Metric" V 7730 3000 30  0001 C CNN
+F 3 "" H 7800 3000 30  0000 C CNN
+F 4 "RC0603JR-07330RL" H 7800 3000 50  0001 C CNN "manf#"
+	1    7800 3000
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:R R?
+U 1 1 58859D2D
+P 7800 3400
+AR Path="/5D8BBF40/58859D2D" Ref="R?"  Part="1" 
+AR Path="/5DCB8CA6/5DCBEAC7/58859D2D" Ref="R606"  Part="1" 
+F 0 "R606" V 7880 3400 50  0000 C CNN
+F 1 "680" V 7800 3400 50  0000 C CNN
+F 2 "Resistor_SMD:R_0603_1608Metric" V 7730 3400 30  0001 C CNN
+F 3 "" H 7800 3400 30  0000 C CNN
+F 4 "RC0603JR-07680RL" H 7800 3400 50  0001 C CNN "manf#"
+	1    7800 3400
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR?
+U 1 1 58859D34
+P 7800 3550
+AR Path="/5D8BBF40/58859D34" Ref="#PWR?"  Part="1" 
+AR Path="/5DCB8CA6/5DCBEAC7/58859D34" Ref="#PWR0603"  Part="1" 
+F 0 "#PWR0603" H 7800 3300 50  0001 C CNN
+F 1 "GND" H 7800 3400 50  0001 C CNN
+F 2 "" H 7800 3550 60  0000 C CNN
+F 3 "" H 7800 3550 60  0000 C CNN
+	1    7800 3550
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:R R?
+U 1 1 58859D48
+P 8550 4050
+AR Path="/5D8BBF40/58859D48" Ref="R?"  Part="1" 
+AR Path="/5DCB8CA6/5DCBEAC7/58859D48" Ref="R607"  Part="1" 
+F 0 "R607" V 8630 4050 50  0000 C CNN
+F 1 "680" V 8550 4050 50  0000 C CNN
+F 2 "Resistor_SMD:R_0603_1608Metric" V 8480 4050 30  0001 C CNN
+F 3 "" H 8550 4050 30  0000 C CNN
+F 4 "RC0603JR-07680RL" H 8550 4050 50  0001 C CNN "manf#"
+	1    8550 4050
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:R R?
+U 1 1 58859D55
+P 8550 3650
+AR Path="/5D8BBF40/58859D55" Ref="R?"  Part="1" 
+AR Path="/5DCB8CA6/5DCBEAC7/58859D55" Ref="R603"  Part="1" 
+F 0 "R603" V 8630 3650 50  0000 C CNN
+F 1 "330" V 8550 3650 50  0000 C CNN
+F 2 "Resistor_SMD:R_0603_1608Metric" V 8480 3650 30  0001 C CNN
+F 3 "" H 8550 3650 30  0000 C CNN
+F 4 "RC0603JR-07330RL" H 8550 3650 50  0001 C CNN "manf#"
+	1    8550 3650
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:R R?
+U 1 1 58859D5E
+P 8325 3650
+AR Path="/5D8BBF40/58859D5E" Ref="R?"  Part="1" 
+AR Path="/5DCB8CA6/5DCBEAC7/58859D5E" Ref="R604"  Part="1" 
+F 0 "R604" V 8405 3650 50  0000 C CNN
+F 1 "330" V 8325 3650 50  0000 C CNN
+F 2 "Resistor_SMD:R_0603_1608Metric" V 8255 3650 30  0001 C CNN
+F 3 "" H 8325 3650 30  0000 C CNN
+F 4 "RC0603JR-07330RL" H 8325 3650 50  0001 C CNN "manf#"
+	1    8325 3650
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR?
+U 1 1 58859D65
+P 8325 4200
+AR Path="/5D8BBF40/58859D65" Ref="#PWR?"  Part="1" 
+AR Path="/5DCB8CA6/5DCBEAC7/58859D65" Ref="#PWR0605"  Part="1" 
+F 0 "#PWR0605" H 8325 3950 50  0001 C CNN
+F 1 "GND" H 8325 4050 50  0001 C CNN
+F 2 "" H 8325 4200 60  0000 C CNN
+F 3 "" H 8325 4200 60  0000 C CNN
+	1    8325 4200
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:R R?
+U 1 1 58859D6B
+P 8325 4050
+AR Path="/5D8BBF40/58859D6B" Ref="R?"  Part="1" 
+AR Path="/5DCB8CA6/5DCBEAC7/58859D6B" Ref="R608"  Part="1" 
+F 0 "R608" V 8405 4050 50  0000 C CNN
+F 1 "680" V 8325 4050 50  0000 C CNN
+F 2 "Resistor_SMD:R_0603_1608Metric" V 8255 4050 30  0001 C CNN
+F 3 "" H 8325 4050 30  0000 C CNN
+F 4 "RC0603JR-07680RL" H 8325 4050 50  0001 C CNN "manf#"
+	1    8325 4050
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR?
+U 1 1 588617EB
+P 8550 4200
+AR Path="/5D8BBF40/588617EB" Ref="#PWR?"  Part="1" 
+AR Path="/5DCB8CA6/5DCBEAC7/588617EB" Ref="#PWR0604"  Part="1" 
+F 0 "#PWR0604" H 8550 3950 50  0001 C CNN
+F 1 "GND" H 8550 4050 50  0001 C CNN
+F 2 "" H 8550 4200 60  0000 C CNN
+F 3 "" H 8550 4200 60  0000 C CNN
+	1    8550 4200
+	1    0    0    -1  
+$EndComp
+Connection ~ 8550 3850
+Wire Wire Line
+	8550 3800 8550 3850
+Wire Wire Line
+	8325 3800 8325 3850
+Connection ~ 8325 3850
+Text HLabel 6750 3200 0    60   Input ~ 0
+TIAKO
+Text HLabel 6750 3850 0    60   Input ~ 0
+TDMGO
+Text HLabel 1150 1275 0    60   Input ~ 0
+TSYNC
+Text HLabel 1150 1675 0    60   Input ~ 0
+TDIN
+Text HLabel 1150 2075 0    60   Input ~ 0
+TDOUT
+Text HLabel 1150 2475 0    60   Input ~ 0
+TRPLY
+Text HLabel 1150 2875 0    60   Input ~ 0
+TREF
+Text HLabel 1150 4875 0    60   Input ~ 0
+TDMR
+Text HLabel 1150 5275 0    60   Input ~ 0
+TSACK
+Text HLabel 1150 3275 0    60   Input ~ 0
+TIRQ4
+Text HLabel 1150 3675 0    60   Input ~ 0
+TIRQ5
+Text HLabel 1150 4075 0    60   Input ~ 0
+TIRQ6
+Text HLabel 1675 6900 2    60   Output ~ 0
+RPOK
+Text HLabel 1675 6500 2    60   Output ~ 0
+RDCOK
+Text HLabel 1675 6100 2    60   Output ~ 0
+RHALT
+Text HLabel 9475 3200 2    60   Output ~ 0
+RIAKI
+Text HLabel 1675 1325 2    60   Output ~ 0
+RSYNC
+Text HLabel 1675 1725 2    60   Output ~ 0
+RDIN
+Text HLabel 1675 2125 2    60   Output ~ 0
+RDOUT
+Text HLabel 1675 2525 2    60   Output ~ 0
+RRPLY
+Text HLabel 1675 2925 2    60   Output ~ 0
+RREF
+Text HLabel 1675 5725 2    60   Output ~ 0
+RINIT
+Text HLabel 1675 4925 2    60   Output ~ 0
+RDMR
+Text HLabel 1675 5325 2    60   Output ~ 0
+RSACK
+Text HLabel 1675 3325 2    60   Output ~ 0
+RIRQ4
+Text HLabel 1675 3725 2    60   Output ~ 0
+RIRQ5
+Text HLabel 1675 4125 2    60   Output ~ 0
+RIRQ6
+Wire Wire Line
+	7800 3200 7800 3250
+Wire Wire Line
+	8550 3850 8550 3900
+Wire Wire Line
+	8325 3850 8325 3900
+Text HLabel 1675 4525 2    60   Output ~ 0
+RIRQ7
+Text HLabel 1150 4475 0    60   Input ~ 0
+TIRQ7
+Text HLabel 9475 3850 2    60   Output ~ 0
+RDMGI
+Text HLabel 4525 3675 0    60   Input ~ 0
+TBS7
+Text HLabel 4525 4075 0    60   Input ~ 0
+TWTBT
+Text HLabel 5050 3725 2    60   Output ~ 0
+RBS7
+Text HLabel 5050 4125 2    60   Output ~ 0
+RWTBT
+Text HLabel 4625 7275 0    60   Input ~ 0
+3V3
+Text HLabel 7975 950  2    60   Output ~ 0
+5V0
+Text Label 7800 2850 0    60   ~ 0
+5V0
+Text Label 8325 3500 0    60   ~ 0
+5V0
+Text Label 8550 3500 0    60   ~ 0
+5V0
+Text Label 4625 7175 2    60   ~ 0
+5V0
+$Comp
+L DEC:QBUS_A J?
+U 1 1 5DF69407
+P 6925 900
+AR Path="/5DF69407" Ref="J?"  Part="1" 
+AR Path="/5D8BBF40/5DF69407" Ref="J101"  Part="1" 
+AR Path="/5DCB8CA6/5DCBEAC7/5DF69407" Ref="J601"  Part="1" 
+F 0 "J601" H 6925 1075 50  0000 C CNN
+F 1 "QBUS_A" H 6925 984 50  0000 C CNN
+F 2 "DEC:DEC_Edge_Fingers_single_height" H 6925 900 50  0001 C CNN
+F 3 "" H 6925 900 50  0001 C CNN
+F 4 "" H 6925 900 50  0001 C CNN "manf#"
+F 5 "x" H 6925 900 50  0001 C CNN "DNP"
+	1    6925 900 
+	1    0    0    -1  
+$EndComp
+Text Label 8775 2650 2    60   ~ 0
+5V0
+Text Label 9975 950  0    60   ~ 0
+5V0
+Text Label 7525 1250 0    60   ~ 0
+5V0
+Text Label 7525 950  0    60   ~ 0
+5V0
+Text Label 7525 1150 0    60   ~ 0
+GND
+Text Label 9975 1150 0    60   ~ 0
+GND
+Text Label 8775 1950 2    60   ~ 0
+GND
+Text Label 8775 2450 2    60   ~ 0
+GND
+Text Label 8775 1650 2    60   ~ 0
+GND
+Text Label 6325 2450 2    60   ~ 0
+GND
+Text Label 6325 1950 2    60   ~ 0
+GND
+Text Label 6325 1650 2    60   ~ 0
+GND
+NoConn ~ 7525 1050
+NoConn ~ 9975 1050
+NoConn ~ 9975 1250
+NoConn ~ 8775 2550
+NoConn ~ 8775 2350
+NoConn ~ 8775 1750
+NoConn ~ 8775 1850
+NoConn ~ 8775 1550
+NoConn ~ 6325 2650
+NoConn ~ 6325 2550
+NoConn ~ 6325 2350
+NoConn ~ 6325 1850
+NoConn ~ 6325 1750
+NoConn ~ 6325 1550
+NoConn ~ 6325 1450
+NoConn ~ 6325 1350
+Text Label 4525 1775 2    60   ~ 0
+BDAL17
+Text Label 4525 1375 2    60   ~ 0
+BDAL16
+Text Label 1150 3775 2    60   ~ 0
+BIRQ5
+Text Label 1150 4175 2    60   ~ 0
+BIRQ6
+Text Label 1150 1375 2    60   ~ 0
+BSYNC
+Text Label 1150 1775 2    60   ~ 0
+BDIN
+Text Label 1150 2175 2    60   ~ 0
+BDOUT
+Text Label 1150 2575 2    60   ~ 0
+BRPLY
+Text Label 6325 1250 2    60   ~ 0
+BDAL17
+Text Label 6325 1150 2    60   ~ 0
+BDAL16
+Text Label 6325 950  2    60   ~ 0
+BIRQ5
+Text Label 6325 1050 2    60   ~ 0
+BIRQ6
+Text Label 7525 1650 0    60   ~ 0
+BSYNC
+Text Label 7525 1550 0    60   ~ 0
+BDIN
+Text Label 7525 1350 0    60   ~ 0
+BDOUT
+Text Label 7525 1450 0    60   ~ 0
+BRPLY
+Text Label 2850 2575 2    60   ~ 0
+BDAL3
+Text Label 2850 2175 2    60   ~ 0
+BDAL2
+Text Label 4525 2975 2    60   ~ 0
+BDAL20
+Text Label 4525 3375 2    60   ~ 0
+BDAL21
+Text Label 2850 4175 2    60   ~ 0
+BDAL7
+Text Label 2850 3775 2    60   ~ 0
+BDAL6
+Text Label 2850 2975 2    60   ~ 0
+BDAL4
+Text Label 2850 3375 2    60   ~ 0
+BDAL5
+Text Label 2850 5775 2    60   ~ 0
+BDAL11
+Text Label 2850 5375 2    60   ~ 0
+BDAL10
+Text Label 1150 5375 2    60   ~ 0
+BSACK
+Text Label 1150 4575 2    60   ~ 0
+BIRQ7
+Text Label 2850 7375 2    60   ~ 0
+BDAL15
+Text Label 2850 6975 2    60   ~ 0
+BDAL14
+Text Label 2850 6175 2    60   ~ 0
+BDAL12
+Text Label 2850 6575 2    60   ~ 0
+BDAL13
+Text Label 4525 2175 2    60   ~ 0
+BDAL18
+Text Label 4525 2575 2    60   ~ 0
+BDAL19
+Text Label 2850 1775 2    60   ~ 0
+BDAL1
+Text Label 2850 1375 2    60   ~ 0
+BDAL0
+Text Label 8950 3200 2    60   ~ 0
+BIAKI
+Text Label 7275 3200 0    60   ~ 0
+BIAKO
+Text Label 4525 4175 2    60   ~ 0
+BWTBT
+Text Label 1150 3375 2    60   ~ 0
+BIRQ4
+Text Label 1150 2975 2    60   ~ 0
+BREF
+Text Label 1150 6100 2    60   ~ 0
+BHALT
+Text Label 1150 4975 2    60   ~ 0
+BDMR
+Text Label 4525 3775 2    60   ~ 0
+BBS7
+Text Label 1150 5775 2    60   ~ 0
+BINIT
+Text Label 7275 3850 0    60   ~ 0
+BDMGO
+Text Label 8950 3850 2    60   ~ 0
+BDMGI
+Text Label 2850 4975 2    60   ~ 0
+BDAL9
+Text Label 2850 4575 2    60   ~ 0
+BDAL8
+Text Label 1150 6500 2    60   ~ 0
+BDCOK
+Text Label 1150 6900 2    60   ~ 0
+BPOK
+Text Label 6325 2250 2    60   ~ 0
+BREF
+Text Label 6325 2150 2    60   ~ 0
+BHALT
+Text Label 6325 2050 2    60   ~ 0
+BDMR
+Text Label 7525 2150 0    60   ~ 0
+BBS7
+Text Label 7525 2450 0    60   ~ 0
+BINIT
+Text Label 7525 2350 0    60   ~ 0
+BDMGO
+Text Label 7525 2250 0    60   ~ 0
+BDMGI
+Text Label 9975 2050 0    60   ~ 0
+BDAL9
+Text Label 9975 1950 0    60   ~ 0
+BDAL8
+Text Label 8775 950  2    60   ~ 0
+BDCOK
+Text Label 8775 1050 2    60   ~ 0
+BPOK
+Text Label 8775 1150 2    60   ~ 0
+BDAL18
+Text Label 8775 1250 2    60   ~ 0
+BDAL19
+Text Label 7525 2650 0    60   ~ 0
+BDAL1
+Text Label 7525 2550 0    60   ~ 0
+BDAL0
+Text Label 7525 1950 0    60   ~ 0
+BIAKI
+Text Label 7525 2050 0    60   ~ 0
+BIAKO
+Text Label 7525 1750 0    60   ~ 0
+BWTBT
+Text Label 7525 1850 0    60   ~ 0
+BIRQ4
+Text Label 9975 2250 0    60   ~ 0
+BDAL11
+Text Label 9975 2150 0    60   ~ 0
+BDAL10
+Text Label 8775 2050 2    60   ~ 0
+BSACK
+Text Label 8775 2150 2    60   ~ 0
+BIRQ7
+Text Label 9975 2650 0    60   ~ 0
+BDAL15
+Text Label 9975 2550 0    60   ~ 0
+BDAL14
+Text Label 9975 2350 0    60   ~ 0
+BDAL12
+Text Label 9975 2450 0    60   ~ 0
+BDAL13
+Text Label 9975 1450 0    60   ~ 0
+BDAL3
+Text Label 9975 1350 0    60   ~ 0
+BDAL2
+Text Label 8775 1350 2    60   ~ 0
+BDAL20
+Text Label 8775 1450 2    60   ~ 0
+BDAL21
+Text Label 9975 1850 0    60   ~ 0
+BDAL7
+Text Label 9975 1750 0    60   ~ 0
+BDAL6
+Text Label 9975 1550 0    60   ~ 0
+BDAL4
+Text Label 9975 1650 0    60   ~ 0
+BDAL5
+Text HLabel 1400 900  0    60   Input ~ 0
+TDAL[0..21]
+Wire Wire Line
+	7525 950  7875 950 
+Text Label 4525 1675 2    60   ~ 0
+TDAL17
+Text Label 4525 1275 2    60   ~ 0
+TDAL16
+Entry Bus Bus
+	2325 900  2425 1000
+Text Label 2850 2475 2    60   ~ 0
+TDAL3
+Text Label 2850 2075 2    60   ~ 0
+TDAL2
+Text Label 4525 2875 2    60   ~ 0
+TDAL20
+Text Label 4525 3275 2    60   ~ 0
+TDAL21
+Text Label 2850 4075 2    60   ~ 0
+TDAL7
+Text Label 2850 3675 2    60   ~ 0
+TDAL6
+Text Label 2850 2875 2    60   ~ 0
+TDAL4
+Text Label 2850 3275 2    60   ~ 0
+TDAL5
+Entry Bus Bus
+	4000 900  4100 1000
+Text Label 2850 4875 2    60   ~ 0
+TDAL9
+Text Label 2850 4475 2    60   ~ 0
+TDAL8
+Text Label 4525 2075 2    60   ~ 0
+TDAL18
+Text Label 4525 2475 2    60   ~ 0
+TDAL19
+Text Label 2850 1675 2    60   ~ 0
+TDAL1
+Text Label 2850 1275 2    60   ~ 0
+TDAL0
+Text Label 2850 5675 2    60   ~ 0
+TDAL11
+Text Label 2850 5275 2    60   ~ 0
+TDAL10
+Text Label 2850 7275 2    60   ~ 0
+TDAL15
+Text Label 2850 6875 2    60   ~ 0
+TDAL14
+Text Label 2850 6075 2    60   ~ 0
+TDAL12
+Text Label 2850 6475 2    60   ~ 0
+TDAL13
+Text Label 3375 4925 0    60   ~ 0
+RDAL9
+Text Label 3375 4525 0    60   ~ 0
+RDAL8
+Text Label 3375 2525 0    60   ~ 0
+RDAL3
+Text Label 3375 2125 0    60   ~ 0
+RDAL2
+Text Label 5050 2925 0    60   ~ 0
+RDAL20
+Text Label 5050 3325 0    60   ~ 0
+RDAL21
+Text Label 3375 4125 0    60   ~ 0
+RDAL7
+Text Label 3375 3725 0    60   ~ 0
+RDAL6
+Text Label 3375 2925 0    60   ~ 0
+RDAL4
+Text Label 3375 3325 0    60   ~ 0
+RDAL5
+Text Label 5050 1725 0    60   ~ 0
+RDAL17
+Text Label 5050 1325 0    60   ~ 0
+RDAL16
+Text Label 5050 2125 0    60   ~ 0
+RDAL18
+Text Label 5050 2525 0    60   ~ 0
+RDAL19
+Text Label 3375 1725 0    60   ~ 0
+RDAL1
+Text Label 3375 1325 0    60   ~ 0
+RDAL0
+Text Label 3375 5725 0    60   ~ 0
+RDAL11
+Text Label 3375 5325 0    60   ~ 0
+RDAL10
+Text Label 3375 7325 0    60   ~ 0
+RDAL15
+Text Label 3375 6925 0    60   ~ 0
+RDAL14
+Text Label 3375 6125 0    60   ~ 0
+RDAL12
+Text Label 3375 6525 0    60   ~ 0
+RDAL13
+Entry Bus Bus
+	3900 800  4000 700 
+Entry Bus Bus
+	5575 800  5675 700 
+Text HLabel 5850 700  2    60   Output ~ 0
+RDAL[0..21]
+$Comp
+L power:PWR_FLAG #FLG?
+U 1 1 5D9FD871
+P 7875 950
+AR Path="/5D8BBF40/5D9FD871" Ref="#FLG?"  Part="1" 
+AR Path="/5DCB8CA6/5DCBEAC7/5D9FD871" Ref="#FLG0601"  Part="1" 
+F 0 "#FLG0601" H 7875 1025 50  0001 C CNN
+F 1 "PWR_FLAG" H 7875 1123 50  0000 C CNN
+F 2 "" H 7875 950 50  0001 C CNN
+F 3 "~" H 7875 950 50  0001 C CNN
+	1    7875 950 
+	1    0    0    -1  
+$EndComp
+Connection ~ 7875 950 
+Wire Wire Line
+	7875 950  7975 950 
+Text Label 7000 4700 0    60   ~ 0
+5V0
+$Comp
+L power:GND #PWR?
+U 1 1 5D969C28
+P 9050 6600
+AR Path="/5D8BBF40/5D969C28" Ref="#PWR?"  Part="1" 
+AR Path="/5DCB8CA6/5DCBEAC7/5D969C28" Ref="#PWR0118"  Part="1" 
+F 0 "#PWR0118" H 9050 6350 50  0001 C CNN
+F 1 "GND" H 9050 6450 50  0001 C CNN
+F 2 "" H 9050 6600 60  0000 C CNN
+F 3 "" H 9050 6600 60  0000 C CNN
+	1    9050 6600
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR?
+U 1 1 5D96C823
+P 8025 6600
+AR Path="/5D8BBF40/5D96C823" Ref="#PWR?"  Part="1" 
+AR Path="/5DCB8CA6/5DCBEAC7/5D96C823" Ref="#PWR0119"  Part="1" 
+F 0 "#PWR0119" H 8025 6350 50  0001 C CNN
+F 1 "GND" H 8025 6450 50  0001 C CNN
+F 2 "" H 8025 6600 60  0000 C CNN
+F 3 "" H 8025 6600 60  0000 C CNN
+	1    8025 6600
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR?
+U 1 1 5D96CD28
+P 7000 6600
+AR Path="/5D8BBF40/5D96CD28" Ref="#PWR?"  Part="1" 
+AR Path="/5DCB8CA6/5DCBEAC7/5D96CD28" Ref="#PWR0120"  Part="1" 
+F 0 "#PWR0120" H 7000 6350 50  0001 C CNN
+F 1 "GND" H 7000 6450 50  0001 C CNN
+F 2 "" H 7000 6600 60  0000 C CNN
+F 3 "" H 7000 6600 60  0000 C CNN
+	1    7000 6600
+	1    0    0    -1  
+$EndComp
+Text Label 8025 4700 0    60   ~ 0
+5V0
+Text Label 10075 4700 0    60   ~ 0
+5V0
+Text Label 9050 4700 0    60   ~ 0
+5V0
+Text Label 6400 5400 2    60   ~ 0
+BDAL17
+Text Label 6400 5200 2    60   ~ 0
+BDAL16
+Text Label 6400 4800 2    60   ~ 0
+BIRQ5
+Text Label 6400 5000 2    60   ~ 0
+BIRQ6
+Text Label 6400 6200 2    60   ~ 0
+BSYNC
+Text Label 6400 6000 2    60   ~ 0
+BDIN
+Text Label 6400 5600 2    60   ~ 0
+BDOUT
+Text Label 6400 5800 2    60   ~ 0
+BRPLY
+Text Label 9475 5800 2    60   ~ 0
+BDAL11
+Text Label 9475 5400 2    60   ~ 0
+BDAL10
+Text Label 9475 5000 2    60   ~ 0
+BSACK
+Text Label 9475 5200 2    60   ~ 0
+BIRQ7
+Text Label 9475 6600 2    60   ~ 0
+BDAL15
+Text Label 9475 6400 2    60   ~ 0
+BDAL14
+Text Label 9475 6000 2    60   ~ 0
+BDAL12
+Text Label 9475 6200 2    60   ~ 0
+BDAL13
+Text Label 7425 6600 2    60   ~ 0
+BDAL18
+Text Label 8450 4800 2    60   ~ 0
+BDAL19
+Text Label 7425 6000 2    60   ~ 0
+BDAL1
+Text Label 7425 5800 2    60   ~ 0
+BDAL0
+Text Label 6400 6400 2    60   ~ 0
+BWTBT
+Text Label 6400 6600 2    60   ~ 0
+BIRQ4
+Text Label 8450 5400 2    60   ~ 0
+BDAL3
+Text Label 8450 5000 2    60   ~ 0
+BDAL2
+Text Label 8450 5200 2    60   ~ 0
+BDAL20
+Text Label 8450 5600 2    60   ~ 0
+BDAL21
+Text Label 8450 6400 2    60   ~ 0
+BDAL7
+Text Label 8450 6200 2    60   ~ 0
+BDAL6
+Text Label 8450 5800 2    60   ~ 0
+BDAL4
+Text Label 8450 6000 2    60   ~ 0
+BDAL5
+Text Label 7425 5400 2    60   ~ 0
+BREF
+Text Label 7425 5200 2    60   ~ 0
+BHALT
+Text Label 7425 4800 2    60   ~ 0
+BDMR
+Text Label 7425 5000 2    60   ~ 0
+BBS7
+Text Label 7425 5600 2    60   ~ 0
+BINIT
+Text Label 9475 4800 2    60   ~ 0
+BDAL9
+Text Label 8450 6600 2    60   ~ 0
+BDAL8
+Text Label 7425 6200 2    60   ~ 0
+BDCOK
+Text Label 7425 6400 2    60   ~ 0
+BPOK
+Text Label 9475 5600 2    60   ~ 0
+BEVNT
+Text Label 8775 2250 2    60   ~ 0
+BEVNT
+$Comp
+L DEC:QBUS_B J?
+U 1 1 5DF6940D
+P 9375 950
+AR Path="/5DF6940D" Ref="J?"  Part="1" 
+AR Path="/5D8BBF40/5DF6940D" Ref="J102"  Part="1" 
+AR Path="/5DCB8CA6/5DCBEAC7/5DF6940D" Ref="J602"  Part="1" 
+F 0 "J602" H 9375 1175 50  0000 C CNN
+F 1 "QBUS_B" H 9375 1084 50  0000 C CNN
+F 2 "DEC:DEC_Edge_Fingers_single_height" H 8775 950 50  0001 C CNN
+F 3 "" H 8775 950 50  0001 C CNN
+F 4 "" H 9375 950 50  0001 C CNN "manf#"
+F 5 "x" H 9375 950 50  0001 C CNN "DNP"
+	1    9375 950 
+	1    0    0    -1  
+$EndComp
+$Sheet
+S 2850 1225 525  200 
+U 5DA824EC
+F0 "DAL0" 60
+F1 "bus-xcvr.sch" 60
+F2 "R" O R 3375 1325 60 
+F3 "T" I L 2850 1275 60 
+F4 "B" B L 2850 1375 60 
+$EndSheet
+$Sheet
+S 2850 1625 525  200 
+U 5DAE0F16
+F0 "DAL1" 60
+F1 "bus-xcvr.sch" 60
+F2 "R" O R 3375 1725 60 
+F3 "T" I L 2850 1675 60 
+F4 "B" B L 2850 1775 60 
+$EndSheet
+$Sheet
+S 2850 2025 525  200 
+U 5DB650E4
+F0 "DAL2" 60
+F1 "bus-xcvr.sch" 60
+F2 "R" O R 3375 2125 60 
+F3 "T" I L 2850 2075 60 
+F4 "B" B L 2850 2175 60 
+$EndSheet
+$Sheet
+S 2850 2425 525  200 
+U 5DB650E9
+F0 "DAL3" 60
+F1 "bus-xcvr.sch" 60
+F2 "R" O R 3375 2525 60 
+F3 "T" I L 2850 2475 60 
+F4 "B" B L 2850 2575 60 
+$EndSheet
+$Sheet
+S 2850 2825 525  200 
+U 5DB66AB5
+F0 "DAL4" 60
+F1 "bus-xcvr.sch" 60
+F2 "R" O R 3375 2925 60 
+F3 "T" I L 2850 2875 60 
+F4 "B" B L 2850 2975 60 
+$EndSheet
+$Sheet
+S 2850 3225 525  200 
+U 5DB66ABA
+F0 "DAL5" 60
+F1 "bus-xcvr.sch" 60
+F2 "R" O R 3375 3325 60 
+F3 "T" I L 2850 3275 60 
+F4 "B" B L 2850 3375 60 
+$EndSheet
+$Sheet
+S 2850 3625 525  200 
+U 5DB685BE
+F0 "DAL6" 60
+F1 "bus-xcvr.sch" 60
+F2 "R" O R 3375 3725 60 
+F3 "T" I L 2850 3675 60 
+F4 "B" B L 2850 3775 60 
+$EndSheet
+$Sheet
+S 2850 4025 525  200 
+U 5DB685C3
+F0 "DAL7" 60
+F1 "bus-xcvr.sch" 60
+F2 "R" O R 3375 4125 60 
+F3 "T" I L 2850 4075 60 
+F4 "B" B L 2850 4175 60 
+$EndSheet
+$Sheet
+S 2850 4425 525  200 
+U 5DB6A4B5
+F0 "DAL8" 60
+F1 "bus-xcvr.sch" 60
+F2 "R" O R 3375 4525 60 
+F3 "T" I L 2850 4475 60 
+F4 "B" B L 2850 4575 60 
+$EndSheet
+$Sheet
+S 2850 4825 525  200 
+U 5DB6A4BA
+F0 "DAL9" 60
+F1 "bus-xcvr.sch" 60
+F2 "R" O R 3375 4925 60 
+F3 "T" I L 2850 4875 60 
+F4 "B" B L 2850 4975 60 
+$EndSheet
+$Sheet
+S 2850 5225 525  200 
+U 5DB6A4BF
+F0 "DAL10" 60
+F1 "bus-xcvr.sch" 60
+F2 "R" O R 3375 5325 60 
+F3 "T" I L 2850 5275 60 
+F4 "B" B L 2850 5375 60 
+$EndSheet
+$Sheet
+S 2850 5625 525  200 
+U 5DB6A4C4
+F0 "DAL11" 60
+F1 "bus-xcvr.sch" 60
+F2 "R" O R 3375 5725 60 
+F3 "T" I L 2850 5675 60 
+F4 "B" B L 2850 5775 60 
+$EndSheet
+$Sheet
+S 2850 6025 525  200 
+U 5DB6A4C9
+F0 "DAL12" 60
+F1 "bus-xcvr.sch" 60
+F2 "R" O R 3375 6125 60 
+F3 "T" I L 2850 6075 60 
+F4 "B" B L 2850 6175 60 
+$EndSheet
+$Sheet
+S 2850 6425 525  200 
+U 5DB6A4CE
+F0 "DAL13" 60
+F1 "bus-xcvr.sch" 60
+F2 "R" O R 3375 6525 60 
+F3 "T" I L 2850 6475 60 
+F4 "B" B L 2850 6575 60 
+$EndSheet
+$Sheet
+S 2850 6825 525  200 
+U 5DB6A4D3
+F0 "DAL14" 60
+F1 "bus-xcvr.sch" 60
+F2 "R" O R 3375 6925 60 
+F3 "T" I L 2850 6875 60 
+F4 "B" B L 2850 6975 60 
+$EndSheet
+$Sheet
+S 2850 7225 525  200 
+U 5DB6A4D8
+F0 "DAL15" 60
+F1 "bus-xcvr.sch" 60
+F2 "R" O R 3375 7325 60 
+F3 "T" I L 2850 7275 60 
+F4 "B" B L 2850 7375 60 
+$EndSheet
+$Sheet
+S 4525 1225 525  200 
+U 5DBEEEF1
+F0 "DAL16" 60
+F1 "bus-xcvr.sch" 60
+F2 "R" O R 5050 1325 60 
+F3 "T" I L 4525 1275 60 
+F4 "B" B L 4525 1375 60 
+$EndSheet
+$Sheet
+S 4525 1625 525  200 
+U 5DBEEEF6
+F0 "DAL17" 60
+F1 "bus-xcvr.sch" 60
+F2 "R" O R 5050 1725 60 
+F3 "T" I L 4525 1675 60 
+F4 "B" B L 4525 1775 60 
+$EndSheet
+$Sheet
+S 4525 2025 525  200 
+U 5DBEEEFB
+F0 "DAL18" 60
+F1 "bus-xcvr.sch" 60
+F2 "R" O R 5050 2125 60 
+F3 "T" I L 4525 2075 60 
+F4 "B" B L 4525 2175 60 
+$EndSheet
+$Sheet
+S 4525 2425 525  200 
+U 5DBEEF00
+F0 "DAL19" 60
+F1 "bus-xcvr.sch" 60
+F2 "R" O R 5050 2525 60 
+F3 "T" I L 4525 2475 60 
+F4 "B" B L 4525 2575 60 
+$EndSheet
+$Sheet
+S 4525 2825 525  200 
+U 5DBEEF05
+F0 "DAL20" 60
+F1 "bus-xcvr.sch" 60
+F2 "R" O R 5050 2925 60 
+F3 "T" I L 4525 2875 60 
+F4 "B" B L 4525 2975 60 
+$EndSheet
+$Sheet
+S 4525 3225 525  200 
+U 5DBEEF0A
+F0 "DAL21" 60
+F1 "bus-xcvr.sch" 60
+F2 "R" O R 5050 3325 60 
+F3 "T" I L 4525 3275 60 
+F4 "B" B L 4525 3375 60 
+$EndSheet
+$Sheet
+S 4525 3625 525  200 
+U 5DBEEF0F
+F0 "BS7" 60
+F1 "bus-xcvr.sch" 60
+F2 "R" O R 5050 3725 60 
+F3 "T" I L 4525 3675 60 
+F4 "B" B L 4525 3775 60 
+$EndSheet
+$Sheet
+S 4525 4025 525  200 
+U 5DBEEF14
+F0 "WTBT" 60
+F1 "bus-xcvr.sch" 60
+F2 "R" O R 5050 4125 60 
+F3 "T" I L 4525 4075 60 
+F4 "B" B L 4525 4175 60 
+$EndSheet
+$Sheet
+S 6750 3775 525  200 
+U 5DC0E33E
+F0 "DMGO" 60
+F1 "bus-xmtr.sch" 60
+F2 "B" B R 7275 3850 60 
+F3 "T" I L 6750 3850 60 
+$EndSheet
+$Sheet
+S 1150 6025 525  200 
+U 5DC0E3D1
+F0 "HALT" 60
+F1 "bus-rcvr.sch" 60
+F2 "B" B L 1150 6100 60 
+F3 "R" O R 1675 6100 60 
+$EndSheet
+Wire Wire Line
+	4200 3275 4525 3275
+Entry Wire Line
+	4100 3175 4200 3275
+Wire Wire Line
+	4200 2875 4525 2875
+Entry Wire Line
+	4100 2775 4200 2875
+Wire Wire Line
+	4200 2475 4525 2475
+Entry Wire Line
+	4100 2375 4200 2475
+Wire Wire Line
+	4200 2075 4525 2075
+Entry Wire Line
+	4100 1975 4200 2075
+Wire Wire Line
+	4200 1675 4525 1675
+Entry Wire Line
+	4100 1575 4200 1675
+Wire Wire Line
+	4200 1275 4525 1275
+Entry Wire Line
+	4100 1175 4200 1275
+Wire Wire Line
+	2525 1275 2850 1275
+Entry Wire Line
+	2425 1175 2525 1275
+Wire Wire Line
+	2525 1675 2850 1675
+Entry Wire Line
+	2425 1575 2525 1675
+Wire Wire Line
+	2525 2075 2850 2075
+Entry Wire Line
+	2425 1975 2525 2075
+Wire Wire Line
+	2525 2475 2850 2475
+Entry Wire Line
+	2425 2375 2525 2475
+Wire Wire Line
+	2525 2875 2850 2875
+Entry Wire Line
+	2425 2775 2525 2875
+Wire Wire Line
+	2525 3275 2850 3275
+Entry Wire Line
+	2425 3175 2525 3275
+Wire Wire Line
+	2525 3675 2850 3675
+Entry Wire Line
+	2425 3575 2525 3675
+Wire Wire Line
+	2525 4075 2850 4075
+Entry Wire Line
+	2425 3975 2525 4075
+Wire Wire Line
+	2525 4475 2850 4475
+Entry Wire Line
+	2425 4375 2525 4475
+Wire Wire Line
+	2525 4875 2850 4875
+Entry Wire Line
+	2425 4775 2525 4875
+Wire Wire Line
+	2525 5275 2850 5275
+Entry Wire Line
+	2425 5175 2525 5275
+Wire Wire Line
+	2525 5675 2850 5675
+Entry Wire Line
+	2425 5575 2525 5675
+Wire Wire Line
+	2525 6075 2850 6075
+Entry Wire Line
+	2425 5975 2525 6075
+Wire Wire Line
+	2525 6475 2850 6475
+Entry Wire Line
+	2425 6375 2525 6475
+Wire Wire Line
+	2525 6875 2850 6875
+Entry Wire Line
+	2425 6775 2525 6875
+Wire Wire Line
+	2525 7275 2850 7275
+Entry Wire Line
+	2425 7175 2525 7275
+Entry Wire Line
+	5575 3225 5475 3325
+Wire Wire Line
+	5475 3325 5050 3325
+Entry Wire Line
+	5575 2825 5475 2925
+Wire Wire Line
+	5475 2925 5050 2925
+Entry Wire Line
+	3900 1225 3800 1325
+Wire Wire Line
+	3800 1325 3375 1325
+Entry Wire Line
+	5575 1225 5475 1325
+Wire Wire Line
+	5475 1325 5050 1325
+Entry Wire Line
+	5575 1625 5475 1725
+Wire Wire Line
+	5475 1725 5050 1725
+Entry Wire Line
+	5575 2025 5475 2125
+Wire Wire Line
+	5475 2125 5050 2125
+Entry Wire Line
+	5575 2425 5475 2525
+Wire Wire Line
+	5475 2525 5050 2525
+Entry Wire Line
+	3900 1625 3800 1725
+Wire Wire Line
+	3800 1725 3375 1725
+Entry Wire Line
+	3900 2025 3800 2125
+Wire Wire Line
+	3800 2125 3375 2125
+Entry Wire Line
+	3900 2425 3800 2525
+Wire Wire Line
+	3800 2525 3375 2525
+Entry Wire Line
+	3900 2825 3800 2925
+Wire Wire Line
+	3800 2925 3375 2925
+Entry Wire Line
+	3900 3225 3800 3325
+Wire Wire Line
+	3800 3325 3375 3325
+Entry Wire Line
+	3900 3625 3800 3725
+Wire Wire Line
+	3800 3725 3375 3725
+Entry Wire Line
+	3900 4025 3800 4125
+Wire Wire Line
+	3800 4125 3375 4125
+Entry Wire Line
+	3900 4425 3800 4525
+Wire Wire Line
+	3800 4525 3375 4525
+Entry Wire Line
+	3900 4825 3800 4925
+Wire Wire Line
+	3800 4925 3375 4925
+Entry Wire Line
+	3900 5225 3800 5325
+Wire Wire Line
+	3800 5325 3375 5325
+Entry Wire Line
+	3900 5625 3800 5725
+Wire Wire Line
+	3800 5725 3375 5725
+Entry Wire Line
+	3900 6025 3800 6125
+Wire Wire Line
+	3800 6125 3375 6125
+Entry Wire Line
+	3900 6425 3800 6525
+Wire Wire Line
+	3800 6525 3375 6525
+Entry Wire Line
+	3900 6825 3800 6925
+Wire Wire Line
+	3800 6925 3375 6925
+Entry Wire Line
+	3900 7225 3800 7325
+Wire Wire Line
+	3800 7325 3375 7325
+$Sheet
+S 1150 1225 525  200 
+U 5DD9CEA5
+F0 "SYNC" 60
+F1 "bus-xcvr.sch" 60
+F2 "R" O R 1675 1325 60 
+F3 "T" I L 1150 1275 60 
+F4 "B" B L 1150 1375 60 
+$EndSheet
+$Sheet
+S 1150 1625 525  200 
+U 5DD9CEAA
+F0 "DIN" 60
+F1 "bus-xcvr.sch" 60
+F2 "R" O R 1675 1725 60 
+F3 "T" I L 1150 1675 60 
+F4 "B" B L 1150 1775 60 
+$EndSheet
+$Sheet
+S 1150 2025 525  200 
+U 5DD9CEAF
+F0 "DOUT" 60
+F1 "bus-xcvr.sch" 60
+F2 "R" O R 1675 2125 60 
+F3 "T" I L 1150 2075 60 
+F4 "B" B L 1150 2175 60 
+$EndSheet
+$Sheet
+S 1150 2425 525  200 
+U 5DD9CEB4
+F0 "RPLY" 60
+F1 "bus-xcvr.sch" 60
+F2 "R" O R 1675 2525 60 
+F3 "T" I L 1150 2475 60 
+F4 "B" B L 1150 2575 60 
+$EndSheet
+$Sheet
+S 1150 2825 525  200 
+U 5DD9CEB9
+F0 "REF" 60
+F1 "bus-xcvr.sch" 60
+F2 "R" O R 1675 2925 60 
+F3 "T" I L 1150 2875 60 
+F4 "B" B L 1150 2975 60 
+$EndSheet
+$Sheet
+S 1150 3225 525  200 
+U 5DD9CEBE
+F0 "IRQ4" 60
+F1 "bus-xcvr.sch" 60
+F2 "R" O R 1675 3325 60 
+F3 "T" I L 1150 3275 60 
+F4 "B" B L 1150 3375 60 
+$EndSheet
+$Sheet
+S 1150 3625 525  200 
+U 5DD9CEC3
+F0 "IRQ5" 60
+F1 "bus-xcvr.sch" 60
+F2 "R" O R 1675 3725 60 
+F3 "T" I L 1150 3675 60 
+F4 "B" B L 1150 3775 60 
+$EndSheet
+$Sheet
+S 1150 4025 525  200 
+U 5DD9CEC8
+F0 "IRQ6" 60
+F1 "bus-xcvr.sch" 60
+F2 "R" O R 1675 4125 60 
+F3 "T" I L 1150 4075 60 
+F4 "B" B L 1150 4175 60 
+$EndSheet
+$Sheet
+S 1150 4425 525  200 
+U 5DD9CECD
+F0 "IRQ7" 60
+F1 "bus-xcvr.sch" 60
+F2 "R" O R 1675 4525 60 
+F3 "T" I L 1150 4475 60 
+F4 "B" B L 1150 4575 60 
+$EndSheet
+$Sheet
+S 1150 4825 525  200 
+U 5DD9CED2
+F0 "DMR" 60
+F1 "bus-xcvr.sch" 60
+F2 "R" O R 1675 4925 60 
+F3 "T" I L 1150 4875 60 
+F4 "B" B L 1150 4975 60 
+$EndSheet
+$Sheet
+S 1150 5225 525  200 
+U 5DD9CED7
+F0 "SACK" 60
+F1 "bus-xcvr.sch" 60
+F2 "R" O R 1675 5325 60 
+F3 "T" I L 1150 5275 60 
+F4 "B" B L 1150 5375 60 
+$EndSheet
+$Sheet
+S 8950 3125 525  200 
+U 5DEE7FA3
+F0 "IAKI" 60
+F1 "bus-rcvr.sch" 60
+F2 "B" B L 8950 3200 60 
+F3 "R" O R 9475 3200 60 
+$EndSheet
+$Sheet
+S 6750 3125 525  200 
+U 5DF09657
+F0 "IAKO" 60
+F1 "bus-xmtr.sch" 60
+F2 "B" B R 7275 3200 60 
+F3 "T" I L 6750 3200 60 
+$EndSheet
+$Sheet
+S 8950 3775 525  200 
+U 5DF0AFFB
+F0 "DMGI" 60
+F1 "bus-rcvr.sch" 60
+F2 "B" B L 8950 3850 60 
+F3 "R" O R 9475 3850 60 
+$EndSheet
+$Sheet
+S 1150 6425 525  200 
+U 5DF25FB7
+F0 "DCOK" 60
+F1 "bus-rcvr.sch" 60
+F2 "B" B L 1150 6500 60 
+F3 "R" O R 1675 6500 60 
+$EndSheet
+$Sheet
+S 1150 6825 525  200 
+U 5DF27759
+F0 "POK" 60
+F1 "bus-rcvr.sch" 60
+F2 "B" B L 1150 6900 60 
+F3 "R" O R 1675 6900 60 
+$EndSheet
+$Sheet
+S 4625 7100 600  375 
+U 5DFF8FC5
+F0 "Bus Driver Power" 60
+F1 "bus-driver-pwr.sch" 60
+F2 "5V0" I L 4625 7175 60 
+F3 "3V3" I L 4625 7275 60 
+$EndSheet
+Text Label 8025 2850 0    60   ~ 0
+5V0
+$Comp
+L power:GND #PWR?
+U 1 1 5886142E
+P 8025 3550
+AR Path="/5D8BBF40/5886142E" Ref="#PWR?"  Part="1" 
+AR Path="/5DCB8CA6/5DCBEAC7/5886142E" Ref="#PWR0602"  Part="1" 
+F 0 "#PWR0602" H 8025 3300 50  0001 C CNN
+F 1 "GND" H 8025 3400 50  0001 C CNN
+F 2 "" H 8025 3550 60  0000 C CNN
+F 3 "" H 8025 3550 60  0000 C CNN
+	1    8025 3550
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:R R?
+U 1 1 58859D11
+P 8025 3000
+AR Path="/5D8BBF40/58859D11" Ref="R?"  Part="1" 
+AR Path="/5DCB8CA6/5DCBEAC7/58859D11" Ref="R601"  Part="1" 
+F 0 "R601" V 8105 3000 50  0000 C CNN
+F 1 "330" V 8025 3000 50  0000 C CNN
+F 2 "Resistor_SMD:R_0603_1608Metric" V 7955 3000 30  0001 C CNN
+F 3 "" H 8025 3000 30  0000 C CNN
+F 4 "RC0603JR-07330RL" H 8025 3000 50  0001 C CNN "manf#"
+	1    8025 3000
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:R R?
+U 1 1 58859D09
+P 8025 3400
+AR Path="/5D8BBF40/58859D09" Ref="R?"  Part="1" 
+AR Path="/5DCB8CA6/5DCBEAC7/58859D09" Ref="R605"  Part="1" 
+F 0 "R605" V 8105 3400 50  0000 C CNN
+F 1 "680" V 8025 3400 50  0000 C CNN
+F 2 "Resistor_SMD:R_0603_1608Metric" V 7955 3400 30  0001 C CNN
+F 3 "" H 8025 3400 30  0000 C CNN
+F 4 "RC0603JR-07680RL" H 8025 3400 50  0001 C CNN "manf#"
+	1    8025 3400
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	7275 3200 7800 3200
+Wire Wire Line
+	7800 3150 7800 3200
+Connection ~ 7800 3200
+Wire Wire Line
+	8025 3150 8025 3200
+Wire Wire Line
+	8025 3200 8950 3200
+Connection ~ 8025 3200
+Wire Wire Line
+	8025 3200 8025 3250
+Wire Wire Line
+	7275 3850 8325 3850
+Wire Wire Line
+	8550 3850 8950 3850
+Text Notes 10200 5075 3    60   ~ 0
+Optional Bus Termination
+Wire Notes Line
+	6000 4425 10375 4425
+Wire Notes Line
+	10375 4425 10375 6750
+Wire Notes Line
+	10375 6750 6000 6750
+Wire Notes Line
+	6000 6750 6000 4425
+Wire Wire Line
+	8400 2450 8400 2525
+$Comp
+L power:GND #PWR?
+U 1 1 5E08C826
+P 8400 2525
+AR Path="/5D8BBF40/5E08C826" Ref="#PWR?"  Part="1" 
+AR Path="/5DCB8CA6/5DCBEAC7/5E08C826" Ref="#PWR0601"  Part="1" 
+F 0 "#PWR0601" H 8400 2275 50  0001 C CNN
+F 1 "GND" H 8400 2375 50  0001 C CNN
+F 2 "" H 8400 2525 60  0000 C CNN
+F 3 "" H 8400 2525 60  0000 C CNN
+	1    8400 2525
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	8400 2450 8775 2450
+$Comp
+L power:PWR_FLAG #FLG?
+U 1 1 608B0B22
+P 8400 2450
+AR Path="/5D8BBF40/608B0B22" Ref="#FLG?"  Part="1" 
+AR Path="/5DCB8CA6/5DCBEAC7/608B0B22" Ref="#FLG0101"  Part="1" 
+F 0 "#FLG0101" H 8400 2525 50  0001 C CNN
+F 1 "PWR_FLAG" H 8400 2623 50  0000 C CNN
+F 2 "" H 8400 2450 50  0001 C CNN
+F 3 "~" H 8400 2450 50  0001 C CNN
+	1    8400 2450
+	1    0    0    -1  
+$EndComp
+Connection ~ 8400 2450
+$Sheet
+S 1150 7225 525  200 
+U 5DC0CBC9
+F0 "EVNT" 60
+F1 "bus-rcvr.sch" 60
+F2 "B" B L 1150 7300 60 
+F3 "R" O R 1675 7300 60 
+$EndSheet
+Text Label 1150 7300 2    60   ~ 0
+BEVNT
+Text HLabel 1675 7300 2    60   Output ~ 0
+REVNT
+$Comp
+L Device:R_Network_Dividers_x10_SIP RN606
+U 1 1 5D928377
+P 6700 5600
+F 0 "RN606" V 7825 5600 50  0000 C CNN
+F 1 "330/680" V 7734 5600 50  0000 C CNN
+F 2 "Resistor_THT:R_Array_SIP12" V 7775 5600 50  0001 C CNN
+F 3 "http://www.vishay.com/docs/31509/csc.pdf" H 6700 5600 50  0001 C CNN
+F 4 "CSC12A05221BGEK" H 6700 5600 50  0001 C CNN "manf#"
+	1    6700 5600
+	0    1    -1   0   
+$EndComp
+$Comp
+L Device:R_Network_Dividers_x10_SIP RN607
+U 1 1 5D9311B6
+P 7725 5600
+F 0 "RN607" V 8850 5600 50  0000 C CNN
+F 1 "330/680" V 8759 5600 50  0000 C CNN
+F 2 "Resistor_THT:R_Array_SIP12" V 8800 5600 50  0001 C CNN
+F 3 "http://www.vishay.com/docs/31509/csc.pdf" H 7725 5600 50  0001 C CNN
+F 4 "CSC12A05221BGEK" H 7725 5600 50  0001 C CNN "manf#"
+	1    7725 5600
+	0    1    -1   0   
+$EndComp
+$Comp
+L Device:R_Network_Dividers_x10_SIP RN608
+U 1 1 5D933550
+P 8750 5600
+F 0 "RN608" V 9875 5600 50  0000 C CNN
+F 1 "330/680" V 9784 5600 50  0000 C CNN
+F 2 "Resistor_THT:R_Array_SIP12" V 9825 5600 50  0001 C CNN
+F 3 "http://www.vishay.com/docs/31509/csc.pdf" H 8750 5600 50  0001 C CNN
+F 4 "CSC12A05221BGEK" H 8750 5600 50  0001 C CNN "manf#"
+	1    8750 5600
+	0    1    -1   0   
+$EndComp
+$Comp
+L Device:R_Network_Dividers_x10_SIP RN609
+U 1 1 5D934BE9
+P 9775 5600
+F 0 "RN609" V 10900 5600 50  0000 C CNN
+F 1 "330/680" V 10809 5600 50  0000 C CNN
+F 2 "Resistor_THT:R_Array_SIP12" V 10850 5600 50  0001 C CNN
+F 3 "http://www.vishay.com/docs/31509/csc.pdf" H 9775 5600 50  0001 C CNN
+F 4 "CSC12A05221BGEK" H 9775 5600 50  0001 C CNN "manf#"
+	1    9775 5600
+	0    1    -1   0   
+$EndComp
+$Sheet
+S 1150 5625 525  200 
+U 5DB938AA
+F0 "INIT" 60
+F1 "bus-xcvr.sch" 60
+F2 "R" O R 1675 5725 60 
+F3 "T" I L 1150 5675 60 
+F4 "B" B L 1150 5775 60 
+$EndSheet
+Text HLabel 1150 5675 0    60   Input ~ 0
+TINIT
+$Comp
+L power:GND #PWR?
+U 1 1 5DE2BD5C
+P 10075 6600
+AR Path="/5D8BBF40/5DE2BD5C" Ref="#PWR?"  Part="1" 
+AR Path="/5DCB8CA6/5DCBEAC7/5DE2BD5C" Ref="#PWR0116"  Part="1" 
+F 0 "#PWR0116" H 10075 6350 50  0001 C CNN
+F 1 "GND" H 10075 6450 50  0001 C CNN
+F 2 "" H 10075 6600 60  0000 C CNN
+F 3 "" H 10075 6600 60  0000 C CNN
+	1    10075 6600
+	1    0    0    -1  
+$EndComp
+Wire Bus Line
+	1400 900  4075 900 
+Wire Bus Line
+	3900 700  5850 700 
+Wire Bus Line
+	4100 1000 4100 3300
+Wire Bus Line
+	5575 800  5575 3350
+Wire Bus Line
+	3900 800  3900 7300
+Wire Bus Line
+	2425 1000 2425 7250
+$EndSCHEMATC
