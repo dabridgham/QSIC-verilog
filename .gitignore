@@ -5,6 +5,7 @@
 /indicator-panel/output
 */rescue-backup/
 *.bak
+*-bak
 *.kicad_pcb-bak
 *.net
 *.jpg
