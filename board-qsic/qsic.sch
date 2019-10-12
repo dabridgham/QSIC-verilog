@@ -6,7 +6,7 @@ $Descr A 11000 8500
 encoding utf-8
 Sheet 1 5
 Title "QSIC - QBUS Storage & I/O Card"
-Date "2019-10-07"
+Date "2019-10-12"
 Rev "0.2"
 Comp "QSIC - QBUS Storage & I/O Card"
 Comment1 ""

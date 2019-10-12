@@ -6,7 +6,7 @@ $Descr B 17000 11000
 encoding utf-8
 Sheet 4 5
 Title "QBUS Interface"
-Date "2019-10-07"
+Date "2019-10-12"
 Rev "0.2"
 Comp "QSIC - QBUS Storage & I/O Card"
 Comment1 ""
