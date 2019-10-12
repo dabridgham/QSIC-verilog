@@ -307,11 +307,11 @@ Text Label 11575 9300 0    60   ~ 0
 BDAL4
 Text Label 11575 9400 0    60   ~ 0
 BDAL5
-Text HLabel 5350 1525 0    60   Input ~ 0
+Text HLabel 5250 575  0    60   Input ~ 0
 TDAL[0..21]
 Wire Wire Line
 	11575 6625 11925 6625
-Text HLabel 9800 575  2    60   Output ~ 0
+Text HLabel 9700 575  2    60   Output ~ 0
 RDAL[0..21]
 $Comp
 L power:PWR_FLAG #FLG?
@@ -4129,12 +4129,6 @@ Text Label 2150 9000 2    60   ~ 0
 GND
 Text Label 2150 9900 2    60   ~ 0
 GND
-Text Label 5350 1350 2    60   ~ 0
-TDAL[0..21]
-Text Label 9700 575  2    60   ~ 0
-RDAL[0..21]
-Wire Bus Line
-	9800 575  9600 575 
 Wire Wire Line
 	5450 1250 5775 1250
 $Comp
@@ -4149,8 +4143,12 @@ F 4 "SN74LVC8T245PWR" H 3950 6725 50  0001 C CNN "manf#"
 	7    3950 6725
 	-1   0    0    -1  
 $EndComp
+Entry Bus Bus
+	5250 575  5350 675 
+Entry Bus Bus
+	9600 675  9700 575 
 Wire Bus Line
-	9600 575  9600 10300
+	9600 675  9600 10300
 Wire Bus Line
 	5350 675  5350 10325
 $EndSCHEMATC
