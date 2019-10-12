@@ -4,9 +4,9 @@ EELAYER 30 0
 EELAYER END
 $Descr A 11000 8500
 encoding utf-8
-Sheet 53 53
+Sheet 5 5
 Title "Power"
-Date "2019-09-30"
+Date "2019-10-07"
 Rev "0.2"
 Comp "QSIC - QBUS Storage & I/O Card"
 Comment1 ""
@@ -15,7 +15,7 @@ Comment3 ""
 Comment4 ""
 $EndDescr
 Wire Wire Line
-	8875 1550 8875 1650
+	8875 1450 8875 1525
 Wire Wire Line
 	8775 1650 8875 1650
 Connection ~ 8875 1650
@@ -60,7 +60,7 @@ Wire Wire Line
 Wire Wire Line
 	6675 1950 6775 1950
 Wire Wire Line
-	6675 1600 6675 1650
+	6675 1425 6675 1525
 Wire Wire Line
 	6775 1650 6675 1650
 Connection ~ 6675 1650
@@ -231,9 +231,9 @@ Wire Wire Line
 	8875 3250 8875 3350
 Text HLabel 1125 1350 0    60   Input ~ 0
 5V
-Text Label 8875 1550 0    60   ~ 0
+Text Label 8875 1450 0    60   ~ 0
 1V0
-Text Label 6675 1600 2    60   ~ 0
+Text Label 6675 1425 2    60   ~ 0
 1V8
 Text HLabel 4050 1500 2    60   Output ~ 0
 3V3
@@ -256,12 +256,12 @@ F 4 "XC7A75T-2CSG324C" H 7775 3550 50  0001 C CNN "manf#"
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	6775 2550 6700 2550
+	6775 2550 6750 2550
 Wire Wire Line
-	6700 2550 6700 2450
+	6750 2550 6750 2450
 Wire Wire Line
-	6775 2450 6700 2450
-Text Label 6575 2550 2    60   ~ 0
+	6775 2450 6750 2450
+Text Label 6700 2550 2    60   ~ 0
 1V0
 $Comp
 L power:GND #PWR01214
@@ -413,8 +413,8 @@ $EndComp
 Wire Wire Line
 	6475 2150 6775 2150
 Wire Wire Line
-	6575 2550 6700 2550
-Connection ~ 6700 2550
+	6700 2550 6750 2550
+Connection ~ 6750 2550
 $Comp
 L myLib:TPS82085 U1201
 U 1 1 5D7D7532
@@ -1210,4 +1210,85 @@ Wire Wire Line
 	1225 1350 1225 1500
 Connection ~ 1225 1500
 Connection ~ 1225 2750
+$Comp
+L Device:C C?
+U 1 1 5DDB3BFE
+P 9075 1700
+AR Path="/5DCB8CA6/5DDB3BFE" Ref="C?"  Part="1" 
+AR Path="/5D96DF52/5DDB3BFE" Ref="C512"  Part="1" 
+F 0 "C512" H 9190 1746 50  0000 L CNN
+F 1 "100nF" H 9190 1655 50  0000 L CNN
+F 2 "Capacitor_SMD:C_0603_1608Metric" H 9113 1550 50  0001 C CNN
+F 3 "~" H 9075 1700 50  0001 C CNN
+	1    9075 1700
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:C C?
+U 1 1 5DDC711B
+P 6475 1700
+AR Path="/5DCB8CA6/5DDC711B" Ref="C?"  Part="1" 
+AR Path="/5D96DF52/5DDC711B" Ref="C508"  Part="1" 
+F 0 "C508" H 6361 1746 50  0000 R CNN
+F 1 "100nF" H 6361 1655 50  0000 R CNN
+F 2 "Capacitor_SMD:C_0603_1608Metric" H 6513 1550 50  0001 C CNN
+F 3 "~" H 6475 1700 50  0001 C CNN
+	1    6475 1700
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR?
+U 1 1 5DDDA595
+P 6475 1850
+AR Path="/5DCB8CA6/5DCBEACE/5DDDA595" Ref="#PWR?"  Part="1" 
+AR Path="/5D96DF52/5DDDA595" Ref="#PWR0148"  Part="1" 
+F 0 "#PWR0148" H 6475 1600 50  0001 C CNN
+F 1 "GND" H 6475 1700 50  0001 C CNN
+F 2 "" H 6475 1850 50  0000 C CNN
+F 3 "" H 6475 1850 50  0000 C CNN
+	1    6475 1850
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR?
+U 1 1 5DDDD3FE
+P 9075 1850
+AR Path="/5DCB8CA6/5DCBEACE/5DDDD3FE" Ref="#PWR?"  Part="1" 
+AR Path="/5D96DF52/5DDDD3FE" Ref="#PWR0149"  Part="1" 
+F 0 "#PWR0149" H 9075 1600 50  0001 C CNN
+F 1 "GND" H 9075 1700 50  0001 C CNN
+F 2 "" H 9075 1850 50  0000 C CNN
+F 3 "" H 9075 1850 50  0000 C CNN
+	1    9075 1850
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	9075 1550 9075 1525
+Wire Wire Line
+	9075 1525 8875 1525
+Connection ~ 8875 1525
+Wire Wire Line
+	8875 1525 8875 1650
+Wire Wire Line
+	6475 1550 6475 1525
+Wire Wire Line
+	6475 1525 6675 1525
+Connection ~ 6675 1525
+Wire Wire Line
+	6675 1525 6675 1650
+$Comp
+L power:GND #PWR?
+U 1 1 5DA43B10
+P 6475 2350
+AR Path="/5DCB8CA6/5DCBEACE/5DA43B10" Ref="#PWR?"  Part="1" 
+AR Path="/5D96DF52/5DA43B10" Ref="#PWR?"  Part="1" 
+F 0 "#PWR?" H 6475 2100 50  0001 C CNN
+F 1 "GND" H 6475 2200 50  0001 C CNN
+F 2 "" H 6475 2350 50  0000 C CNN
+F 3 "" H 6475 2350 50  0000 C CNN
+	1    6475 2350
+	-1   0    0    -1  
+$EndComp
+Wire Wire Line
+	6475 2350 6775 2350
 $EndSCHEMATC

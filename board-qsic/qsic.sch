@@ -4,9 +4,9 @@ EELAYER 30 0
 EELAYER END
 $Descr A 11000 8500
 encoding utf-8
-Sheet 1 53
+Sheet 1 5
 Title "QSIC - QBUS Storage & I/O Card"
-Date "2019-09-30"
+Date "2019-10-07"
 Rev "0.2"
 Comp "QSIC - QBUS Storage & I/O Card"
 Comment1 ""
@@ -27,20 +27,6 @@ F 4 "XC7A75T-2CSG324C" H 2925 4175 50  0001 C CNN "manf#"
 	1    0    0    -1  
 $EndComp
 $Sheet
-S 9000 4800 650  700 
-U 5D8E0230
-F0 "SD 0" 60
-F1 "sd.sch" 60
-F2 "DAT2" B R 9650 5100 60 
-F3 "DAT3" B R 9650 5200 60 
-F4 "CMD" I L 9000 5200 60 
-F5 "CLK" I L 9000 5100 60 
-F6 "DAT0" B R 9650 4900 60 
-F7 "DAT1" B R 9650 5000 60 
-F8 "DET" O R 9650 5400 60 
-F9 "3V3" I L 9000 4900 60 
-$EndSheet
-$Sheet
 S 9000 4025 650  550 
 U 5D8F7A71
 F0 "Memory" 60
@@ -48,36 +34,17 @@ F1 "memory.sch" 60
 F2 "1V5" I L 9000 4125 60 
 $EndSheet
 $Sheet
-S 9000 5750 650  700 
-U 5D933A84
-F0 "SD 1" 60
-F1 "sd.sch" 60
-F2 "DAT2" B R 9650 6050 60 
-F3 "DAT3" B R 9650 6150 60 
-F4 "CMD" I L 9000 6150 60 
-F5 "CLK" I L 9000 6050 60 
-F6 "DAT0" B R 9650 5850 60 
-F7 "DAT1" B R 9650 5950 60 
-F8 "DET" O R 9650 6350 60 
-F9 "3V3" I L 9000 5850 60 
-$EndSheet
-$Sheet
 S 7000 1975 625  575 
 U 5DCB8CA6
-F0 "QBUS" 60
+F0 "QBUS & I/O" 60
 F1 "qbus.sch" 60
 F2 "3V3" I L 7000 2075 60 
 F3 "5V0" O R 7625 2075 60 
 F4 "CCLK" I L 7000 2300 60 
+F5 "1V8" I L 7000 2175 60 
 $EndSheet
 Text Notes 8850 1200 2    250  ~ 50
 QSIC - QBUS Storage & I/O Card
-$Sheet
-S 7575 3600 675  625 
-U 5DA36495
-F0 "IO" 60
-F1 "io.sch" 60
-$EndSheet
 $Sheet
 S 8225 1975 550  525 
 U 5D96DF52
@@ -179,9 +146,10 @@ L Device:LED_ALT D101
 U 1 1 5DA7BF75
 P 4925 4375
 F 0 "D101" H 4918 4591 50  0000 C CNN
-F 1 "LED_ALT" H 4918 4500 50  0000 C CNN
+F 1 "green" H 4918 4500 50  0000 C CNN
 F 2 "LED_SMD:LED_0603_1608Metric" H 4925 4375 50  0001 C CNN
 F 3 "~" H 4925 4375 50  0001 C CNN
+F 4 "LTST-C190KGKT" H 4925 4375 50  0001 C CNN "manf#"
 	1    4925 4375
 	1    0    0    -1  
 $EndComp
@@ -219,12 +187,12 @@ Wire Wire Line
 $Comp
 L power:GND #PWR0210
 U 1 1 5DAA622F
-P 4525 5400
-F 0 "#PWR0210" H 4525 5150 50  0001 C CNN
-F 1 "GND" H 4530 5227 50  0001 C CNN
-F 2 "" H 4525 5400 50  0001 C CNN
-F 3 "" H 4525 5400 50  0001 C CNN
-	1    4525 5400
+P 4525 5725
+F 0 "#PWR0210" H 4525 5475 50  0001 C CNN
+F 1 "GND" H 4530 5552 50  0001 C CNN
+F 2 "" H 4525 5725 50  0001 C CNN
+F 3 "" H 4525 5725 50  0001 C CNN
+	1    4525 5725
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
@@ -234,8 +202,6 @@ Wire Wire Line
 Wire Wire Line
 	4425 5375 4525 5375
 Connection ~ 4525 5375
-Wire Wire Line
-	4525 5375 4525 5400
 Wire Wire Line
 	4425 3875 5975 3875
 Wire Wire Line
@@ -250,6 +216,7 @@ F 0 "J101" H 2575 7092 50  0000 C CNN
 F 1 "Conn_02x05_Odd_Even" H 2575 7001 50  0000 C CNN
 F 2 "Connector:Tag-Connect_TC2050-IDC-FP_2x05_P1.27mm_Vertical" H 2525 6675 50  0001 C CNN
 F 3 "~" H 2525 6675 50  0001 C CNN
+F 4 "x" H 2525 6675 50  0001 C CNN "DNP"
 	1    2525 6675
 	1    0    0    -1  
 $EndComp
@@ -259,8 +226,9 @@ U 1 1 5DEE2FA5
 P 3650 6700
 F 0 "J102" H 3700 7217 50  0000 C CNN
 F 1 "Conn_02x07_Odd_Even" H 3700 7126 50  0000 C CNN
-F 2 "Connector_PinHeader_2.54mm:PinHeader_2x07_P2.54mm_Horizontal" H 3650 6700 50  0001 C CNN
+F 2 "Connector_PinHeader_2.00mm:PinHeader_2x07_P2.00mm_Vertical" H 3650 6700 50  0001 C CNN
 F 3 "~" H 3650 6700 50  0001 C CNN
+F 4 "x" H 3650 6700 50  0001 C CNN "DNP"
 	1    3650 6700
 	1    0    0    -1  
 $EndComp
@@ -307,9 +275,6 @@ F 3 "" H 2325 6925 50  0001 C CNN
 $EndComp
 Wire Wire Line
 	2325 6925 2325 6875
-Connection ~ 2325 6575
-Wire Wire Line
-	2325 6575 2325 6475
 Connection ~ 2325 6675
 Wire Wire Line
 	2325 6675 2325 6575
@@ -347,7 +312,40 @@ F 0 "LOGO101" H 1450 7000 50  0001 C CNN
 F 1 "Logo_Open_Hardware_Small" H 1450 6500 50  0001 C CNN
 F 2 "Symbol:KiCad-Logo2_5mm_SilkScreen" H 1450 6725 50  0001 C CNN
 F 3 "~" H 1450 6725 50  0001 C CNN
+F 4 "x" H 1450 6725 50  0001 C CNN "DNP"
 	1    1450 6725
 	1    0    0    -1  
 $EndComp
+Text Label 3950 6400 0    60   ~ 0
+3V3
+Text Label 2325 6475 2    60   ~ 0
+3V3
+Text Label 9000 4125 2    60   ~ 0
+1V5
+Text Label 7000 2175 2    60   ~ 0
+1V8
+Wire Wire Line
+	4425 4975 4525 4975
+Wire Wire Line
+	4525 4975 4525 5075
+Wire Wire Line
+	4425 5075 4525 5075
+Connection ~ 4525 5075
+Wire Wire Line
+	4525 5075 4525 5275
+Wire Wire Line
+	4425 5575 4525 5575
+Wire Wire Line
+	4525 5575 4525 5675
+Wire Wire Line
+	4425 5675 4525 5675
+Connection ~ 4525 5675
+Wire Wire Line
+	4525 5675 4525 5725
+Wire Wire Line
+	4525 5375 4525 5575
+Connection ~ 4525 5575
+Connection ~ 4525 5275
+Text Label 4425 4775 0    60   ~ 0
+3V3
 $EndSCHEMATC

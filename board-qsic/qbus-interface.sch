@@ -2,11 +2,11 @@ EESchema Schematic File Version 4
 LIBS:qsic-cache
 EELAYER 30 0
 EELAYER END
-$Descr A 11000 8500
+$Descr B 17000 11000
 encoding utf-8
-Sheet 6 53
+Sheet 4 5
 Title "QBUS Interface"
-Date "2019-09-30"
+Date "2019-10-07"
 Rev "0.2"
 Comp "QSIC - QBUS Storage & I/O Card"
 Comment1 ""
@@ -17,1458 +17,4140 @@ $EndDescr
 $Comp
 L Device:R R?
 U 1 1 58859D26
-P 7800 3000
+P 14725 5500
 AR Path="/5D8BBF40/58859D26" Ref="R?"  Part="1" 
 AR Path="/5DCB8CA6/5DCBEAC7/58859D26" Ref="R602"  Part="1" 
-F 0 "R602" V 7880 3000 50  0000 C CNN
-F 1 "330" V 7800 3000 50  0000 C CNN
-F 2 "Resistor_SMD:R_0603_1608Metric" V 7730 3000 30  0001 C CNN
-F 3 "" H 7800 3000 30  0000 C CNN
-F 4 "RC0603JR-07330RL" H 7800 3000 50  0001 C CNN "manf#"
-	1    7800 3000
-	1    0    0    -1  
+F 0 "R602" V 14805 5500 50  0000 C CNN
+F 1 "330" V 14725 5500 50  0000 C CNN
+F 2 "Resistor_SMD:R_0603_1608Metric" V 14655 5500 30  0001 C CNN
+F 3 "" H 14725 5500 30  0000 C CNN
+F 4 "RC0603JR-07330RL" H 14725 5500 50  0001 C CNN "manf#"
+	1    14725 5500
+	-1   0    0    -1  
 $EndComp
 $Comp
 L Device:R R?
 U 1 1 58859D2D
-P 7800 3400
+P 14725 5900
 AR Path="/5D8BBF40/58859D2D" Ref="R?"  Part="1" 
 AR Path="/5DCB8CA6/5DCBEAC7/58859D2D" Ref="R606"  Part="1" 
-F 0 "R606" V 7880 3400 50  0000 C CNN
-F 1 "680" V 7800 3400 50  0000 C CNN
-F 2 "Resistor_SMD:R_0603_1608Metric" V 7730 3400 30  0001 C CNN
-F 3 "" H 7800 3400 30  0000 C CNN
-F 4 "RC0603JR-07680RL" H 7800 3400 50  0001 C CNN "manf#"
-	1    7800 3400
-	1    0    0    -1  
+F 0 "R606" V 14805 5900 50  0000 C CNN
+F 1 "680" V 14725 5900 50  0000 C CNN
+F 2 "Resistor_SMD:R_0603_1608Metric" V 14655 5900 30  0001 C CNN
+F 3 "" H 14725 5900 30  0000 C CNN
+F 4 "RC0603JR-07680RL" H 14725 5900 50  0001 C CNN "manf#"
+	1    14725 5900
+	-1   0    0    -1  
 $EndComp
 $Comp
 L power:GND #PWR?
 U 1 1 58859D34
-P 7800 3550
+P 14725 6050
 AR Path="/5D8BBF40/58859D34" Ref="#PWR?"  Part="1" 
 AR Path="/5DCB8CA6/5DCBEAC7/58859D34" Ref="#PWR0603"  Part="1" 
-F 0 "#PWR0603" H 7800 3300 50  0001 C CNN
-F 1 "GND" H 7800 3400 50  0001 C CNN
-F 2 "" H 7800 3550 60  0000 C CNN
-F 3 "" H 7800 3550 60  0000 C CNN
-	1    7800 3550
-	1    0    0    -1  
+F 0 "#PWR0603" H 14725 5800 50  0001 C CNN
+F 1 "GND" H 14725 5900 50  0001 C CNN
+F 2 "" H 14725 6050 60  0000 C CNN
+F 3 "" H 14725 6050 60  0000 C CNN
+	1    14725 6050
+	-1   0    0    -1  
 $EndComp
 $Comp
 L Device:R R?
 U 1 1 58859D48
-P 8550 4050
+P 15475 5900
 AR Path="/5D8BBF40/58859D48" Ref="R?"  Part="1" 
 AR Path="/5DCB8CA6/5DCBEAC7/58859D48" Ref="R607"  Part="1" 
-F 0 "R607" V 8630 4050 50  0000 C CNN
-F 1 "680" V 8550 4050 50  0000 C CNN
-F 2 "Resistor_SMD:R_0603_1608Metric" V 8480 4050 30  0001 C CNN
-F 3 "" H 8550 4050 30  0000 C CNN
-F 4 "RC0603JR-07680RL" H 8550 4050 50  0001 C CNN "manf#"
-	1    8550 4050
-	1    0    0    -1  
+F 0 "R607" V 15555 5900 50  0000 C CNN
+F 1 "680" V 15475 5900 50  0000 C CNN
+F 2 "Resistor_SMD:R_0603_1608Metric" V 15405 5900 30  0001 C CNN
+F 3 "" H 15475 5900 30  0000 C CNN
+F 4 "RC0603JR-07680RL" H 15475 5900 50  0001 C CNN "manf#"
+	1    15475 5900
+	-1   0    0    -1  
 $EndComp
 $Comp
 L Device:R R?
 U 1 1 58859D55
-P 8550 3650
+P 15475 5500
 AR Path="/5D8BBF40/58859D55" Ref="R?"  Part="1" 
 AR Path="/5DCB8CA6/5DCBEAC7/58859D55" Ref="R603"  Part="1" 
-F 0 "R603" V 8630 3650 50  0000 C CNN
-F 1 "330" V 8550 3650 50  0000 C CNN
-F 2 "Resistor_SMD:R_0603_1608Metric" V 8480 3650 30  0001 C CNN
-F 3 "" H 8550 3650 30  0000 C CNN
-F 4 "RC0603JR-07330RL" H 8550 3650 50  0001 C CNN "manf#"
-	1    8550 3650
-	1    0    0    -1  
+F 0 "R603" V 15555 5500 50  0000 C CNN
+F 1 "330" V 15475 5500 50  0000 C CNN
+F 2 "Resistor_SMD:R_0603_1608Metric" V 15405 5500 30  0001 C CNN
+F 3 "" H 15475 5500 30  0000 C CNN
+F 4 "RC0603JR-07330RL" H 15475 5500 50  0001 C CNN "manf#"
+	1    15475 5500
+	-1   0    0    -1  
 $EndComp
 $Comp
 L Device:R R?
 U 1 1 58859D5E
-P 8325 3650
+P 15700 5500
 AR Path="/5D8BBF40/58859D5E" Ref="R?"  Part="1" 
 AR Path="/5DCB8CA6/5DCBEAC7/58859D5E" Ref="R604"  Part="1" 
-F 0 "R604" V 8405 3650 50  0000 C CNN
-F 1 "330" V 8325 3650 50  0000 C CNN
-F 2 "Resistor_SMD:R_0603_1608Metric" V 8255 3650 30  0001 C CNN
-F 3 "" H 8325 3650 30  0000 C CNN
-F 4 "RC0603JR-07330RL" H 8325 3650 50  0001 C CNN "manf#"
-	1    8325 3650
-	1    0    0    -1  
+F 0 "R604" V 15780 5500 50  0000 C CNN
+F 1 "330" V 15700 5500 50  0000 C CNN
+F 2 "Resistor_SMD:R_0603_1608Metric" V 15630 5500 30  0001 C CNN
+F 3 "" H 15700 5500 30  0000 C CNN
+F 4 "RC0603JR-07330RL" H 15700 5500 50  0001 C CNN "manf#"
+	1    15700 5500
+	-1   0    0    -1  
 $EndComp
 $Comp
 L power:GND #PWR?
 U 1 1 58859D65
-P 8325 4200
+P 15700 6050
 AR Path="/5D8BBF40/58859D65" Ref="#PWR?"  Part="1" 
 AR Path="/5DCB8CA6/5DCBEAC7/58859D65" Ref="#PWR0605"  Part="1" 
-F 0 "#PWR0605" H 8325 3950 50  0001 C CNN
-F 1 "GND" H 8325 4050 50  0001 C CNN
-F 2 "" H 8325 4200 60  0000 C CNN
-F 3 "" H 8325 4200 60  0000 C CNN
-	1    8325 4200
-	1    0    0    -1  
+F 0 "#PWR0605" H 15700 5800 50  0001 C CNN
+F 1 "GND" H 15700 5900 50  0001 C CNN
+F 2 "" H 15700 6050 60  0000 C CNN
+F 3 "" H 15700 6050 60  0000 C CNN
+	1    15700 6050
+	-1   0    0    -1  
 $EndComp
 $Comp
 L Device:R R?
 U 1 1 58859D6B
-P 8325 4050
+P 15700 5900
 AR Path="/5D8BBF40/58859D6B" Ref="R?"  Part="1" 
 AR Path="/5DCB8CA6/5DCBEAC7/58859D6B" Ref="R608"  Part="1" 
-F 0 "R608" V 8405 4050 50  0000 C CNN
-F 1 "680" V 8325 4050 50  0000 C CNN
-F 2 "Resistor_SMD:R_0603_1608Metric" V 8255 4050 30  0001 C CNN
-F 3 "" H 8325 4050 30  0000 C CNN
-F 4 "RC0603JR-07680RL" H 8325 4050 50  0001 C CNN "manf#"
-	1    8325 4050
-	1    0    0    -1  
+F 0 "R608" V 15780 5900 50  0000 C CNN
+F 1 "680" V 15700 5900 50  0000 C CNN
+F 2 "Resistor_SMD:R_0603_1608Metric" V 15630 5900 30  0001 C CNN
+F 3 "" H 15700 5900 30  0000 C CNN
+F 4 "RC0603JR-07680RL" H 15700 5900 50  0001 C CNN "manf#"
+	1    15700 5900
+	-1   0    0    -1  
 $EndComp
 $Comp
 L power:GND #PWR?
 U 1 1 588617EB
-P 8550 4200
+P 15475 6050
 AR Path="/5D8BBF40/588617EB" Ref="#PWR?"  Part="1" 
 AR Path="/5DCB8CA6/5DCBEAC7/588617EB" Ref="#PWR0604"  Part="1" 
-F 0 "#PWR0604" H 8550 3950 50  0001 C CNN
-F 1 "GND" H 8550 4050 50  0001 C CNN
-F 2 "" H 8550 4200 60  0000 C CNN
-F 3 "" H 8550 4200 60  0000 C CNN
-	1    8550 4200
-	1    0    0    -1  
+F 0 "#PWR0604" H 15475 5800 50  0001 C CNN
+F 1 "GND" H 15475 5900 50  0001 C CNN
+F 2 "" H 15475 6050 60  0000 C CNN
+F 3 "" H 15475 6050 60  0000 C CNN
+	1    15475 6050
+	-1   0    0    -1  
 $EndComp
-Connection ~ 8550 3850
+Connection ~ 15475 5700
 Wire Wire Line
-	8550 3800 8550 3850
+	15475 5650 15475 5700
 Wire Wire Line
-	8325 3800 8325 3850
-Connection ~ 8325 3850
-Text HLabel 6750 3200 0    60   Input ~ 0
-TIAKO
-Text HLabel 6750 3850 0    60   Input ~ 0
-TDMGO
-Text HLabel 1150 1275 0    60   Input ~ 0
-TSYNC
-Text HLabel 1150 1675 0    60   Input ~ 0
-TDIN
-Text HLabel 1150 2075 0    60   Input ~ 0
-TDOUT
-Text HLabel 1150 2475 0    60   Input ~ 0
-TRPLY
-Text HLabel 1150 2875 0    60   Input ~ 0
-TREF
-Text HLabel 1150 4875 0    60   Input ~ 0
-TDMR
-Text HLabel 1150 5275 0    60   Input ~ 0
-TSACK
-Text HLabel 1150 3275 0    60   Input ~ 0
-TIRQ4
-Text HLabel 1150 3675 0    60   Input ~ 0
-TIRQ5
-Text HLabel 1150 4075 0    60   Input ~ 0
-TIRQ6
-Text HLabel 1675 6900 2    60   Output ~ 0
-RPOK
-Text HLabel 1675 6500 2    60   Output ~ 0
-RDCOK
-Text HLabel 1675 6100 2    60   Output ~ 0
-RHALT
-Text HLabel 9475 3200 2    60   Output ~ 0
-RIAKI
-Text HLabel 1675 1325 2    60   Output ~ 0
-RSYNC
-Text HLabel 1675 1725 2    60   Output ~ 0
-RDIN
-Text HLabel 1675 2125 2    60   Output ~ 0
-RDOUT
-Text HLabel 1675 2525 2    60   Output ~ 0
-RRPLY
-Text HLabel 1675 2925 2    60   Output ~ 0
-RREF
-Text HLabel 1675 5725 2    60   Output ~ 0
-RINIT
-Text HLabel 1675 4925 2    60   Output ~ 0
-RDMR
-Text HLabel 1675 5325 2    60   Output ~ 0
-RSACK
-Text HLabel 1675 3325 2    60   Output ~ 0
-RIRQ4
-Text HLabel 1675 3725 2    60   Output ~ 0
-RIRQ5
-Text HLabel 1675 4125 2    60   Output ~ 0
-RIRQ6
+	15700 5650 15700 5700
+Connection ~ 15700 5700
 Wire Wire Line
-	7800 3200 7800 3250
+	14725 5700 14725 5750
 Wire Wire Line
-	8550 3850 8550 3900
+	15475 5700 15475 5750
 Wire Wire Line
-	8325 3850 8325 3900
-Text HLabel 1675 4525 2    60   Output ~ 0
-RIRQ7
-Text HLabel 1150 4475 0    60   Input ~ 0
-TIRQ7
-Text HLabel 9475 3850 2    60   Output ~ 0
-RDMGI
-Text HLabel 4525 3675 0    60   Input ~ 0
-TBS7
-Text HLabel 4525 4075 0    60   Input ~ 0
-TWTBT
-Text HLabel 5050 3725 2    60   Output ~ 0
-RBS7
-Text HLabel 5050 4125 2    60   Output ~ 0
-RWTBT
-Text HLabel 4625 7275 0    60   Input ~ 0
-3V3
-Text HLabel 7975 950  2    60   Output ~ 0
+	15700 5700 15700 5750
+Text HLabel 12025 6625 2    60   Output ~ 0
 5V0
-Text Label 7800 2850 0    60   ~ 0
+Text Label 14725 5350 2    60   ~ 0
 5V0
-Text Label 8325 3500 0    60   ~ 0
+Text Label 15700 5350 2    60   ~ 0
 5V0
-Text Label 8550 3500 0    60   ~ 0
-5V0
-Text Label 4625 7175 2    60   ~ 0
+Text Label 15475 5350 2    60   ~ 0
 5V0
 $Comp
 L DEC:QBUS_A J?
 U 1 1 5DF69407
-P 6925 900
+P 10975 6575
 AR Path="/5DF69407" Ref="J?"  Part="1" 
 AR Path="/5D8BBF40/5DF69407" Ref="J101"  Part="1" 
 AR Path="/5DCB8CA6/5DCBEAC7/5DF69407" Ref="J601"  Part="1" 
-F 0 "J601" H 6925 1075 50  0000 C CNN
-F 1 "QBUS_A" H 6925 984 50  0000 C CNN
-F 2 "DEC:DEC_Edge_Fingers_single_height" H 6925 900 50  0001 C CNN
-F 3 "" H 6925 900 50  0001 C CNN
-F 4 "" H 6925 900 50  0001 C CNN "manf#"
-F 5 "x" H 6925 900 50  0001 C CNN "DNP"
-	1    6925 900 
+F 0 "J601" H 10975 6750 50  0000 C CNN
+F 1 "QBUS_A" H 10975 6659 50  0000 C CNN
+F 2 "DEC:DEC_Edge_Fingers_single_height" H 10975 6575 50  0001 C CNN
+F 3 "" H 10975 6575 50  0001 C CNN
+F 4 "" H 10975 6575 50  0001 C CNN "manf#"
+F 5 "x" H 10975 6575 50  0001 C CNN "DNP"
+	1    10975 6575
 	1    0    0    -1  
 $EndComp
-Text Label 8775 2650 2    60   ~ 0
+Text Label 10375 10400 2    60   ~ 0
 5V0
-Text Label 9975 950  0    60   ~ 0
+Text Label 11575 8700 0    60   ~ 0
 5V0
-Text Label 7525 1250 0    60   ~ 0
+Text Label 11575 6925 0    60   ~ 0
 5V0
-Text Label 7525 950  0    60   ~ 0
+Text Label 11575 6625 0    60   ~ 0
 5V0
-Text Label 7525 1150 0    60   ~ 0
+Text Label 11575 6825 0    60   ~ 0
 GND
-Text Label 9975 1150 0    60   ~ 0
+Text Label 11575 8900 0    60   ~ 0
 GND
-Text Label 8775 1950 2    60   ~ 0
+Text Label 10375 9700 2    60   ~ 0
 GND
-Text Label 8775 2450 2    60   ~ 0
+Text Label 10375 10200 2    60   ~ 0
 GND
-Text Label 8775 1650 2    60   ~ 0
+Text Label 10375 9400 2    60   ~ 0
 GND
-Text Label 6325 2450 2    60   ~ 0
+Text Label 10375 8125 2    60   ~ 0
 GND
-Text Label 6325 1950 2    60   ~ 0
+Text Label 10375 7625 2    60   ~ 0
 GND
-Text Label 6325 1650 2    60   ~ 0
+Text Label 10375 7325 2    60   ~ 0
 GND
-NoConn ~ 7525 1050
-NoConn ~ 9975 1050
-NoConn ~ 9975 1250
-NoConn ~ 8775 2550
-NoConn ~ 8775 2350
-NoConn ~ 8775 1750
-NoConn ~ 8775 1850
-NoConn ~ 8775 1550
-NoConn ~ 6325 2650
-NoConn ~ 6325 2550
-NoConn ~ 6325 2350
-NoConn ~ 6325 1850
-NoConn ~ 6325 1750
-NoConn ~ 6325 1550
-NoConn ~ 6325 1450
-NoConn ~ 6325 1350
-Text Label 4525 1775 2    60   ~ 0
+NoConn ~ 11575 6725
+NoConn ~ 11575 8800
+NoConn ~ 11575 9000
+NoConn ~ 10375 10300
+NoConn ~ 10375 10100
+NoConn ~ 10375 9500
+NoConn ~ 10375 9600
+NoConn ~ 10375 9300
+NoConn ~ 10375 8325
+NoConn ~ 10375 8225
+NoConn ~ 10375 8025
+NoConn ~ 10375 7525
+NoConn ~ 10375 7425
+NoConn ~ 10375 7225
+NoConn ~ 10375 7125
+NoConn ~ 10375 7025
+Text Label 10375 6925 2    60   ~ 0
 BDAL17
-Text Label 4525 1375 2    60   ~ 0
+Text Label 10375 6825 2    60   ~ 0
 BDAL16
-Text Label 1150 3775 2    60   ~ 0
+Text Label 10375 6625 2    60   ~ 0
 BIRQ5
-Text Label 1150 4175 2    60   ~ 0
+Text Label 10375 6725 2    60   ~ 0
 BIRQ6
-Text Label 1150 1375 2    60   ~ 0
+Text Label 11575 7325 0    60   ~ 0
 BSYNC
-Text Label 1150 1775 2    60   ~ 0
+Text Label 11575 7225 0    60   ~ 0
 BDIN
-Text Label 1150 2175 2    60   ~ 0
+Text Label 11575 7025 0    60   ~ 0
 BDOUT
-Text Label 1150 2575 2    60   ~ 0
+Text Label 11575 7125 0    60   ~ 0
 BRPLY
-Text Label 6325 1250 2    60   ~ 0
-BDAL17
-Text Label 6325 1150 2    60   ~ 0
-BDAL16
-Text Label 6325 950  2    60   ~ 0
-BIRQ5
-Text Label 6325 1050 2    60   ~ 0
-BIRQ6
-Text Label 7525 1650 0    60   ~ 0
-BSYNC
-Text Label 7525 1550 0    60   ~ 0
-BDIN
-Text Label 7525 1350 0    60   ~ 0
-BDOUT
-Text Label 7525 1450 0    60   ~ 0
-BRPLY
-Text Label 2850 2575 2    60   ~ 0
-BDAL3
-Text Label 2850 2175 2    60   ~ 0
-BDAL2
-Text Label 4525 2975 2    60   ~ 0
-BDAL20
-Text Label 4525 3375 2    60   ~ 0
-BDAL21
-Text Label 2850 4175 2    60   ~ 0
-BDAL7
-Text Label 2850 3775 2    60   ~ 0
-BDAL6
-Text Label 2850 2975 2    60   ~ 0
-BDAL4
-Text Label 2850 3375 2    60   ~ 0
-BDAL5
-Text Label 2850 5775 2    60   ~ 0
-BDAL11
-Text Label 2850 5375 2    60   ~ 0
-BDAL10
-Text Label 1150 5375 2    60   ~ 0
-BSACK
-Text Label 1150 4575 2    60   ~ 0
-BIRQ7
-Text Label 2850 7375 2    60   ~ 0
-BDAL15
-Text Label 2850 6975 2    60   ~ 0
-BDAL14
-Text Label 2850 6175 2    60   ~ 0
-BDAL12
-Text Label 2850 6575 2    60   ~ 0
-BDAL13
-Text Label 4525 2175 2    60   ~ 0
-BDAL18
-Text Label 4525 2575 2    60   ~ 0
-BDAL19
-Text Label 2850 1775 2    60   ~ 0
-BDAL1
-Text Label 2850 1375 2    60   ~ 0
-BDAL0
-Text Label 8950 3200 2    60   ~ 0
+Text Label 14425 5700 2    60   ~ 0
 BIAKI
-Text Label 7275 3200 0    60   ~ 0
+Text Label 14800 5700 0    60   ~ 0
 BIAKO
-Text Label 4525 4175 2    60   ~ 0
-BWTBT
-Text Label 1150 3375 2    60   ~ 0
-BIRQ4
-Text Label 1150 2975 2    60   ~ 0
-BREF
-Text Label 1150 6100 2    60   ~ 0
-BHALT
-Text Label 1150 4975 2    60   ~ 0
-BDMR
-Text Label 4525 3775 2    60   ~ 0
-BBS7
-Text Label 1150 5775 2    60   ~ 0
-BINIT
-Text Label 7275 3850 0    60   ~ 0
+Text Label 15775 5700 0    60   ~ 0
 BDMGO
-Text Label 8950 3850 2    60   ~ 0
+Text Label 15400 5700 2    60   ~ 0
 BDMGI
-Text Label 2850 4975 2    60   ~ 0
-BDAL9
-Text Label 2850 4575 2    60   ~ 0
-BDAL8
-Text Label 1150 6500 2    60   ~ 0
-BDCOK
-Text Label 1150 6900 2    60   ~ 0
-BPOK
-Text Label 6325 2250 2    60   ~ 0
+Text Label 10375 7925 2    60   ~ 0
 BREF
-Text Label 6325 2150 2    60   ~ 0
+Text Label 10375 7825 2    60   ~ 0
 BHALT
-Text Label 6325 2050 2    60   ~ 0
+Text Label 10375 7725 2    60   ~ 0
 BDMR
-Text Label 7525 2150 0    60   ~ 0
+Text Label 11575 7825 0    60   ~ 0
 BBS7
-Text Label 7525 2450 0    60   ~ 0
+Text Label 11575 8125 0    60   ~ 0
 BINIT
-Text Label 7525 2350 0    60   ~ 0
+Text Label 11575 8025 0    60   ~ 0
 BDMGO
-Text Label 7525 2250 0    60   ~ 0
+Text Label 11575 7925 0    60   ~ 0
 BDMGI
-Text Label 9975 2050 0    60   ~ 0
+Text Label 11575 9800 0    60   ~ 0
 BDAL9
-Text Label 9975 1950 0    60   ~ 0
+Text Label 11575 9700 0    60   ~ 0
 BDAL8
-Text Label 8775 950  2    60   ~ 0
+Text Label 10375 8700 2    60   ~ 0
 BDCOK
-Text Label 8775 1050 2    60   ~ 0
+Text Label 10375 8800 2    60   ~ 0
 BPOK
-Text Label 8775 1150 2    60   ~ 0
+Text Label 10375 8900 2    60   ~ 0
 BDAL18
-Text Label 8775 1250 2    60   ~ 0
+Text Label 10375 9000 2    60   ~ 0
 BDAL19
-Text Label 7525 2650 0    60   ~ 0
+Text Label 11575 8325 0    60   ~ 0
 BDAL1
-Text Label 7525 2550 0    60   ~ 0
+Text Label 11575 8225 0    60   ~ 0
 BDAL0
-Text Label 7525 1950 0    60   ~ 0
+Text Label 11575 7625 0    60   ~ 0
 BIAKI
-Text Label 7525 2050 0    60   ~ 0
+Text Label 11575 7725 0    60   ~ 0
 BIAKO
-Text Label 7525 1750 0    60   ~ 0
+Text Label 11575 7425 0    60   ~ 0
 BWTBT
-Text Label 7525 1850 0    60   ~ 0
+Text Label 11575 7525 0    60   ~ 0
 BIRQ4
-Text Label 9975 2250 0    60   ~ 0
+Text Label 11575 10000 0    60   ~ 0
 BDAL11
-Text Label 9975 2150 0    60   ~ 0
+Text Label 11575 9900 0    60   ~ 0
 BDAL10
-Text Label 8775 2050 2    60   ~ 0
+Text Label 10375 9800 2    60   ~ 0
 BSACK
-Text Label 8775 2150 2    60   ~ 0
+Text Label 10375 9900 2    60   ~ 0
 BIRQ7
-Text Label 9975 2650 0    60   ~ 0
+Text Label 11575 10400 0    60   ~ 0
 BDAL15
-Text Label 9975 2550 0    60   ~ 0
+Text Label 11575 10300 0    60   ~ 0
 BDAL14
-Text Label 9975 2350 0    60   ~ 0
+Text Label 11575 10100 0    60   ~ 0
 BDAL12
-Text Label 9975 2450 0    60   ~ 0
+Text Label 11575 10200 0    60   ~ 0
 BDAL13
-Text Label 9975 1450 0    60   ~ 0
+Text Label 11575 9200 0    60   ~ 0
 BDAL3
-Text Label 9975 1350 0    60   ~ 0
+Text Label 11575 9100 0    60   ~ 0
 BDAL2
-Text Label 8775 1350 2    60   ~ 0
+Text Label 10375 9100 2    60   ~ 0
 BDAL20
-Text Label 8775 1450 2    60   ~ 0
+Text Label 10375 9200 2    60   ~ 0
 BDAL21
-Text Label 9975 1850 0    60   ~ 0
+Text Label 11575 9600 0    60   ~ 0
 BDAL7
-Text Label 9975 1750 0    60   ~ 0
+Text Label 11575 9500 0    60   ~ 0
 BDAL6
-Text Label 9975 1550 0    60   ~ 0
+Text Label 11575 9300 0    60   ~ 0
 BDAL4
-Text Label 9975 1650 0    60   ~ 0
+Text Label 11575 9400 0    60   ~ 0
 BDAL5
-Text HLabel 1400 900  0    60   Input ~ 0
+Text HLabel 5350 1525 0    60   Input ~ 0
 TDAL[0..21]
 Wire Wire Line
-	7525 950  7875 950 
-Text Label 4525 1675 2    60   ~ 0
-TDAL17
-Text Label 4525 1275 2    60   ~ 0
-TDAL16
-Entry Bus Bus
-	2325 900  2425 1000
-Text Label 2850 2475 2    60   ~ 0
-TDAL3
-Text Label 2850 2075 2    60   ~ 0
-TDAL2
-Text Label 4525 2875 2    60   ~ 0
-TDAL20
-Text Label 4525 3275 2    60   ~ 0
-TDAL21
-Text Label 2850 4075 2    60   ~ 0
-TDAL7
-Text Label 2850 3675 2    60   ~ 0
-TDAL6
-Text Label 2850 2875 2    60   ~ 0
-TDAL4
-Text Label 2850 3275 2    60   ~ 0
-TDAL5
-Entry Bus Bus
-	4000 900  4100 1000
-Text Label 2850 4875 2    60   ~ 0
-TDAL9
-Text Label 2850 4475 2    60   ~ 0
-TDAL8
-Text Label 4525 2075 2    60   ~ 0
-TDAL18
-Text Label 4525 2475 2    60   ~ 0
-TDAL19
-Text Label 2850 1675 2    60   ~ 0
-TDAL1
-Text Label 2850 1275 2    60   ~ 0
-TDAL0
-Text Label 2850 5675 2    60   ~ 0
-TDAL11
-Text Label 2850 5275 2    60   ~ 0
-TDAL10
-Text Label 2850 7275 2    60   ~ 0
-TDAL15
-Text Label 2850 6875 2    60   ~ 0
-TDAL14
-Text Label 2850 6075 2    60   ~ 0
-TDAL12
-Text Label 2850 6475 2    60   ~ 0
-TDAL13
-Text Label 3375 4925 0    60   ~ 0
-RDAL9
-Text Label 3375 4525 0    60   ~ 0
-RDAL8
-Text Label 3375 2525 0    60   ~ 0
-RDAL3
-Text Label 3375 2125 0    60   ~ 0
-RDAL2
-Text Label 5050 2925 0    60   ~ 0
-RDAL20
-Text Label 5050 3325 0    60   ~ 0
-RDAL21
-Text Label 3375 4125 0    60   ~ 0
-RDAL7
-Text Label 3375 3725 0    60   ~ 0
-RDAL6
-Text Label 3375 2925 0    60   ~ 0
-RDAL4
-Text Label 3375 3325 0    60   ~ 0
-RDAL5
-Text Label 5050 1725 0    60   ~ 0
-RDAL17
-Text Label 5050 1325 0    60   ~ 0
-RDAL16
-Text Label 5050 2125 0    60   ~ 0
-RDAL18
-Text Label 5050 2525 0    60   ~ 0
-RDAL19
-Text Label 3375 1725 0    60   ~ 0
-RDAL1
-Text Label 3375 1325 0    60   ~ 0
-RDAL0
-Text Label 3375 5725 0    60   ~ 0
-RDAL11
-Text Label 3375 5325 0    60   ~ 0
-RDAL10
-Text Label 3375 7325 0    60   ~ 0
-RDAL15
-Text Label 3375 6925 0    60   ~ 0
-RDAL14
-Text Label 3375 6125 0    60   ~ 0
-RDAL12
-Text Label 3375 6525 0    60   ~ 0
-RDAL13
-Entry Bus Bus
-	3900 800  4000 700 
-Entry Bus Bus
-	5575 800  5675 700 
-Text HLabel 5850 700  2    60   Output ~ 0
+	11575 6625 11925 6625
+Text HLabel 9800 575  2    60   Output ~ 0
 RDAL[0..21]
 $Comp
 L power:PWR_FLAG #FLG?
 U 1 1 5D9FD871
-P 7875 950
+P 11925 6625
 AR Path="/5D8BBF40/5D9FD871" Ref="#FLG?"  Part="1" 
 AR Path="/5DCB8CA6/5DCBEAC7/5D9FD871" Ref="#FLG0601"  Part="1" 
-F 0 "#FLG0601" H 7875 1025 50  0001 C CNN
-F 1 "PWR_FLAG" H 7875 1123 50  0000 C CNN
-F 2 "" H 7875 950 50  0001 C CNN
-F 3 "~" H 7875 950 50  0001 C CNN
-	1    7875 950 
+F 0 "#FLG0601" H 11925 6700 50  0001 C CNN
+F 1 "PWR_FLAG" H 11925 6798 50  0000 C CNN
+F 2 "" H 11925 6625 50  0001 C CNN
+F 3 "~" H 11925 6625 50  0001 C CNN
+	1    11925 6625
 	1    0    0    -1  
 $EndComp
-Connection ~ 7875 950 
+Connection ~ 11925 6625
 Wire Wire Line
-	7875 950  7975 950 
-Text Label 7000 4700 0    60   ~ 0
+	11925 6625 12025 6625
+Text Label 13075 7125 0    60   ~ 0
 5V0
 $Comp
 L power:GND #PWR?
 U 1 1 5D969C28
-P 9050 6600
+P 15125 9025
 AR Path="/5D8BBF40/5D969C28" Ref="#PWR?"  Part="1" 
 AR Path="/5DCB8CA6/5DCBEAC7/5D969C28" Ref="#PWR0118"  Part="1" 
-F 0 "#PWR0118" H 9050 6350 50  0001 C CNN
-F 1 "GND" H 9050 6450 50  0001 C CNN
-F 2 "" H 9050 6600 60  0000 C CNN
-F 3 "" H 9050 6600 60  0000 C CNN
-	1    9050 6600
+F 0 "#PWR0118" H 15125 8775 50  0001 C CNN
+F 1 "GND" H 15125 8875 50  0001 C CNN
+F 2 "" H 15125 9025 60  0000 C CNN
+F 3 "" H 15125 9025 60  0000 C CNN
+	1    15125 9025
 	1    0    0    -1  
 $EndComp
 $Comp
 L power:GND #PWR?
 U 1 1 5D96C823
-P 8025 6600
+P 14100 9025
 AR Path="/5D8BBF40/5D96C823" Ref="#PWR?"  Part="1" 
 AR Path="/5DCB8CA6/5DCBEAC7/5D96C823" Ref="#PWR0119"  Part="1" 
-F 0 "#PWR0119" H 8025 6350 50  0001 C CNN
-F 1 "GND" H 8025 6450 50  0001 C CNN
-F 2 "" H 8025 6600 60  0000 C CNN
-F 3 "" H 8025 6600 60  0000 C CNN
-	1    8025 6600
+F 0 "#PWR0119" H 14100 8775 50  0001 C CNN
+F 1 "GND" H 14100 8875 50  0001 C CNN
+F 2 "" H 14100 9025 60  0000 C CNN
+F 3 "" H 14100 9025 60  0000 C CNN
+	1    14100 9025
 	1    0    0    -1  
 $EndComp
 $Comp
 L power:GND #PWR?
 U 1 1 5D96CD28
-P 7000 6600
+P 13075 9025
 AR Path="/5D8BBF40/5D96CD28" Ref="#PWR?"  Part="1" 
 AR Path="/5DCB8CA6/5DCBEAC7/5D96CD28" Ref="#PWR0120"  Part="1" 
-F 0 "#PWR0120" H 7000 6350 50  0001 C CNN
-F 1 "GND" H 7000 6450 50  0001 C CNN
-F 2 "" H 7000 6600 60  0000 C CNN
-F 3 "" H 7000 6600 60  0000 C CNN
-	1    7000 6600
+F 0 "#PWR0120" H 13075 8775 50  0001 C CNN
+F 1 "GND" H 13075 8875 50  0001 C CNN
+F 2 "" H 13075 9025 60  0000 C CNN
+F 3 "" H 13075 9025 60  0000 C CNN
+	1    13075 9025
 	1    0    0    -1  
 $EndComp
-Text Label 8025 4700 0    60   ~ 0
+Text Label 14100 7125 0    60   ~ 0
 5V0
-Text Label 10075 4700 0    60   ~ 0
+Text Label 16150 7125 0    60   ~ 0
 5V0
-Text Label 9050 4700 0    60   ~ 0
+Text Label 15125 7125 0    60   ~ 0
 5V0
-Text Label 6400 5400 2    60   ~ 0
+Text Label 12475 7825 2    60   ~ 0
 BDAL17
-Text Label 6400 5200 2    60   ~ 0
+Text Label 12475 7625 2    60   ~ 0
 BDAL16
-Text Label 6400 4800 2    60   ~ 0
+Text Label 12475 7225 2    60   ~ 0
 BIRQ5
-Text Label 6400 5000 2    60   ~ 0
+Text Label 12475 7425 2    60   ~ 0
 BIRQ6
-Text Label 6400 6200 2    60   ~ 0
+Text Label 12475 8625 2    60   ~ 0
 BSYNC
-Text Label 6400 6000 2    60   ~ 0
+Text Label 12475 8425 2    60   ~ 0
 BDIN
-Text Label 6400 5600 2    60   ~ 0
+Text Label 12475 8025 2    60   ~ 0
 BDOUT
-Text Label 6400 5800 2    60   ~ 0
+Text Label 12475 8225 2    60   ~ 0
 BRPLY
-Text Label 9475 5800 2    60   ~ 0
+Text Label 15550 8225 2    60   ~ 0
 BDAL11
-Text Label 9475 5400 2    60   ~ 0
+Text Label 15550 7825 2    60   ~ 0
 BDAL10
-Text Label 9475 5000 2    60   ~ 0
+Text Label 15550 7425 2    60   ~ 0
 BSACK
-Text Label 9475 5200 2    60   ~ 0
+Text Label 15550 7625 2    60   ~ 0
 BIRQ7
-Text Label 9475 6600 2    60   ~ 0
+Text Label 15550 9025 2    60   ~ 0
 BDAL15
-Text Label 9475 6400 2    60   ~ 0
+Text Label 15550 8825 2    60   ~ 0
 BDAL14
-Text Label 9475 6000 2    60   ~ 0
+Text Label 15550 8425 2    60   ~ 0
 BDAL12
-Text Label 9475 6200 2    60   ~ 0
+Text Label 15550 8625 2    60   ~ 0
 BDAL13
-Text Label 7425 6600 2    60   ~ 0
+Text Label 13500 9025 2    60   ~ 0
 BDAL18
-Text Label 8450 4800 2    60   ~ 0
+Text Label 14525 7225 2    60   ~ 0
 BDAL19
-Text Label 7425 6000 2    60   ~ 0
+Text Label 13500 8425 2    60   ~ 0
 BDAL1
-Text Label 7425 5800 2    60   ~ 0
+Text Label 13500 8225 2    60   ~ 0
 BDAL0
-Text Label 6400 6400 2    60   ~ 0
+Text Label 12475 8825 2    60   ~ 0
 BWTBT
-Text Label 6400 6600 2    60   ~ 0
+Text Label 12475 9025 2    60   ~ 0
 BIRQ4
-Text Label 8450 5400 2    60   ~ 0
+Text Label 14525 7825 2    60   ~ 0
 BDAL3
-Text Label 8450 5000 2    60   ~ 0
+Text Label 14525 7425 2    60   ~ 0
 BDAL2
-Text Label 8450 5200 2    60   ~ 0
+Text Label 14525 7625 2    60   ~ 0
 BDAL20
-Text Label 8450 5600 2    60   ~ 0
+Text Label 14525 8025 2    60   ~ 0
 BDAL21
-Text Label 8450 6400 2    60   ~ 0
+Text Label 14525 8825 2    60   ~ 0
 BDAL7
-Text Label 8450 6200 2    60   ~ 0
+Text Label 14525 8625 2    60   ~ 0
 BDAL6
-Text Label 8450 5800 2    60   ~ 0
+Text Label 14525 8225 2    60   ~ 0
 BDAL4
-Text Label 8450 6000 2    60   ~ 0
+Text Label 14525 8425 2    60   ~ 0
 BDAL5
-Text Label 7425 5400 2    60   ~ 0
+Text Label 13500 7825 2    60   ~ 0
 BREF
-Text Label 7425 5200 2    60   ~ 0
+Text Label 13500 7625 2    60   ~ 0
 BHALT
-Text Label 7425 4800 2    60   ~ 0
+Text Label 13500 7225 2    60   ~ 0
 BDMR
-Text Label 7425 5000 2    60   ~ 0
+Text Label 13500 7425 2    60   ~ 0
 BBS7
-Text Label 7425 5600 2    60   ~ 0
+Text Label 13500 8025 2    60   ~ 0
 BINIT
-Text Label 9475 4800 2    60   ~ 0
+Text Label 15550 7225 2    60   ~ 0
 BDAL9
-Text Label 8450 6600 2    60   ~ 0
+Text Label 14525 9025 2    60   ~ 0
 BDAL8
-Text Label 7425 6200 2    60   ~ 0
+Text Label 13500 8625 2    60   ~ 0
 BDCOK
-Text Label 7425 6400 2    60   ~ 0
+Text Label 13500 8825 2    60   ~ 0
 BPOK
-Text Label 9475 5600 2    60   ~ 0
+Text Label 15550 8025 2    60   ~ 0
 BEVNT
-Text Label 8775 2250 2    60   ~ 0
+Text Label 10375 10000 2    60   ~ 0
 BEVNT
 $Comp
 L DEC:QBUS_B J?
 U 1 1 5DF6940D
-P 9375 950
+P 10975 8700
 AR Path="/5DF6940D" Ref="J?"  Part="1" 
 AR Path="/5D8BBF40/5DF6940D" Ref="J102"  Part="1" 
 AR Path="/5DCB8CA6/5DCBEAC7/5DF6940D" Ref="J602"  Part="1" 
-F 0 "J602" H 9375 1175 50  0000 C CNN
-F 1 "QBUS_B" H 9375 1084 50  0000 C CNN
-F 2 "DEC:DEC_Edge_Fingers_single_height" H 8775 950 50  0001 C CNN
-F 3 "" H 8775 950 50  0001 C CNN
-F 4 "" H 9375 950 50  0001 C CNN "manf#"
-F 5 "x" H 9375 950 50  0001 C CNN "DNP"
-	1    9375 950 
+F 0 "J602" H 10975 8925 50  0000 C CNN
+F 1 "QBUS_B" H 10975 8834 50  0000 C CNN
+F 2 "DEC:DEC_Edge_Fingers_single_height" H 10375 8700 50  0001 C CNN
+F 3 "" H 10375 8700 50  0001 C CNN
+F 4 "" H 10975 8700 50  0001 C CNN "manf#"
+F 5 "x" H 10975 8700 50  0001 C CNN "DNP"
+	1    10975 8700
 	1    0    0    -1  
 $EndComp
-$Sheet
-S 2850 1225 525  200 
-U 5DA824EC
-F0 "DAL0" 60
-F1 "bus-xcvr.sch" 60
-F2 "R" O R 3375 1325 60 
-F3 "T" I L 2850 1275 60 
-F4 "B" B L 2850 1375 60 
-$EndSheet
-$Sheet
-S 2850 1625 525  200 
-U 5DAE0F16
-F0 "DAL1" 60
-F1 "bus-xcvr.sch" 60
-F2 "R" O R 3375 1725 60 
-F3 "T" I L 2850 1675 60 
-F4 "B" B L 2850 1775 60 
-$EndSheet
-$Sheet
-S 2850 2025 525  200 
-U 5DB650E4
-F0 "DAL2" 60
-F1 "bus-xcvr.sch" 60
-F2 "R" O R 3375 2125 60 
-F3 "T" I L 2850 2075 60 
-F4 "B" B L 2850 2175 60 
-$EndSheet
-$Sheet
-S 2850 2425 525  200 
-U 5DB650E9
-F0 "DAL3" 60
-F1 "bus-xcvr.sch" 60
-F2 "R" O R 3375 2525 60 
-F3 "T" I L 2850 2475 60 
-F4 "B" B L 2850 2575 60 
-$EndSheet
-$Sheet
-S 2850 2825 525  200 
-U 5DB66AB5
-F0 "DAL4" 60
-F1 "bus-xcvr.sch" 60
-F2 "R" O R 3375 2925 60 
-F3 "T" I L 2850 2875 60 
-F4 "B" B L 2850 2975 60 
-$EndSheet
-$Sheet
-S 2850 3225 525  200 
-U 5DB66ABA
-F0 "DAL5" 60
-F1 "bus-xcvr.sch" 60
-F2 "R" O R 3375 3325 60 
-F3 "T" I L 2850 3275 60 
-F4 "B" B L 2850 3375 60 
-$EndSheet
-$Sheet
-S 2850 3625 525  200 
-U 5DB685BE
-F0 "DAL6" 60
-F1 "bus-xcvr.sch" 60
-F2 "R" O R 3375 3725 60 
-F3 "T" I L 2850 3675 60 
-F4 "B" B L 2850 3775 60 
-$EndSheet
-$Sheet
-S 2850 4025 525  200 
-U 5DB685C3
-F0 "DAL7" 60
-F1 "bus-xcvr.sch" 60
-F2 "R" O R 3375 4125 60 
-F3 "T" I L 2850 4075 60 
-F4 "B" B L 2850 4175 60 
-$EndSheet
-$Sheet
-S 2850 4425 525  200 
-U 5DB6A4B5
-F0 "DAL8" 60
-F1 "bus-xcvr.sch" 60
-F2 "R" O R 3375 4525 60 
-F3 "T" I L 2850 4475 60 
-F4 "B" B L 2850 4575 60 
-$EndSheet
-$Sheet
-S 2850 4825 525  200 
-U 5DB6A4BA
-F0 "DAL9" 60
-F1 "bus-xcvr.sch" 60
-F2 "R" O R 3375 4925 60 
-F3 "T" I L 2850 4875 60 
-F4 "B" B L 2850 4975 60 
-$EndSheet
-$Sheet
-S 2850 5225 525  200 
-U 5DB6A4BF
-F0 "DAL10" 60
-F1 "bus-xcvr.sch" 60
-F2 "R" O R 3375 5325 60 
-F3 "T" I L 2850 5275 60 
-F4 "B" B L 2850 5375 60 
-$EndSheet
-$Sheet
-S 2850 5625 525  200 
-U 5DB6A4C4
-F0 "DAL11" 60
-F1 "bus-xcvr.sch" 60
-F2 "R" O R 3375 5725 60 
-F3 "T" I L 2850 5675 60 
-F4 "B" B L 2850 5775 60 
-$EndSheet
-$Sheet
-S 2850 6025 525  200 
-U 5DB6A4C9
-F0 "DAL12" 60
-F1 "bus-xcvr.sch" 60
-F2 "R" O R 3375 6125 60 
-F3 "T" I L 2850 6075 60 
-F4 "B" B L 2850 6175 60 
-$EndSheet
-$Sheet
-S 2850 6425 525  200 
-U 5DB6A4CE
-F0 "DAL13" 60
-F1 "bus-xcvr.sch" 60
-F2 "R" O R 3375 6525 60 
-F3 "T" I L 2850 6475 60 
-F4 "B" B L 2850 6575 60 
-$EndSheet
-$Sheet
-S 2850 6825 525  200 
-U 5DB6A4D3
-F0 "DAL14" 60
-F1 "bus-xcvr.sch" 60
-F2 "R" O R 3375 6925 60 
-F3 "T" I L 2850 6875 60 
-F4 "B" B L 2850 6975 60 
-$EndSheet
-$Sheet
-S 2850 7225 525  200 
-U 5DB6A4D8
-F0 "DAL15" 60
-F1 "bus-xcvr.sch" 60
-F2 "R" O R 3375 7325 60 
-F3 "T" I L 2850 7275 60 
-F4 "B" B L 2850 7375 60 
-$EndSheet
-$Sheet
-S 4525 1225 525  200 
-U 5DBEEEF1
-F0 "DAL16" 60
-F1 "bus-xcvr.sch" 60
-F2 "R" O R 5050 1325 60 
-F3 "T" I L 4525 1275 60 
-F4 "B" B L 4525 1375 60 
-$EndSheet
-$Sheet
-S 4525 1625 525  200 
-U 5DBEEEF6
-F0 "DAL17" 60
-F1 "bus-xcvr.sch" 60
-F2 "R" O R 5050 1725 60 
-F3 "T" I L 4525 1675 60 
-F4 "B" B L 4525 1775 60 
-$EndSheet
-$Sheet
-S 4525 2025 525  200 
-U 5DBEEEFB
-F0 "DAL18" 60
-F1 "bus-xcvr.sch" 60
-F2 "R" O R 5050 2125 60 
-F3 "T" I L 4525 2075 60 
-F4 "B" B L 4525 2175 60 
-$EndSheet
-$Sheet
-S 4525 2425 525  200 
-U 5DBEEF00
-F0 "DAL19" 60
-F1 "bus-xcvr.sch" 60
-F2 "R" O R 5050 2525 60 
-F3 "T" I L 4525 2475 60 
-F4 "B" B L 4525 2575 60 
-$EndSheet
-$Sheet
-S 4525 2825 525  200 
-U 5DBEEF05
-F0 "DAL20" 60
-F1 "bus-xcvr.sch" 60
-F2 "R" O R 5050 2925 60 
-F3 "T" I L 4525 2875 60 
-F4 "B" B L 4525 2975 60 
-$EndSheet
-$Sheet
-S 4525 3225 525  200 
-U 5DBEEF0A
-F0 "DAL21" 60
-F1 "bus-xcvr.sch" 60
-F2 "R" O R 5050 3325 60 
-F3 "T" I L 4525 3275 60 
-F4 "B" B L 4525 3375 60 
-$EndSheet
-$Sheet
-S 4525 3625 525  200 
-U 5DBEEF0F
-F0 "BS7" 60
-F1 "bus-xcvr.sch" 60
-F2 "R" O R 5050 3725 60 
-F3 "T" I L 4525 3675 60 
-F4 "B" B L 4525 3775 60 
-$EndSheet
-$Sheet
-S 4525 4025 525  200 
-U 5DBEEF14
-F0 "WTBT" 60
-F1 "bus-xcvr.sch" 60
-F2 "R" O R 5050 4125 60 
-F3 "T" I L 4525 4075 60 
-F4 "B" B L 4525 4175 60 
-$EndSheet
-$Sheet
-S 6750 3775 525  200 
-U 5DC0E33E
-F0 "DMGO" 60
-F1 "bus-xmtr.sch" 60
-F2 "B" B R 7275 3850 60 
-F3 "T" I L 6750 3850 60 
-$EndSheet
-$Sheet
-S 1150 6025 525  200 
-U 5DC0E3D1
-F0 "HALT" 60
-F1 "bus-rcvr.sch" 60
-F2 "B" B L 1150 6100 60 
-F3 "R" O R 1675 6100 60 
-$EndSheet
-Wire Wire Line
-	4200 3275 4525 3275
 Entry Wire Line
-	4100 3175 4200 3275
-Wire Wire Line
-	4200 2875 4525 2875
+	5350 700  5450 800 
 Entry Wire Line
-	4100 2775 4200 2875
-Wire Wire Line
-	4200 2475 4525 2475
+	5350 1150 5450 1250
 Entry Wire Line
-	4100 2375 4200 2475
-Wire Wire Line
-	4200 2075 4525 2075
+	5350 1600 5450 1700
 Entry Wire Line
-	4100 1975 4200 2075
-Wire Wire Line
-	4200 1675 4525 1675
+	5350 2050 5450 2150
 Entry Wire Line
-	4100 1575 4200 1675
-Wire Wire Line
-	4200 1275 4525 1275
+	9600 2950 9500 3050
 Entry Wire Line
-	4100 1175 4200 1275
-Wire Wire Line
-	2525 1275 2850 1275
+	9600 2500 9500 2600
 Entry Wire Line
-	2425 1175 2525 1275
-Wire Wire Line
-	2525 1675 2850 1675
+	9600 700  9500 800 
 Entry Wire Line
-	2425 1575 2525 1675
-Wire Wire Line
-	2525 2075 2850 2075
+	9600 1150 9500 1250
 Entry Wire Line
-	2425 1975 2525 2075
-Wire Wire Line
-	2525 2475 2850 2475
+	9600 1600 9500 1700
 Entry Wire Line
-	2425 2375 2525 2475
-Wire Wire Line
-	2525 2875 2850 2875
-Entry Wire Line
-	2425 2775 2525 2875
-Wire Wire Line
-	2525 3275 2850 3275
-Entry Wire Line
-	2425 3175 2525 3275
-Wire Wire Line
-	2525 3675 2850 3675
-Entry Wire Line
-	2425 3575 2525 3675
-Wire Wire Line
-	2525 4075 2850 4075
-Entry Wire Line
-	2425 3975 2525 4075
-Wire Wire Line
-	2525 4475 2850 4475
-Entry Wire Line
-	2425 4375 2525 4475
-Wire Wire Line
-	2525 4875 2850 4875
-Entry Wire Line
-	2425 4775 2525 4875
-Wire Wire Line
-	2525 5275 2850 5275
-Entry Wire Line
-	2425 5175 2525 5275
-Wire Wire Line
-	2525 5675 2850 5675
-Entry Wire Line
-	2425 5575 2525 5675
-Wire Wire Line
-	2525 6075 2850 6075
-Entry Wire Line
-	2425 5975 2525 6075
-Wire Wire Line
-	2525 6475 2850 6475
-Entry Wire Line
-	2425 6375 2525 6475
-Wire Wire Line
-	2525 6875 2850 6875
-Entry Wire Line
-	2425 6775 2525 6875
-Wire Wire Line
-	2525 7275 2850 7275
-Entry Wire Line
-	2425 7175 2525 7275
-Entry Wire Line
-	5575 3225 5475 3325
-Wire Wire Line
-	5475 3325 5050 3325
-Entry Wire Line
-	5575 2825 5475 2925
-Wire Wire Line
-	5475 2925 5050 2925
-Entry Wire Line
-	3900 1225 3800 1325
-Wire Wire Line
-	3800 1325 3375 1325
-Entry Wire Line
-	5575 1225 5475 1325
-Wire Wire Line
-	5475 1325 5050 1325
-Entry Wire Line
-	5575 1625 5475 1725
-Wire Wire Line
-	5475 1725 5050 1725
-Entry Wire Line
-	5575 2025 5475 2125
-Wire Wire Line
-	5475 2125 5050 2125
-Entry Wire Line
-	5575 2425 5475 2525
-Wire Wire Line
-	5475 2525 5050 2525
-Entry Wire Line
-	3900 1625 3800 1725
-Wire Wire Line
-	3800 1725 3375 1725
-Entry Wire Line
-	3900 2025 3800 2125
-Wire Wire Line
-	3800 2125 3375 2125
-Entry Wire Line
-	3900 2425 3800 2525
-Wire Wire Line
-	3800 2525 3375 2525
-Entry Wire Line
-	3900 2825 3800 2925
-Wire Wire Line
-	3800 2925 3375 2925
-Entry Wire Line
-	3900 3225 3800 3325
-Wire Wire Line
-	3800 3325 3375 3325
-Entry Wire Line
-	3900 3625 3800 3725
-Wire Wire Line
-	3800 3725 3375 3725
-Entry Wire Line
-	3900 4025 3800 4125
-Wire Wire Line
-	3800 4125 3375 4125
-Entry Wire Line
-	3900 4425 3800 4525
-Wire Wire Line
-	3800 4525 3375 4525
-Entry Wire Line
-	3900 4825 3800 4925
-Wire Wire Line
-	3800 4925 3375 4925
-Entry Wire Line
-	3900 5225 3800 5325
-Wire Wire Line
-	3800 5325 3375 5325
-Entry Wire Line
-	3900 5625 3800 5725
-Wire Wire Line
-	3800 5725 3375 5725
-Entry Wire Line
-	3900 6025 3800 6125
-Wire Wire Line
-	3800 6125 3375 6125
-Entry Wire Line
-	3900 6425 3800 6525
-Wire Wire Line
-	3800 6525 3375 6525
-Entry Wire Line
-	3900 6825 3800 6925
-Wire Wire Line
-	3800 6925 3375 6925
-Entry Wire Line
-	3900 7225 3800 7325
-Wire Wire Line
-	3800 7325 3375 7325
-$Sheet
-S 1150 1225 525  200 
-U 5DD9CEA5
-F0 "SYNC" 60
-F1 "bus-xcvr.sch" 60
-F2 "R" O R 1675 1325 60 
-F3 "T" I L 1150 1275 60 
-F4 "B" B L 1150 1375 60 
-$EndSheet
-$Sheet
-S 1150 1625 525  200 
-U 5DD9CEAA
-F0 "DIN" 60
-F1 "bus-xcvr.sch" 60
-F2 "R" O R 1675 1725 60 
-F3 "T" I L 1150 1675 60 
-F4 "B" B L 1150 1775 60 
-$EndSheet
-$Sheet
-S 1150 2025 525  200 
-U 5DD9CEAF
-F0 "DOUT" 60
-F1 "bus-xcvr.sch" 60
-F2 "R" O R 1675 2125 60 
-F3 "T" I L 1150 2075 60 
-F4 "B" B L 1150 2175 60 
-$EndSheet
-$Sheet
-S 1150 2425 525  200 
-U 5DD9CEB4
-F0 "RPLY" 60
-F1 "bus-xcvr.sch" 60
-F2 "R" O R 1675 2525 60 
-F3 "T" I L 1150 2475 60 
-F4 "B" B L 1150 2575 60 
-$EndSheet
-$Sheet
-S 1150 2825 525  200 
-U 5DD9CEB9
-F0 "REF" 60
-F1 "bus-xcvr.sch" 60
-F2 "R" O R 1675 2925 60 
-F3 "T" I L 1150 2875 60 
-F4 "B" B L 1150 2975 60 
-$EndSheet
-$Sheet
-S 1150 3225 525  200 
-U 5DD9CEBE
-F0 "IRQ4" 60
-F1 "bus-xcvr.sch" 60
-F2 "R" O R 1675 3325 60 
-F3 "T" I L 1150 3275 60 
-F4 "B" B L 1150 3375 60 
-$EndSheet
-$Sheet
-S 1150 3625 525  200 
-U 5DD9CEC3
-F0 "IRQ5" 60
-F1 "bus-xcvr.sch" 60
-F2 "R" O R 1675 3725 60 
-F3 "T" I L 1150 3675 60 
-F4 "B" B L 1150 3775 60 
-$EndSheet
-$Sheet
-S 1150 4025 525  200 
-U 5DD9CEC8
-F0 "IRQ6" 60
-F1 "bus-xcvr.sch" 60
-F2 "R" O R 1675 4125 60 
-F3 "T" I L 1150 4075 60 
-F4 "B" B L 1150 4175 60 
-$EndSheet
-$Sheet
-S 1150 4425 525  200 
-U 5DD9CECD
-F0 "IRQ7" 60
-F1 "bus-xcvr.sch" 60
-F2 "R" O R 1675 4525 60 
-F3 "T" I L 1150 4475 60 
-F4 "B" B L 1150 4575 60 
-$EndSheet
-$Sheet
-S 1150 4825 525  200 
-U 5DD9CED2
-F0 "DMR" 60
-F1 "bus-xcvr.sch" 60
-F2 "R" O R 1675 4925 60 
-F3 "T" I L 1150 4875 60 
-F4 "B" B L 1150 4975 60 
-$EndSheet
-$Sheet
-S 1150 5225 525  200 
-U 5DD9CED7
-F0 "SACK" 60
-F1 "bus-xcvr.sch" 60
-F2 "R" O R 1675 5325 60 
-F3 "T" I L 1150 5275 60 
-F4 "B" B L 1150 5375 60 
-$EndSheet
-$Sheet
-S 8950 3125 525  200 
-U 5DEE7FA3
-F0 "IAKI" 60
-F1 "bus-rcvr.sch" 60
-F2 "B" B L 8950 3200 60 
-F3 "R" O R 9475 3200 60 
-$EndSheet
-$Sheet
-S 6750 3125 525  200 
-U 5DF09657
-F0 "IAKO" 60
-F1 "bus-xmtr.sch" 60
-F2 "B" B R 7275 3200 60 
-F3 "T" I L 6750 3200 60 
-$EndSheet
-$Sheet
-S 8950 3775 525  200 
-U 5DF0AFFB
-F0 "DMGI" 60
-F1 "bus-rcvr.sch" 60
-F2 "B" B L 8950 3850 60 
-F3 "R" O R 9475 3850 60 
-$EndSheet
-$Sheet
-S 1150 6425 525  200 
-U 5DF25FB7
-F0 "DCOK" 60
-F1 "bus-rcvr.sch" 60
-F2 "B" B L 1150 6500 60 
-F3 "R" O R 1675 6500 60 
-$EndSheet
-$Sheet
-S 1150 6825 525  200 
-U 5DF27759
-F0 "POK" 60
-F1 "bus-rcvr.sch" 60
-F2 "B" B L 1150 6900 60 
-F3 "R" O R 1675 6900 60 
-$EndSheet
-$Sheet
-S 4625 7100 600  375 
-U 5DFF8FC5
-F0 "Bus Driver Power" 60
-F1 "bus-driver-pwr.sch" 60
-F2 "5V0" I L 4625 7175 60 
-F3 "3V3" I L 4625 7275 60 
-$EndSheet
-Text Label 8025 2850 0    60   ~ 0
+	9600 2050 9500 2150
+Text Label 14500 5350 2    60   ~ 0
 5V0
 $Comp
 L power:GND #PWR?
 U 1 1 5886142E
-P 8025 3550
+P 14500 6050
 AR Path="/5D8BBF40/5886142E" Ref="#PWR?"  Part="1" 
 AR Path="/5DCB8CA6/5DCBEAC7/5886142E" Ref="#PWR0602"  Part="1" 
-F 0 "#PWR0602" H 8025 3300 50  0001 C CNN
-F 1 "GND" H 8025 3400 50  0001 C CNN
-F 2 "" H 8025 3550 60  0000 C CNN
-F 3 "" H 8025 3550 60  0000 C CNN
-	1    8025 3550
-	1    0    0    -1  
+F 0 "#PWR0602" H 14500 5800 50  0001 C CNN
+F 1 "GND" H 14500 5900 50  0001 C CNN
+F 2 "" H 14500 6050 60  0000 C CNN
+F 3 "" H 14500 6050 60  0000 C CNN
+	1    14500 6050
+	-1   0    0    -1  
 $EndComp
 $Comp
 L Device:R R?
 U 1 1 58859D11
-P 8025 3000
+P 14500 5500
 AR Path="/5D8BBF40/58859D11" Ref="R?"  Part="1" 
 AR Path="/5DCB8CA6/5DCBEAC7/58859D11" Ref="R601"  Part="1" 
-F 0 "R601" V 8105 3000 50  0000 C CNN
-F 1 "330" V 8025 3000 50  0000 C CNN
-F 2 "Resistor_SMD:R_0603_1608Metric" V 7955 3000 30  0001 C CNN
-F 3 "" H 8025 3000 30  0000 C CNN
-F 4 "RC0603JR-07330RL" H 8025 3000 50  0001 C CNN "manf#"
-	1    8025 3000
-	1    0    0    -1  
+F 0 "R601" V 14580 5500 50  0000 C CNN
+F 1 "330" V 14500 5500 50  0000 C CNN
+F 2 "Resistor_SMD:R_0603_1608Metric" V 14430 5500 30  0001 C CNN
+F 3 "" H 14500 5500 30  0000 C CNN
+F 4 "RC0603JR-07330RL" H 14500 5500 50  0001 C CNN "manf#"
+	1    14500 5500
+	-1   0    0    -1  
 $EndComp
 $Comp
 L Device:R R?
 U 1 1 58859D09
-P 8025 3400
+P 14500 5900
 AR Path="/5D8BBF40/58859D09" Ref="R?"  Part="1" 
 AR Path="/5DCB8CA6/5DCBEAC7/58859D09" Ref="R605"  Part="1" 
-F 0 "R605" V 8105 3400 50  0000 C CNN
-F 1 "680" V 8025 3400 50  0000 C CNN
-F 2 "Resistor_SMD:R_0603_1608Metric" V 7955 3400 30  0001 C CNN
-F 3 "" H 8025 3400 30  0000 C CNN
-F 4 "RC0603JR-07680RL" H 8025 3400 50  0001 C CNN "manf#"
-	1    8025 3400
-	1    0    0    -1  
+F 0 "R605" V 14580 5900 50  0000 C CNN
+F 1 "680" V 14500 5900 50  0000 C CNN
+F 2 "Resistor_SMD:R_0603_1608Metric" V 14430 5900 30  0001 C CNN
+F 3 "" H 14500 5900 30  0000 C CNN
+F 4 "RC0603JR-07680RL" H 14500 5900 50  0001 C CNN "manf#"
+	1    14500 5900
+	-1   0    0    -1  
 $EndComp
 Wire Wire Line
-	7275 3200 7800 3200
+	14800 5700 14725 5700
 Wire Wire Line
-	7800 3150 7800 3200
-Connection ~ 7800 3200
+	14725 5650 14725 5700
+Connection ~ 14725 5700
 Wire Wire Line
-	8025 3150 8025 3200
+	14500 5650 14500 5700
 Wire Wire Line
-	8025 3200 8950 3200
-Connection ~ 8025 3200
+	14500 5700 14425 5700
+Connection ~ 14500 5700
 Wire Wire Line
-	8025 3200 8025 3250
+	14500 5700 14500 5750
 Wire Wire Line
-	7275 3850 8325 3850
+	15775 5700 15700 5700
 Wire Wire Line
-	8550 3850 8950 3850
-Text Notes 10200 5075 3    60   ~ 0
+	15475 5700 15400 5700
+Text Notes 16275 7500 3    60   ~ 0
 Optional Bus Termination
 Wire Notes Line
-	6000 4425 10375 4425
+	12075 6850 16450 6850
 Wire Notes Line
-	10375 4425 10375 6750
+	16450 6850 16450 9175
 Wire Notes Line
-	10375 6750 6000 6750
+	16450 9175 12075 9175
 Wire Notes Line
-	6000 6750 6000 4425
+	12075 9175 12075 6850
 Wire Wire Line
-	8400 2450 8400 2525
+	10000 10200 10000 10275
 $Comp
 L power:GND #PWR?
 U 1 1 5E08C826
-P 8400 2525
+P 10000 10275
 AR Path="/5D8BBF40/5E08C826" Ref="#PWR?"  Part="1" 
 AR Path="/5DCB8CA6/5DCBEAC7/5E08C826" Ref="#PWR0601"  Part="1" 
-F 0 "#PWR0601" H 8400 2275 50  0001 C CNN
-F 1 "GND" H 8400 2375 50  0001 C CNN
-F 2 "" H 8400 2525 60  0000 C CNN
-F 3 "" H 8400 2525 60  0000 C CNN
-	1    8400 2525
+F 0 "#PWR0601" H 10000 10025 50  0001 C CNN
+F 1 "GND" H 10000 10125 50  0001 C CNN
+F 2 "" H 10000 10275 60  0000 C CNN
+F 3 "" H 10000 10275 60  0000 C CNN
+	1    10000 10275
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	8400 2450 8775 2450
+	10000 10200 10375 10200
 $Comp
 L power:PWR_FLAG #FLG?
 U 1 1 608B0B22
-P 8400 2450
+P 10000 10200
 AR Path="/5D8BBF40/608B0B22" Ref="#FLG?"  Part="1" 
 AR Path="/5DCB8CA6/5DCBEAC7/608B0B22" Ref="#FLG0101"  Part="1" 
-F 0 "#FLG0101" H 8400 2525 50  0001 C CNN
-F 1 "PWR_FLAG" H 8400 2623 50  0000 C CNN
-F 2 "" H 8400 2450 50  0001 C CNN
-F 3 "~" H 8400 2450 50  0001 C CNN
-	1    8400 2450
+F 0 "#FLG0101" H 10000 10275 50  0001 C CNN
+F 1 "PWR_FLAG" H 10000 10373 50  0000 C CNN
+F 2 "" H 10000 10200 50  0001 C CNN
+F 3 "~" H 10000 10200 50  0001 C CNN
+	1    10000 10200
 	1    0    0    -1  
 $EndComp
-Connection ~ 8400 2450
-$Sheet
-S 1150 7225 525  200 
-U 5DC0CBC9
-F0 "EVNT" 60
-F1 "bus-rcvr.sch" 60
-F2 "B" B L 1150 7300 60 
-F3 "R" O R 1675 7300 60 
-$EndSheet
-Text Label 1150 7300 2    60   ~ 0
-BEVNT
-Text HLabel 1675 7300 2    60   Output ~ 0
-REVNT
+Connection ~ 10000 10200
 $Comp
 L Device:R_Network_Dividers_x10_SIP RN606
 U 1 1 5D928377
-P 6700 5600
-F 0 "RN606" V 7825 5600 50  0000 C CNN
-F 1 "330/680" V 7734 5600 50  0000 C CNN
-F 2 "Resistor_THT:R_Array_SIP12" V 7775 5600 50  0001 C CNN
-F 3 "http://www.vishay.com/docs/31509/csc.pdf" H 6700 5600 50  0001 C CNN
-F 4 "CSC12A05221BGEK" H 6700 5600 50  0001 C CNN "manf#"
-	1    6700 5600
+P 12775 8025
+F 0 "RN606" V 13900 8025 50  0000 C CNN
+F 1 "330/680" V 13809 8025 50  0000 C CNN
+F 2 "Resistor_THT:R_Array_SIP12" V 13850 8025 50  0001 C CNN
+F 3 "http://www.vishay.com/docs/31509/csc.pdf" H 12775 8025 50  0001 C CNN
+F 4 "CSC12A05221BGEK" H 12775 8025 50  0001 C CNN "manf#"
+	1    12775 8025
 	0    1    -1   0   
 $EndComp
 $Comp
 L Device:R_Network_Dividers_x10_SIP RN607
 U 1 1 5D9311B6
-P 7725 5600
-F 0 "RN607" V 8850 5600 50  0000 C CNN
-F 1 "330/680" V 8759 5600 50  0000 C CNN
-F 2 "Resistor_THT:R_Array_SIP12" V 8800 5600 50  0001 C CNN
-F 3 "http://www.vishay.com/docs/31509/csc.pdf" H 7725 5600 50  0001 C CNN
-F 4 "CSC12A05221BGEK" H 7725 5600 50  0001 C CNN "manf#"
-	1    7725 5600
+P 13800 8025
+F 0 "RN607" V 14925 8025 50  0000 C CNN
+F 1 "330/680" V 14834 8025 50  0000 C CNN
+F 2 "Resistor_THT:R_Array_SIP12" V 14875 8025 50  0001 C CNN
+F 3 "http://www.vishay.com/docs/31509/csc.pdf" H 13800 8025 50  0001 C CNN
+F 4 "CSC12A05221BGEK" H 13800 8025 50  0001 C CNN "manf#"
+	1    13800 8025
 	0    1    -1   0   
 $EndComp
 $Comp
 L Device:R_Network_Dividers_x10_SIP RN608
 U 1 1 5D933550
-P 8750 5600
-F 0 "RN608" V 9875 5600 50  0000 C CNN
-F 1 "330/680" V 9784 5600 50  0000 C CNN
-F 2 "Resistor_THT:R_Array_SIP12" V 9825 5600 50  0001 C CNN
-F 3 "http://www.vishay.com/docs/31509/csc.pdf" H 8750 5600 50  0001 C CNN
-F 4 "CSC12A05221BGEK" H 8750 5600 50  0001 C CNN "manf#"
-	1    8750 5600
+P 14825 8025
+F 0 "RN608" V 15950 8025 50  0000 C CNN
+F 1 "330/680" V 15859 8025 50  0000 C CNN
+F 2 "Resistor_THT:R_Array_SIP12" V 15900 8025 50  0001 C CNN
+F 3 "http://www.vishay.com/docs/31509/csc.pdf" H 14825 8025 50  0001 C CNN
+F 4 "CSC12A05221BGEK" H 14825 8025 50  0001 C CNN "manf#"
+	1    14825 8025
 	0    1    -1   0   
 $EndComp
 $Comp
 L Device:R_Network_Dividers_x10_SIP RN609
 U 1 1 5D934BE9
-P 9775 5600
-F 0 "RN609" V 10900 5600 50  0000 C CNN
-F 1 "330/680" V 10809 5600 50  0000 C CNN
-F 2 "Resistor_THT:R_Array_SIP12" V 10850 5600 50  0001 C CNN
-F 3 "http://www.vishay.com/docs/31509/csc.pdf" H 9775 5600 50  0001 C CNN
-F 4 "CSC12A05221BGEK" H 9775 5600 50  0001 C CNN "manf#"
-	1    9775 5600
+P 15850 8025
+F 0 "RN609" V 16975 8025 50  0000 C CNN
+F 1 "330/680" V 16884 8025 50  0000 C CNN
+F 2 "Resistor_THT:R_Array_SIP12" V 16925 8025 50  0001 C CNN
+F 3 "http://www.vishay.com/docs/31509/csc.pdf" H 15850 8025 50  0001 C CNN
+F 4 "CSC12A05221BGEK" H 15850 8025 50  0001 C CNN "manf#"
+	1    15850 8025
 	0    1    -1   0   
 $EndComp
-$Sheet
-S 1150 5625 525  200 
-U 5DB938AA
-F0 "INIT" 60
-F1 "bus-xcvr.sch" 60
-F2 "R" O R 1675 5725 60 
-F3 "T" I L 1150 5675 60 
-F4 "B" B L 1150 5775 60 
-$EndSheet
-Text HLabel 1150 5675 0    60   Input ~ 0
-TINIT
 $Comp
 L power:GND #PWR?
 U 1 1 5DE2BD5C
-P 10075 6600
+P 16150 9025
 AR Path="/5D8BBF40/5DE2BD5C" Ref="#PWR?"  Part="1" 
 AR Path="/5DCB8CA6/5DCBEAC7/5DE2BD5C" Ref="#PWR0116"  Part="1" 
-F 0 "#PWR0116" H 10075 6350 50  0001 C CNN
-F 1 "GND" H 10075 6450 50  0001 C CNN
-F 2 "" H 10075 6600 60  0000 C CNN
-F 3 "" H 10075 6600 60  0000 C CNN
-	1    10075 6600
+F 0 "#PWR0116" H 16150 8775 50  0001 C CNN
+F 1 "GND" H 16150 8875 50  0001 C CNN
+F 2 "" H 16150 9025 60  0000 C CNN
+F 3 "" H 16150 9025 60  0000 C CNN
+	1    16150 9025
 	1    0    0    -1  
 $EndComp
+$Comp
+L myLib:74LVC8T245-small U626
+U 1 1 5D9A2225
+P 6275 900
+F 0 "U626" H 6675 1150 60  0000 C CNN
+F 1 "74LVC8T245-small" H 6100 1150 60  0000 C CNN
+F 2 "Package_SO:SSOP-24_5.3x8.2mm_P0.65mm" H 6725 2800 60  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/sn74lvc8t245.pdf" H 6275 1181 60  0001 C CNN
+F 4 "SN74LVC8T245PWR" H 6275 900 50  0001 C CNN "manf#"
+	1    6275 900 
+	1    0    0    -1  
+$EndComp
+$Comp
+L myLib:74LVC8T245-small U625
+U 3 1 5D9C41D2
+P 8575 900
+F 0 "U625" H 8200 1150 60  0000 C CNN
+F 1 "74LVC8T245-small" H 8750 1150 60  0000 C CNN
+F 2 "Package_SO:SSOP-24_5.3x8.2mm_P0.65mm" H 9025 2800 60  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/sn74lvc8t245.pdf" H 8575 1181 60  0001 C CNN
+F 4 "SN74LVC8T245PWR" H 8575 900 50  0001 C CNN "manf#"
+	3    8575 900 
+	-1   0    0    -1  
+$EndComp
+$Comp
+L myLib:DS8641-small U605
+U 1 1 5D9C89CE
+P 7475 900
+F 0 "U605" H 7725 1150 60  0000 C CNN
+F 1 "DS8641-small" H 7250 1150 60  0000 C CNN
+F 2 "Package_DIP:DIP-16_W7.62mm" H 6950 1275 60  0001 C CNN
+F 3 "http://pccomponents.com/datasheets/NATI-ds8641.pdf" H 6950 1275 60  0001 C CNN
+F 4 "DS8641" H 7475 900 50  0001 C CNN "manf#"
+	1    7475 900 
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	5775 1000 6775 1000
+$Comp
+L myLib:74LVC8T245-small U626
+U 3 1 5E471391
+P 6275 1350
+F 0 "U626" H 6675 1600 60  0000 C CNN
+F 1 "74LVC8T245-small" H 6100 1600 60  0000 C CNN
+F 2 "Package_SO:SSOP-24_5.3x8.2mm_P0.65mm" H 6725 3250 60  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/sn74lvc8t245.pdf" H 6275 1631 60  0001 C CNN
+F 4 "SN74LVC8T245PWR" H 6275 1350 50  0001 C CNN "manf#"
+	3    6275 1350
+	1    0    0    -1  
+$EndComp
+$Comp
+L myLib:74LVC8T245-small U625
+U 8 1 5E471397
+P 8575 1350
+F 0 "U625" H 8200 1600 60  0000 C CNN
+F 1 "74LVC8T245-small" H 8750 1600 60  0000 C CNN
+F 2 "Package_SO:SSOP-24_5.3x8.2mm_P0.65mm" H 9025 3250 60  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/sn74lvc8t245.pdf" H 8575 1631 60  0001 C CNN
+F 4 "SN74LVC8T245PWR" H 8575 1350 50  0001 C CNN "manf#"
+	8    8575 1350
+	-1   0    0    -1  
+$EndComp
+$Comp
+L myLib:DS8641-small U606
+U 3 1 5E47139D
+P 7475 1350
+F 0 "U606" H 7725 1600 60  0000 C CNN
+F 1 "DS8641-small" H 7250 1600 60  0000 C CNN
+F 2 "Package_DIP:DIP-16_W7.62mm" H 6950 1725 60  0001 C CNN
+F 3 "http://pccomponents.com/datasheets/NATI-ds8641.pdf" H 6950 1725 60  0001 C CNN
+F 4 "DS8641" H 7475 1350 50  0001 C CNN "manf#"
+	3    7475 1350
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	5775 1450 6775 1450
+$Comp
+L myLib:74LVC8T245-small U626
+U 5 1 5E479FF2
+P 6275 1800
+F 0 "U626" H 6675 2050 60  0000 C CNN
+F 1 "74LVC8T245-small" H 6100 2050 60  0000 C CNN
+F 2 "Package_SO:SSOP-24_5.3x8.2mm_P0.65mm" H 6725 3700 60  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/sn74lvc8t245.pdf" H 6275 2081 60  0001 C CNN
+F 4 "SN74LVC8T245PWR" H 6275 1800 50  0001 C CNN "manf#"
+	5    6275 1800
+	1    0    0    -1  
+$EndComp
+$Comp
+L myLib:74LVC8T245-small U627
+U 5 1 5E479FF8
+P 8575 1800
+F 0 "U627" H 8200 2050 60  0000 C CNN
+F 1 "74LVC8T245-small" H 8750 2050 60  0000 C CNN
+F 2 "Package_SO:SSOP-24_5.3x8.2mm_P0.65mm" H 9025 3700 60  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/sn74lvc8t245.pdf" H 8575 2081 60  0001 C CNN
+F 4 "SN74LVC8T245PWR" H 8575 1800 50  0001 C CNN "manf#"
+	5    8575 1800
+	-1   0    0    -1  
+$EndComp
+$Comp
+L myLib:DS8641-small U607
+U 4 1 5E479FFE
+P 7475 1800
+F 0 "U607" H 7725 2050 60  0000 C CNN
+F 1 "DS8641-small" H 7250 2050 60  0000 C CNN
+F 2 "Package_DIP:DIP-16_W7.62mm" H 6950 2175 60  0001 C CNN
+F 3 "http://pccomponents.com/datasheets/NATI-ds8641.pdf" H 6950 2175 60  0001 C CNN
+F 4 "DS8641" H 7475 1800 50  0001 C CNN "manf#"
+	4    7475 1800
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	5775 1900 6775 1900
+$Comp
+L myLib:74LVC8T245-small U626
+U 7 1 5E483F53
+P 6275 2250
+F 0 "U626" H 6675 2500 60  0000 C CNN
+F 1 "74LVC8T245-small" H 6100 2500 60  0000 C CNN
+F 2 "Package_SO:SSOP-24_5.3x8.2mm_P0.65mm" H 6725 4150 60  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/sn74lvc8t245.pdf" H 6275 2531 60  0001 C CNN
+F 4 "SN74LVC8T245PWR" H 6275 2250 50  0001 C CNN "manf#"
+	7    6275 2250
+	1    0    0    -1  
+$EndComp
+$Comp
+L myLib:74LVC8T245-small U627
+U 7 1 5E483F59
+P 8575 2250
+F 0 "U627" H 8200 2500 60  0000 C CNN
+F 1 "74LVC8T245-small" H 8750 2500 60  0000 C CNN
+F 2 "Package_SO:SSOP-24_5.3x8.2mm_P0.65mm" H 9025 4150 60  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/sn74lvc8t245.pdf" H 8575 2531 60  0001 C CNN
+F 4 "SN74LVC8T245PWR" H 8575 2250 50  0001 C CNN "manf#"
+	7    8575 2250
+	-1   0    0    -1  
+$EndComp
+$Comp
+L myLib:DS8641-small U607
+U 1 1 5E483F5F
+P 7475 2250
+F 0 "U607" H 7725 2500 60  0000 C CNN
+F 1 "DS8641-small" H 7250 2500 60  0000 C CNN
+F 2 "Package_DIP:DIP-16_W7.62mm" H 6950 2625 60  0001 C CNN
+F 3 "http://pccomponents.com/datasheets/NATI-ds8641.pdf" H 6950 2625 60  0001 C CNN
+F 4 "DS8641" H 7475 2250 50  0001 C CNN "manf#"
+	1    7475 2250
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	5775 2350 6775 2350
+$Comp
+L myLib:74LVC8T245-small U629
+U 1 1 5E4DA37A
+P 6275 2700
+F 0 "U629" H 6675 2950 60  0000 C CNN
+F 1 "74LVC8T245-small" H 6100 2950 60  0000 C CNN
+F 2 "Package_SO:SSOP-24_5.3x8.2mm_P0.65mm" H 6725 4600 60  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/sn74lvc8t245.pdf" H 6275 2981 60  0001 C CNN
+F 4 "SN74LVC8T245PWR" H 6275 2700 50  0001 C CNN "manf#"
+	1    6275 2700
+	1    0    0    -1  
+$EndComp
+$Comp
+L myLib:74LVC8T245-small U628
+U 1 1 5E4DA380
+P 8575 2700
+F 0 "U628" H 8200 2950 60  0000 C CNN
+F 1 "74LVC8T245-small" H 8750 2950 60  0000 C CNN
+F 2 "Package_SO:SSOP-24_5.3x8.2mm_P0.65mm" H 9025 4600 60  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/sn74lvc8t245.pdf" H 8575 2981 60  0001 C CNN
+F 4 "SN74LVC8T245PWR" H 8575 2700 50  0001 C CNN "manf#"
+	1    8575 2700
+	-1   0    0    -1  
+$EndComp
+$Comp
+L myLib:DS8641-small U608
+U 4 1 5E4DA386
+P 7475 2700
+F 0 "U608" H 7725 2950 60  0000 C CNN
+F 1 "DS8641-small" H 7250 2950 60  0000 C CNN
+F 2 "Package_DIP:DIP-16_W7.62mm" H 6950 3075 60  0001 C CNN
+F 3 "http://pccomponents.com/datasheets/NATI-ds8641.pdf" H 6950 3075 60  0001 C CNN
+F 4 "DS8641" H 7475 2700 50  0001 C CNN "manf#"
+	4    7475 2700
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	5775 2800 6775 2800
+$Comp
+L myLib:74LVC8T245-small U629
+U 4 1 5E4DA38D
+P 6275 3150
+F 0 "U629" H 6675 3400 60  0000 C CNN
+F 1 "74LVC8T245-small" H 6100 3400 60  0000 C CNN
+F 2 "Package_SO:SSOP-24_5.3x8.2mm_P0.65mm" H 6725 5050 60  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/sn74lvc8t245.pdf" H 6275 3431 60  0001 C CNN
+F 4 "SN74LVC8T245PWR" H 6275 3150 50  0001 C CNN "manf#"
+	4    6275 3150
+	1    0    0    -1  
+$EndComp
+$Comp
+L myLib:74LVC8T245-small U628
+U 4 1 5E4DA393
+P 8575 3150
+F 0 "U628" H 8200 3400 60  0000 C CNN
+F 1 "74LVC8T245-small" H 8750 3400 60  0000 C CNN
+F 2 "Package_SO:SSOP-24_5.3x8.2mm_P0.65mm" H 9025 5050 60  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/sn74lvc8t245.pdf" H 8575 3431 60  0001 C CNN
+F 4 "SN74LVC8T245PWR" H 8575 3150 50  0001 C CNN "manf#"
+	4    8575 3150
+	-1   0    0    -1  
+$EndComp
+$Comp
+L myLib:DS8641-small U608
+U 2 1 5E4DA399
+P 7475 3150
+F 0 "U608" H 7725 3400 60  0000 C CNN
+F 1 "DS8641-small" H 7250 3400 60  0000 C CNN
+F 2 "Package_DIP:DIP-16_W7.62mm" H 6950 3525 60  0001 C CNN
+F 3 "http://pccomponents.com/datasheets/NATI-ds8641.pdf" H 6950 3525 60  0001 C CNN
+F 4 "DS8641" H 7475 3150 50  0001 C CNN "manf#"
+	2    7475 3150
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	5775 3250 6775 3250
+$Comp
+L myLib:74LVC8T245-small U629
+U 3 1 5E4DA3A0
+P 6275 3600
+F 0 "U629" H 6675 3850 60  0000 C CNN
+F 1 "74LVC8T245-small" H 6100 3850 60  0000 C CNN
+F 2 "Package_SO:SSOP-24_5.3x8.2mm_P0.65mm" H 6725 5500 60  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/sn74lvc8t245.pdf" H 6275 3881 60  0001 C CNN
+F 4 "SN74LVC8T245PWR" H 6275 3600 50  0001 C CNN "manf#"
+	3    6275 3600
+	1    0    0    -1  
+$EndComp
+$Comp
+L myLib:74LVC8T245-small U628
+U 3 1 5E4DA3A6
+P 8575 3600
+F 0 "U628" H 8200 3850 60  0000 C CNN
+F 1 "74LVC8T245-small" H 8750 3850 60  0000 C CNN
+F 2 "Package_SO:SSOP-24_5.3x8.2mm_P0.65mm" H 9025 5500 60  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/sn74lvc8t245.pdf" H 8575 3881 60  0001 C CNN
+F 4 "SN74LVC8T245PWR" H 8575 3600 50  0001 C CNN "manf#"
+	3    8575 3600
+	-1   0    0    -1  
+$EndComp
+$Comp
+L myLib:DS8641-small U608
+U 1 1 5E4DA3AC
+P 7475 3600
+F 0 "U608" H 7725 3850 60  0000 C CNN
+F 1 "DS8641-small" H 7250 3850 60  0000 C CNN
+F 2 "Package_DIP:DIP-16_W7.62mm" H 6950 3975 60  0001 C CNN
+F 3 "http://pccomponents.com/datasheets/NATI-ds8641.pdf" H 6950 3975 60  0001 C CNN
+F 4 "DS8641" H 7475 3600 50  0001 C CNN "manf#"
+	1    7475 3600
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	5775 3700 6775 3700
+$Comp
+L myLib:74LVC8T245-small U629
+U 6 1 5E4DA3B3
+P 6275 4050
+F 0 "U629" H 6675 4300 60  0000 C CNN
+F 1 "74LVC8T245-small" H 6100 4300 60  0000 C CNN
+F 2 "Package_SO:SSOP-24_5.3x8.2mm_P0.65mm" H 6725 5950 60  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/sn74lvc8t245.pdf" H 6275 4331 60  0001 C CNN
+F 4 "SN74LVC8T245PWR" H 6275 4050 50  0001 C CNN "manf#"
+	6    6275 4050
+	1    0    0    -1  
+$EndComp
+$Comp
+L myLib:74LVC8T245-small U628
+U 6 1 5E4DA3B9
+P 8575 4050
+F 0 "U628" H 8200 4300 60  0000 C CNN
+F 1 "74LVC8T245-small" H 8750 4300 60  0000 C CNN
+F 2 "Package_SO:SSOP-24_5.3x8.2mm_P0.65mm" H 9025 5950 60  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/sn74lvc8t245.pdf" H 8575 4331 60  0001 C CNN
+F 4 "SN74LVC8T245PWR" H 8575 4050 50  0001 C CNN "manf#"
+	6    8575 4050
+	-1   0    0    -1  
+$EndComp
+$Comp
+L myLib:DS8641-small U609
+U 3 1 5E4DA3BF
+P 7475 4050
+F 0 "U609" H 7725 4300 60  0000 C CNN
+F 1 "DS8641-small" H 7250 4300 60  0000 C CNN
+F 2 "Package_DIP:DIP-16_W7.62mm" H 6950 4425 60  0001 C CNN
+F 3 "http://pccomponents.com/datasheets/NATI-ds8641.pdf" H 6950 4425 60  0001 C CNN
+F 4 "DS8641" H 7475 4050 50  0001 C CNN "manf#"
+	3    7475 4050
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	5775 4150 6775 4150
+$Comp
+L myLib:74LVC8T245-small U629
+U 5 1 5E5664C0
+P 6275 4500
+F 0 "U629" H 6675 4750 60  0000 C CNN
+F 1 "74LVC8T245-small" H 6100 4750 60  0000 C CNN
+F 2 "Package_SO:SSOP-24_5.3x8.2mm_P0.65mm" H 6725 6400 60  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/sn74lvc8t245.pdf" H 6275 4781 60  0001 C CNN
+F 4 "SN74LVC8T245PWR" H 6275 4500 50  0001 C CNN "manf#"
+	5    6275 4500
+	1    0    0    -1  
+$EndComp
+$Comp
+L myLib:74LVC8T245-small U628
+U 5 1 5E5664C6
+P 8575 4500
+F 0 "U628" H 8200 4750 60  0000 C CNN
+F 1 "74LVC8T245-small" H 8750 4750 60  0000 C CNN
+F 2 "Package_SO:SSOP-24_5.3x8.2mm_P0.65mm" H 9025 6400 60  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/sn74lvc8t245.pdf" H 8575 4781 60  0001 C CNN
+F 4 "SN74LVC8T245PWR" H 8575 4500 50  0001 C CNN "manf#"
+	5    8575 4500
+	-1   0    0    -1  
+$EndComp
+$Comp
+L myLib:DS8641-small U609
+U 4 1 5E5664CC
+P 7475 4500
+F 0 "U609" H 7725 4750 60  0000 C CNN
+F 1 "DS8641-small" H 7250 4750 60  0000 C CNN
+F 2 "Package_DIP:DIP-16_W7.62mm" H 6950 4875 60  0001 C CNN
+F 3 "http://pccomponents.com/datasheets/NATI-ds8641.pdf" H 6950 4875 60  0001 C CNN
+F 4 "DS8641" H 7475 4500 50  0001 C CNN "manf#"
+	4    7475 4500
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	5775 4600 6775 4600
+$Comp
+L myLib:74LVC8T245-small U629
+U 8 1 5E5664D3
+P 6275 4950
+F 0 "U629" H 6675 5200 60  0000 C CNN
+F 1 "74LVC8T245-small" H 6100 5200 60  0000 C CNN
+F 2 "Package_SO:SSOP-24_5.3x8.2mm_P0.65mm" H 6725 6850 60  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/sn74lvc8t245.pdf" H 6275 5231 60  0001 C CNN
+F 4 "SN74LVC8T245PWR" H 6275 4950 50  0001 C CNN "manf#"
+	8    6275 4950
+	1    0    0    -1  
+$EndComp
+$Comp
+L myLib:74LVC8T245-small U628
+U 8 1 5E5664D9
+P 8575 4950
+F 0 "U628" H 8200 5200 60  0000 C CNN
+F 1 "74LVC8T245-small" H 8750 5200 60  0000 C CNN
+F 2 "Package_SO:SSOP-24_5.3x8.2mm_P0.65mm" H 9025 6850 60  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/sn74lvc8t245.pdf" H 8575 5231 60  0001 C CNN
+F 4 "SN74LVC8T245PWR" H 8575 4950 50  0001 C CNN "manf#"
+	8    8575 4950
+	-1   0    0    -1  
+$EndComp
+$Comp
+L myLib:DS8641-small U609
+U 2 1 5E5664DF
+P 7475 4950
+F 0 "U609" H 7725 5200 60  0000 C CNN
+F 1 "DS8641-small" H 7250 5200 60  0000 C CNN
+F 2 "Package_DIP:DIP-16_W7.62mm" H 6950 5325 60  0001 C CNN
+F 3 "http://pccomponents.com/datasheets/NATI-ds8641.pdf" H 6950 5325 60  0001 C CNN
+F 4 "DS8641" H 7475 4950 50  0001 C CNN "manf#"
+	2    7475 4950
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	5775 5050 6775 5050
+$Comp
+L myLib:74LVC8T245-small U631
+U 1 1 5E5664E6
+P 6275 5400
+F 0 "U631" H 6675 5650 60  0000 C CNN
+F 1 "74LVC8T245-small" H 6100 5650 60  0000 C CNN
+F 2 "Package_SO:SSOP-24_5.3x8.2mm_P0.65mm" H 6725 7300 60  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/sn74lvc8t245.pdf" H 6275 5681 60  0001 C CNN
+F 4 "SN74LVC8T245PWR" H 6275 5400 50  0001 C CNN "manf#"
+	1    6275 5400
+	1    0    0    -1  
+$EndComp
+$Comp
+L myLib:74LVC8T245-small U630
+U 1 1 5E5664EC
+P 8575 5400
+F 0 "U630" H 8200 5650 60  0000 C CNN
+F 1 "74LVC8T245-small" H 8750 5650 60  0000 C CNN
+F 2 "Package_SO:SSOP-24_5.3x8.2mm_P0.65mm" H 9025 7300 60  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/sn74lvc8t245.pdf" H 8575 5681 60  0001 C CNN
+F 4 "SN74LVC8T245PWR" H 8575 5400 50  0001 C CNN "manf#"
+	1    8575 5400
+	-1   0    0    -1  
+$EndComp
+$Comp
+L myLib:DS8641-small U610
+U 4 1 5E5664F2
+P 7475 5400
+F 0 "U610" H 7725 5650 60  0000 C CNN
+F 1 "DS8641-small" H 7250 5650 60  0000 C CNN
+F 2 "Package_DIP:DIP-16_W7.62mm" H 6950 5775 60  0001 C CNN
+F 3 "http://pccomponents.com/datasheets/NATI-ds8641.pdf" H 6950 5775 60  0001 C CNN
+F 4 "DS8641" H 7475 5400 50  0001 C CNN "manf#"
+	4    7475 5400
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	5775 5500 6775 5500
+$Comp
+L myLib:74LVC8T245-small U631
+U 3 1 5E5664F9
+P 6275 5850
+F 0 "U631" H 6675 6100 60  0000 C CNN
+F 1 "74LVC8T245-small" H 6100 6100 60  0000 C CNN
+F 2 "Package_SO:SSOP-24_5.3x8.2mm_P0.65mm" H 6725 7750 60  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/sn74lvc8t245.pdf" H 6275 6131 60  0001 C CNN
+F 4 "SN74LVC8T245PWR" H 6275 5850 50  0001 C CNN "manf#"
+	3    6275 5850
+	1    0    0    -1  
+$EndComp
+$Comp
+L myLib:74LVC8T245-small U630
+U 3 1 5E5664FF
+P 8575 5850
+F 0 "U630" H 8200 6100 60  0000 C CNN
+F 1 "74LVC8T245-small" H 8750 6100 60  0000 C CNN
+F 2 "Package_SO:SSOP-24_5.3x8.2mm_P0.65mm" H 9025 7750 60  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/sn74lvc8t245.pdf" H 8575 6131 60  0001 C CNN
+F 4 "SN74LVC8T245PWR" H 8575 5850 50  0001 C CNN "manf#"
+	3    8575 5850
+	-1   0    0    -1  
+$EndComp
+$Comp
+L myLib:DS8641-small U610
+U 1 1 5E566505
+P 7475 5850
+F 0 "U610" H 7725 6100 60  0000 C CNN
+F 1 "DS8641-small" H 7250 6100 60  0000 C CNN
+F 2 "Package_DIP:DIP-16_W7.62mm" H 6950 6225 60  0001 C CNN
+F 3 "http://pccomponents.com/datasheets/NATI-ds8641.pdf" H 6950 6225 60  0001 C CNN
+F 4 "DS8641" H 7475 5850 50  0001 C CNN "manf#"
+	1    7475 5850
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	5775 5950 6775 5950
+$Comp
+L myLib:74LVC8T245-small U631
+U 6 1 5E56650C
+P 6275 6300
+F 0 "U631" H 6675 6550 60  0000 C CNN
+F 1 "74LVC8T245-small" H 6100 6550 60  0000 C CNN
+F 2 "Package_SO:SSOP-24_5.3x8.2mm_P0.65mm" H 6725 8200 60  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/sn74lvc8t245.pdf" H 6275 6581 60  0001 C CNN
+F 4 "SN74LVC8T245PWR" H 6275 6300 50  0001 C CNN "manf#"
+	6    6275 6300
+	1    0    0    -1  
+$EndComp
+$Comp
+L myLib:74LVC8T245-small U630
+U 6 1 5E566512
+P 8575 6300
+F 0 "U630" H 8200 6550 60  0000 C CNN
+F 1 "74LVC8T245-small" H 8750 6550 60  0000 C CNN
+F 2 "Package_SO:SSOP-24_5.3x8.2mm_P0.65mm" H 9025 8200 60  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/sn74lvc8t245.pdf" H 8575 6581 60  0001 C CNN
+F 4 "SN74LVC8T245PWR" H 8575 6300 50  0001 C CNN "manf#"
+	6    8575 6300
+	-1   0    0    -1  
+$EndComp
+$Comp
+L myLib:DS8641-small U611
+U 3 1 5E566518
+P 7475 6300
+F 0 "U611" H 7725 6550 60  0000 C CNN
+F 1 "DS8641-small" H 7250 6550 60  0000 C CNN
+F 2 "Package_DIP:DIP-16_W7.62mm" H 6950 6675 60  0001 C CNN
+F 3 "http://pccomponents.com/datasheets/NATI-ds8641.pdf" H 6950 6675 60  0001 C CNN
+F 4 "DS8641" H 7475 6300 50  0001 C CNN "manf#"
+	3    7475 6300
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	5775 6400 6775 6400
+$Comp
+L myLib:74LVC8T245-small U631
+U 5 1 5E56651F
+P 6275 6750
+F 0 "U631" H 6675 7000 60  0000 C CNN
+F 1 "74LVC8T245-small" H 6100 7000 60  0000 C CNN
+F 2 "Package_SO:SSOP-24_5.3x8.2mm_P0.65mm" H 6725 8650 60  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/sn74lvc8t245.pdf" H 6275 7031 60  0001 C CNN
+F 4 "SN74LVC8T245PWR" H 6275 6750 50  0001 C CNN "manf#"
+	5    6275 6750
+	1    0    0    -1  
+$EndComp
+$Comp
+L myLib:74LVC8T245-small U630
+U 5 1 5E566525
+P 8575 6750
+F 0 "U630" H 8200 7000 60  0000 C CNN
+F 1 "74LVC8T245-small" H 8750 7000 60  0000 C CNN
+F 2 "Package_SO:SSOP-24_5.3x8.2mm_P0.65mm" H 9025 8650 60  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/sn74lvc8t245.pdf" H 8575 7031 60  0001 C CNN
+F 4 "SN74LVC8T245PWR" H 8575 6750 50  0001 C CNN "manf#"
+	5    8575 6750
+	-1   0    0    -1  
+$EndComp
+$Comp
+L myLib:DS8641-small U611
+U 4 1 5E56652B
+P 7475 6750
+F 0 "U611" H 7725 7000 60  0000 C CNN
+F 1 "DS8641-small" H 7250 7000 60  0000 C CNN
+F 2 "Package_DIP:DIP-16_W7.62mm" H 6950 7125 60  0001 C CNN
+F 3 "http://pccomponents.com/datasheets/NATI-ds8641.pdf" H 6950 7125 60  0001 C CNN
+F 4 "DS8641" H 7475 6750 50  0001 C CNN "manf#"
+	4    7475 6750
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	5775 6850 6775 6850
+$Comp
+L myLib:74LVC8T245-small U631
+U 8 1 5E566532
+P 6275 7200
+F 0 "U631" H 6675 7450 60  0000 C CNN
+F 1 "74LVC8T245-small" H 6100 7450 60  0000 C CNN
+F 2 "Package_SO:SSOP-24_5.3x8.2mm_P0.65mm" H 6725 9100 60  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/sn74lvc8t245.pdf" H 6275 7481 60  0001 C CNN
+F 4 "SN74LVC8T245PWR" H 6275 7200 50  0001 C CNN "manf#"
+	8    6275 7200
+	1    0    0    -1  
+$EndComp
+$Comp
+L myLib:74LVC8T245-small U630
+U 8 1 5E566538
+P 8575 7200
+F 0 "U630" H 8200 7450 60  0000 C CNN
+F 1 "74LVC8T245-small" H 8750 7450 60  0000 C CNN
+F 2 "Package_SO:SSOP-24_5.3x8.2mm_P0.65mm" H 9025 9100 60  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/sn74lvc8t245.pdf" H 8575 7481 60  0001 C CNN
+F 4 "SN74LVC8T245PWR" H 8575 7200 50  0001 C CNN "manf#"
+	8    8575 7200
+	-1   0    0    -1  
+$EndComp
+$Comp
+L myLib:DS8641-small U611
+U 2 1 5E56653E
+P 7475 7200
+F 0 "U611" H 7725 7450 60  0000 C CNN
+F 1 "DS8641-small" H 7250 7450 60  0000 C CNN
+F 2 "Package_DIP:DIP-16_W7.62mm" H 6950 7575 60  0001 C CNN
+F 3 "http://pccomponents.com/datasheets/NATI-ds8641.pdf" H 6950 7575 60  0001 C CNN
+F 4 "DS8641" H 7475 7200 50  0001 C CNN "manf#"
+	2    7475 7200
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	5775 7300 6775 7300
+$Comp
+L myLib:74LVC8T245-small U631
+U 7 1 5E566545
+P 6275 7650
+F 0 "U631" H 6675 7900 60  0000 C CNN
+F 1 "74LVC8T245-small" H 6100 7900 60  0000 C CNN
+F 2 "Package_SO:SSOP-24_5.3x8.2mm_P0.65mm" H 6725 9550 60  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/sn74lvc8t245.pdf" H 6275 7931 60  0001 C CNN
+F 4 "SN74LVC8T245PWR" H 6275 7650 50  0001 C CNN "manf#"
+	7    6275 7650
+	1    0    0    -1  
+$EndComp
+$Comp
+L myLib:74LVC8T245-small U630
+U 7 1 5E56654B
+P 8575 7650
+F 0 "U630" H 8200 7900 60  0000 C CNN
+F 1 "74LVC8T245-small" H 8750 7900 60  0000 C CNN
+F 2 "Package_SO:SSOP-24_5.3x8.2mm_P0.65mm" H 9025 9550 60  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/sn74lvc8t245.pdf" H 8575 7931 60  0001 C CNN
+F 4 "SN74LVC8T245PWR" H 8575 7650 50  0001 C CNN "manf#"
+	7    8575 7650
+	-1   0    0    -1  
+$EndComp
+$Comp
+L myLib:DS8641-small U611
+U 1 1 5E566551
+P 7475 7650
+F 0 "U611" H 7725 7900 60  0000 C CNN
+F 1 "DS8641-small" H 7250 7900 60  0000 C CNN
+F 2 "Package_DIP:DIP-16_W7.62mm" H 6950 8025 60  0001 C CNN
+F 3 "http://pccomponents.com/datasheets/NATI-ds8641.pdf" H 6950 8025 60  0001 C CNN
+F 4 "DS8641" H 7475 7650 50  0001 C CNN "manf#"
+	1    7475 7650
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	5775 7750 6775 7750
+$Comp
+L myLib:74LVC8T245-small U622
+U 4 1 5E7C0C70
+P 6275 8100
+F 0 "U622" H 6675 8350 60  0000 C CNN
+F 1 "74LVC8T245-small" H 6075 8350 60  0000 C CNN
+F 2 "Package_SO:SSOP-24_5.3x8.2mm_P0.65mm" H 6725 10000 60  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/sn74lvc8t245.pdf" H 6275 8381 60  0001 C CNN
+F 4 "SN74LVC8T245PWR" H 6275 8100 50  0001 C CNN "manf#"
+	4    6275 8100
+	1    0    0    -1  
+$EndComp
+$Comp
+L myLib:74LVC8T245-small U621
+U 4 1 5E7C0C76
+P 8575 8100
+F 0 "U621" H 8200 8350 60  0000 C CNN
+F 1 "74LVC8T245-small" H 8750 8350 60  0000 C CNN
+F 2 "Package_SO:SSOP-24_5.3x8.2mm_P0.65mm" H 9025 10000 60  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/sn74lvc8t245.pdf" H 8575 8381 60  0001 C CNN
+F 4 "SN74LVC8T245PWR" H 8575 8100 50  0001 C CNN "manf#"
+	4    8575 8100
+	-1   0    0    -1  
+$EndComp
+$Comp
+L myLib:DS8641-small U601
+U 2 1 5E7C0C7C
+P 7475 8100
+F 0 "U601" H 7725 8350 60  0000 C CNN
+F 1 "DS8641-small" H 7250 8350 60  0000 C CNN
+F 2 "Package_DIP:DIP-16_W7.62mm" H 6950 8475 60  0001 C CNN
+F 3 "http://pccomponents.com/datasheets/NATI-ds8641.pdf" H 6950 8475 60  0001 C CNN
+F 4 "DS8641" H 7475 8100 50  0001 C CNN "manf#"
+	2    7475 8100
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	5775 8200 6775 8200
+$Comp
+L myLib:74LVC8T245-small U622
+U 3 1 5E7C0C83
+P 6275 8550
+F 0 "U622" H 6675 8800 60  0000 C CNN
+F 1 "74LVC8T245-small" H 6075 8800 60  0000 C CNN
+F 2 "Package_SO:SSOP-24_5.3x8.2mm_P0.65mm" H 6725 10450 60  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/sn74lvc8t245.pdf" H 6275 8831 60  0001 C CNN
+F 4 "SN74LVC8T245PWR" H 6275 8550 50  0001 C CNN "manf#"
+	3    6275 8550
+	1    0    0    -1  
+$EndComp
+$Comp
+L myLib:74LVC8T245-small U621
+U 3 1 5E7C0C89
+P 8575 8550
+F 0 "U621" H 8200 8800 60  0000 C CNN
+F 1 "74LVC8T245-small" H 8750 8800 60  0000 C CNN
+F 2 "Package_SO:SSOP-24_5.3x8.2mm_P0.65mm" H 9025 10450 60  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/sn74lvc8t245.pdf" H 8575 8831 60  0001 C CNN
+F 4 "SN74LVC8T245PWR" H 8575 8550 50  0001 C CNN "manf#"
+	3    8575 8550
+	-1   0    0    -1  
+$EndComp
+$Comp
+L myLib:DS8641-small U601
+U 1 1 5E7C0C8F
+P 7475 8550
+F 0 "U601" H 7725 8800 60  0000 C CNN
+F 1 "DS8641-small" H 7250 8800 60  0000 C CNN
+F 2 "Package_DIP:DIP-16_W7.62mm" H 6950 8925 60  0001 C CNN
+F 3 "http://pccomponents.com/datasheets/NATI-ds8641.pdf" H 6950 8925 60  0001 C CNN
+F 4 "DS8641" H 7475 8550 50  0001 C CNN "manf#"
+	1    7475 8550
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	5775 8650 6775 8650
+$Comp
+L myLib:74LVC8T245-small U626
+U 4 1 5E7C0C96
+P 6275 9000
+F 0 "U626" H 6675 9250 60  0000 C CNN
+F 1 "74LVC8T245-small" H 6075 9250 60  0000 C CNN
+F 2 "Package_SO:SSOP-24_5.3x8.2mm_P0.65mm" H 6725 10900 60  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/sn74lvc8t245.pdf" H 6275 9281 60  0001 C CNN
+F 4 "SN74LVC8T245PWR" H 6275 9000 50  0001 C CNN "manf#"
+	4    6275 9000
+	1    0    0    -1  
+$EndComp
+$Comp
+L myLib:74LVC8T245-small U627
+U 3 1 5E7C0C9C
+P 8575 9000
+F 0 "U627" H 8200 9250 60  0000 C CNN
+F 1 "74LVC8T245-small" H 8750 9250 60  0000 C CNN
+F 2 "Package_SO:SSOP-24_5.3x8.2mm_P0.65mm" H 9025 10900 60  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/sn74lvc8t245.pdf" H 8575 9281 60  0001 C CNN
+F 4 "SN74LVC8T245PWR" H 8575 9000 50  0001 C CNN "manf#"
+	3    8575 9000
+	-1   0    0    -1  
+$EndComp
+$Comp
+L myLib:DS8641-small U606
+U 1 1 5E7C0CA2
+P 7475 9000
+F 0 "U606" H 7725 9250 60  0000 C CNN
+F 1 "DS8641-small" H 7250 9250 60  0000 C CNN
+F 2 "Package_DIP:DIP-16_W7.62mm" H 6950 9375 60  0001 C CNN
+F 3 "http://pccomponents.com/datasheets/NATI-ds8641.pdf" H 6950 9375 60  0001 C CNN
+F 4 "DS8641" H 7475 9000 50  0001 C CNN "manf#"
+	1    7475 9000
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	5775 9100 6775 9100
+$Comp
+L myLib:74LVC8T245-small U626
+U 6 1 5E7C0CA9
+P 6275 9450
+F 0 "U626" H 6675 9700 60  0000 C CNN
+F 1 "74LVC8T245-small" H 6075 9700 60  0000 C CNN
+F 2 "Package_SO:SSOP-24_5.3x8.2mm_P0.65mm" H 6725 11350 60  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/sn74lvc8t245.pdf" H 6275 9731 60  0001 C CNN
+F 4 "SN74LVC8T245PWR" H 6275 9450 50  0001 C CNN "manf#"
+	6    6275 9450
+	1    0    0    -1  
+$EndComp
+$Comp
+L myLib:74LVC8T245-small U627
+U 6 1 5E7C0CAF
+P 8575 9450
+F 0 "U627" H 8200 9700 60  0000 C CNN
+F 1 "74LVC8T245-small" H 8750 9700 60  0000 C CNN
+F 2 "Package_SO:SSOP-24_5.3x8.2mm_P0.65mm" H 9025 11350 60  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/sn74lvc8t245.pdf" H 8575 9731 60  0001 C CNN
+F 4 "SN74LVC8T245PWR" H 8575 9450 50  0001 C CNN "manf#"
+	6    8575 9450
+	-1   0    0    -1  
+$EndComp
+$Comp
+L myLib:DS8641-small U607
+U 3 1 5E7C0CB5
+P 7475 9450
+F 0 "U607" H 7725 9700 60  0000 C CNN
+F 1 "DS8641-small" H 7250 9700 60  0000 C CNN
+F 2 "Package_DIP:DIP-16_W7.62mm" H 6950 9825 60  0001 C CNN
+F 3 "http://pccomponents.com/datasheets/NATI-ds8641.pdf" H 6950 9825 60  0001 C CNN
+F 4 "DS8641" H 7475 9450 50  0001 C CNN "manf#"
+	3    7475 9450
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	5775 9550 6775 9550
+Text Label 5775 2350 2    60   ~ 0
+BDAL3
+Text Label 5775 1900 2    60   ~ 0
+BDAL2
+Text Label 5775 4150 2    60   ~ 0
+BDAL7
+Text Label 5775 3700 2    60   ~ 0
+BDAL6
+Text Label 5775 2800 2    60   ~ 0
+BDAL4
+Text Label 5775 3250 2    60   ~ 0
+BDAL5
+Text Label 5775 5950 2    60   ~ 0
+BDAL11
+Text Label 5775 5500 2    60   ~ 0
+BDAL10
+Text Label 5775 7750 2    60   ~ 0
+BDAL15
+Text Label 5775 7300 2    60   ~ 0
+BDAL14
+Text Label 5775 6400 2    60   ~ 0
+BDAL12
+Text Label 5775 6850 2    60   ~ 0
+BDAL13
+Text Label 5775 5050 2    60   ~ 0
+BDAL9
+Text Label 5775 4600 2    60   ~ 0
+BDAL8
+Text Label 5775 2150 2    60   ~ 0
+TDAL3
+Text Label 5775 1700 2    60   ~ 0
+TDAL2
+Text Label 5775 3950 2    60   ~ 0
+TDAL7
+Text Label 5775 3500 2    60   ~ 0
+TDAL6
+Text Label 5775 2600 2    60   ~ 0
+TDAL4
+Text Label 5775 3050 2    60   ~ 0
+TDAL5
+Text Label 5775 4850 2    60   ~ 0
+TDAL9
+Text Label 5775 4400 2    60   ~ 0
+TDAL8
+Text Label 5775 800  2    60   ~ 0
+TDAL0
+Text Label 5775 5750 2    60   ~ 0
+TDAL11
+Text Label 5775 5300 2    60   ~ 0
+TDAL10
+Text Label 5775 7550 2    60   ~ 0
+TDAL15
+Text Label 5775 7100 2    60   ~ 0
+TDAL14
+Text Label 5775 6200 2    60   ~ 0
+TDAL12
+Text Label 5775 6650 2    60   ~ 0
+TDAL13
+Wire Wire Line
+	5450 800  5775 800 
+Wire Wire Line
+	5450 1700 5775 1700
+Wire Wire Line
+	5450 2150 5775 2150
+Wire Wire Line
+	5450 2600 5775 2600
+Wire Wire Line
+	5450 3050 5775 3050
+Wire Wire Line
+	5450 3500 5775 3500
+Wire Wire Line
+	5450 3950 5775 3950
+Wire Wire Line
+	5450 4400 5775 4400
+Wire Wire Line
+	5450 4850 5775 4850
+Wire Wire Line
+	5450 5300 5775 5300
+Wire Wire Line
+	5450 5750 5775 5750
+Wire Wire Line
+	5450 6200 5775 6200
+Wire Wire Line
+	5450 6650 5775 6650
+Wire Wire Line
+	5450 7100 5775 7100
+Wire Wire Line
+	5450 7550 5775 7550
+Text Label 9075 4850 0    60   ~ 0
+RDAL9
+Text Label 9075 4400 0    60   ~ 0
+RDAL8
+Text Label 9075 2150 0    60   ~ 0
+RDAL3
+Text Label 9075 1700 0    60   ~ 0
+RDAL2
+Text Label 9075 3950 0    60   ~ 0
+RDAL7
+Text Label 9075 3500 0    60   ~ 0
+RDAL6
+Text Label 9075 2600 0    60   ~ 0
+RDAL4
+Text Label 9075 3050 0    60   ~ 0
+RDAL5
+Text Label 9500 1250 2    60   ~ 0
+RDAL1
+Text Label 9500 800  2    60   ~ 0
+RDAL0
+Text Label 9075 5750 0    60   ~ 0
+RDAL11
+Text Label 9075 5300 0    60   ~ 0
+RDAL10
+Text Label 9075 7550 0    60   ~ 0
+RDAL15
+Text Label 9075 7100 0    60   ~ 0
+RDAL14
+Text Label 9075 6200 0    60   ~ 0
+RDAL12
+Text Label 9075 6650 0    60   ~ 0
+RDAL13
+Wire Wire Line
+	9500 800  9075 800 
+Wire Wire Line
+	9500 1250 9075 1250
+Wire Wire Line
+	9500 1700 9075 1700
+Wire Wire Line
+	9500 2150 9075 2150
+Wire Wire Line
+	9500 2600 9075 2600
+Wire Wire Line
+	9500 3050 9075 3050
+Wire Wire Line
+	9500 3500 9075 3500
+Wire Wire Line
+	9500 3950 9075 3950
+Wire Wire Line
+	9500 4400 9075 4400
+Wire Wire Line
+	9500 4850 9075 4850
+Wire Wire Line
+	9500 5300 9075 5300
+Wire Wire Line
+	9500 5750 9075 5750
+Wire Wire Line
+	9500 6200 9075 6200
+Wire Wire Line
+	9500 6650 9075 6650
+Wire Wire Line
+	9500 7100 9075 7100
+Wire Wire Line
+	9500 7550 9075 7550
+Text HLabel 1150 7975 0    60   Input ~ 0
+TBS7
+Text HLabel 1150 8425 0    60   Input ~ 0
+TWTBT
+Text Label 5775 8650 2    60   ~ 0
+BDAL17
+Text Label 5775 8200 2    60   ~ 0
+BDAL16
+Text Label 5775 10000 2    60   ~ 0
+BDAL20
+Text Label 5775 10450 2    60   ~ 0
+BDAL21
+Text Label 5775 9100 2    60   ~ 0
+BDAL18
+Text Label 5775 9550 2    60   ~ 0
+BDAL19
+Text Label 1150 8625 2    60   ~ 0
+BWTBT
+Text Label 1150 8175 2    60   ~ 0
+BBS7
+Text Label 5775 8450 2    60   ~ 0
+TDAL17
+Text Label 5775 8000 2    60   ~ 0
+TDAL16
+Text Label 5775 9800 2    60   ~ 0
+TDAL20
+Text Label 5775 10250 2    60   ~ 0
+TDAL21
+Text Label 5775 8900 2    60   ~ 0
+TDAL18
+Text Label 5775 9350 2    60   ~ 0
+TDAL19
+Wire Wire Line
+	5450 10250 5775 10250
+Wire Wire Line
+	5450 9800 5775 9800
+Wire Wire Line
+	5450 9350 5775 9350
+Wire Wire Line
+	5450 8900 5775 8900
+Wire Wire Line
+	5450 8450 5775 8450
+Wire Wire Line
+	5450 8000 5775 8000
+Text Label 9075 9800 0    60   ~ 0
+RDAL20
+Text Label 9075 10250 0    60   ~ 0
+RDAL21
+Text Label 9075 8450 0    60   ~ 0
+RDAL17
+Text Label 9075 8000 0    60   ~ 0
+RDAL16
+Text Label 9075 8900 0    60   ~ 0
+RDAL18
+Text Label 9075 9350 0    60   ~ 0
+RDAL19
+Wire Wire Line
+	9500 10250 9075 10250
+Wire Wire Line
+	9500 9800 9075 9800
+Wire Wire Line
+	9500 8000 9075 8000
+Wire Wire Line
+	9500 8450 9075 8450
+Wire Wire Line
+	9500 8900 9075 8900
+Wire Wire Line
+	9500 9350 9075 9350
+Text Label 5775 1250 2    60   ~ 0
+TDAL1
+Text Label 5775 1000 2    60   ~ 0
+BDAL0
+Text Label 5775 1450 2    60   ~ 0
+BDAL1
+$Comp
+L myLib:74LVC8T245-small U626
+U 8 1 5F3552EB
+P 6275 9900
+F 0 "U626" H 6675 10150 60  0000 C CNN
+F 1 "74LVC8T245-small" H 6075 10150 60  0000 C CNN
+F 2 "Package_SO:SSOP-24_5.3x8.2mm_P0.65mm" H 6725 11800 60  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/sn74lvc8t245.pdf" H 6275 10181 60  0001 C CNN
+F 4 "SN74LVC8T245PWR" H 6275 9900 50  0001 C CNN "manf#"
+	8    6275 9900
+	1    0    0    -1  
+$EndComp
+$Comp
+L myLib:74LVC8T245-small U627
+U 8 1 5F3552F1
+P 8575 9900
+F 0 "U627" H 8200 10150 60  0000 C CNN
+F 1 "74LVC8T245-small" H 8750 10150 60  0000 C CNN
+F 2 "Package_SO:SSOP-24_5.3x8.2mm_P0.65mm" H 9025 11800 60  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/sn74lvc8t245.pdf" H 8575 10181 60  0001 C CNN
+F 4 "SN74LVC8T245PWR" H 8575 9900 50  0001 C CNN "manf#"
+	8    8575 9900
+	-1   0    0    -1  
+$EndComp
+$Comp
+L myLib:DS8641-small U607
+U 2 1 5F3552F7
+P 7475 9900
+F 0 "U607" H 7725 10150 60  0000 C CNN
+F 1 "DS8641-small" H 7250 10150 60  0000 C CNN
+F 2 "Package_DIP:DIP-16_W7.62mm" H 6950 10275 60  0001 C CNN
+F 3 "http://pccomponents.com/datasheets/NATI-ds8641.pdf" H 6950 10275 60  0001 C CNN
+F 4 "DS8641" H 7475 9900 50  0001 C CNN "manf#"
+	2    7475 9900
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	5775 10000 6775 10000
+$Comp
+L myLib:74LVC8T245-small U629
+U 2 1 5F3552FE
+P 6275 10350
+F 0 "U629" H 6675 10600 60  0000 C CNN
+F 1 "74LVC8T245-small" H 6075 10600 60  0000 C CNN
+F 2 "Package_SO:SSOP-24_5.3x8.2mm_P0.65mm" H 6725 12250 60  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/sn74lvc8t245.pdf" H 6275 10631 60  0001 C CNN
+F 4 "SN74LVC8T245PWR" H 6275 10350 50  0001 C CNN "manf#"
+	2    6275 10350
+	1    0    0    -1  
+$EndComp
+$Comp
+L myLib:74LVC8T245-small U628
+U 2 1 5F355304
+P 8575 10350
+F 0 "U628" H 8200 10600 60  0000 C CNN
+F 1 "74LVC8T245-small" H 8750 10600 60  0000 C CNN
+F 2 "Package_SO:SSOP-24_5.3x8.2mm_P0.65mm" H 9025 12250 60  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/sn74lvc8t245.pdf" H 8575 10631 60  0001 C CNN
+F 4 "SN74LVC8T245PWR" H 8575 10350 50  0001 C CNN "manf#"
+	2    8575 10350
+	-1   0    0    -1  
+$EndComp
+$Comp
+L myLib:DS8641-small U608
+U 3 1 5F35530A
+P 7475 10350
+F 0 "U608" H 7725 10600 60  0000 C CNN
+F 1 "DS8641-small" H 7250 10600 60  0000 C CNN
+F 2 "Package_DIP:DIP-16_W7.62mm" H 6950 10725 60  0001 C CNN
+F 3 "http://pccomponents.com/datasheets/NATI-ds8641.pdf" H 6950 10725 60  0001 C CNN
+F 4 "DS8641" H 7475 10350 50  0001 C CNN "manf#"
+	3    7475 10350
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	5775 10450 6775 10450
+$Comp
+L myLib:74LVC8T245-small U624
+U 5 1 5F355311
+P 1650 8075
+F 0 "U624" H 2050 8325 60  0000 C CNN
+F 1 "74LVC8T245-small" H 1475 8325 60  0000 C CNN
+F 2 "Package_SO:SSOP-24_5.3x8.2mm_P0.65mm" H 2100 9975 60  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/sn74lvc8t245.pdf" H 1650 8356 60  0001 C CNN
+F 4 "SN74LVC8T245PWR" H 1650 8075 50  0001 C CNN "manf#"
+	5    1650 8075
+	1    0    0    -1  
+$EndComp
+$Comp
+L myLib:74LVC8T245-small U623
+U 5 1 5F355317
+P 3950 8075
+F 0 "U623" H 3575 8325 60  0000 C CNN
+F 1 "74LVC8T245-small" H 4175 8325 60  0000 C CNN
+F 2 "Package_SO:SSOP-24_5.3x8.2mm_P0.65mm" H 4400 9975 60  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/sn74lvc8t245.pdf" H 3950 8356 60  0001 C CNN
+F 4 "SN74LVC8T245PWR" H 3950 8075 50  0001 C CNN "manf#"
+	5    3950 8075
+	-1   0    0    -1  
+$EndComp
+$Comp
+L myLib:DS8641-small U604
+U 4 1 5F35531D
+P 2850 8075
+F 0 "U604" H 3100 8325 60  0000 C CNN
+F 1 "DS8641-small" H 2625 8325 60  0000 C CNN
+F 2 "Package_DIP:DIP-16_W7.62mm" H 2325 8450 60  0001 C CNN
+F 3 "http://pccomponents.com/datasheets/NATI-ds8641.pdf" H 2325 8450 60  0001 C CNN
+F 4 "DS8641" H 2850 8075 50  0001 C CNN "manf#"
+	4    2850 8075
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	1150 8175 2150 8175
+$Comp
+L myLib:74LVC8T245-small U624
+U 2 1 5F355324
+P 1650 8525
+F 0 "U624" H 2050 8775 60  0000 C CNN
+F 1 "74LVC8T245-small" H 1475 8775 60  0000 C CNN
+F 2 "Package_SO:SSOP-24_5.3x8.2mm_P0.65mm" H 2100 10425 60  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/sn74lvc8t245.pdf" H 1650 8806 60  0001 C CNN
+F 4 "SN74LVC8T245PWR" H 1650 8525 50  0001 C CNN "manf#"
+	2    1650 8525
+	1    0    0    -1  
+$EndComp
+$Comp
+L myLib:74LVC8T245-small U623
+U 2 1 5F35532A
+P 3950 8525
+F 0 "U623" H 3575 8775 60  0000 C CNN
+F 1 "74LVC8T245-small" H 4175 8775 60  0000 C CNN
+F 2 "Package_SO:SSOP-24_5.3x8.2mm_P0.65mm" H 4400 10425 60  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/sn74lvc8t245.pdf" H 3950 8806 60  0001 C CNN
+F 4 "SN74LVC8T245PWR" H 3950 8525 50  0001 C CNN "manf#"
+	2    3950 8525
+	-1   0    0    -1  
+$EndComp
+$Comp
+L myLib:DS8641-small U603
+U 3 1 5F355330
+P 2850 8525
+F 0 "U603" H 3100 8775 60  0000 C CNN
+F 1 "DS8641-small" H 2625 8775 60  0000 C CNN
+F 2 "Package_DIP:DIP-16_W7.62mm" H 2325 8900 60  0001 C CNN
+F 3 "http://pccomponents.com/datasheets/NATI-ds8641.pdf" H 2325 8900 60  0001 C CNN
+F 4 "DS8641" H 2850 8525 50  0001 C CNN "manf#"
+	3    2850 8525
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	1150 8625 2150 8625
+$Comp
+L myLib:74LVC8T245-small U622
+U 7 1 601E488C
+P 1650 875
+F 0 "U622" H 2050 1125 60  0000 C CNN
+F 1 "74LVC8T245-small" H 1475 1125 60  0000 C CNN
+F 2 "Package_SO:SSOP-24_5.3x8.2mm_P0.65mm" H 2100 2775 60  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/sn74lvc8t245.pdf" H 1650 1156 60  0001 C CNN
+F 4 "SN74LVC8T245PWR" H 1650 875 50  0001 C CNN "manf#"
+	7    1650 875 
+	1    0    0    -1  
+$EndComp
+$Comp
+L myLib:74LVC8T245-small U621
+U 7 1 601E4892
+P 3950 875
+F 0 "U621" H 3575 1125 60  0000 C CNN
+F 1 "74LVC8T245-small" H 4175 1125 60  0000 C CNN
+F 2 "Package_SO:SSOP-24_5.3x8.2mm_P0.65mm" H 4400 2775 60  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/sn74lvc8t245.pdf" H 3950 1156 60  0001 C CNN
+F 4 "SN74LVC8T245PWR" H 3950 875 50  0001 C CNN "manf#"
+	7    3950 875 
+	-1   0    0    -1  
+$EndComp
+$Comp
+L myLib:DS8641-small U602
+U 1 1 601E4898
+P 2850 875
+F 0 "U602" H 3100 1125 60  0000 C CNN
+F 1 "DS8641-small" H 2625 1125 60  0000 C CNN
+F 2 "Package_DIP:DIP-16_W7.62mm" H 2325 1250 60  0001 C CNN
+F 3 "http://pccomponents.com/datasheets/NATI-ds8641.pdf" H 2325 1250 60  0001 C CNN
+F 4 "DS8641" H 2850 875 50  0001 C CNN "manf#"
+	1    2850 875 
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	1150 975  2150 975 
+$Comp
+L myLib:74LVC8T245-small U622
+U 8 1 601E489F
+P 1650 1325
+F 0 "U622" H 2050 1575 60  0000 C CNN
+F 1 "74LVC8T245-small" H 1475 1575 60  0000 C CNN
+F 2 "Package_SO:SSOP-24_5.3x8.2mm_P0.65mm" H 2100 3225 60  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/sn74lvc8t245.pdf" H 1650 1606 60  0001 C CNN
+F 4 "SN74LVC8T245PWR" H 1650 1325 50  0001 C CNN "manf#"
+	8    1650 1325
+	1    0    0    -1  
+$EndComp
+$Comp
+L myLib:74LVC8T245-small U621
+U 8 1 601E48A5
+P 3950 1325
+F 0 "U621" H 3575 1575 60  0000 C CNN
+F 1 "74LVC8T245-small" H 4175 1575 60  0000 C CNN
+F 2 "Package_SO:SSOP-24_5.3x8.2mm_P0.65mm" H 4400 3225 60  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/sn74lvc8t245.pdf" H 3950 1606 60  0001 C CNN
+F 4 "SN74LVC8T245PWR" H 3950 1325 50  0001 C CNN "manf#"
+	8    3950 1325
+	-1   0    0    -1  
+$EndComp
+$Comp
+L myLib:DS8641-small U602
+U 2 1 601E48AB
+P 2850 1325
+F 0 "U602" H 3100 1575 60  0000 C CNN
+F 1 "DS8641-small" H 2625 1575 60  0000 C CNN
+F 2 "Package_DIP:DIP-16_W7.62mm" H 2325 1700 60  0001 C CNN
+F 3 "http://pccomponents.com/datasheets/NATI-ds8641.pdf" H 2325 1700 60  0001 C CNN
+F 4 "DS8641" H 2850 1325 50  0001 C CNN "manf#"
+	2    2850 1325
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	1150 1425 2150 1425
+$Comp
+L myLib:74LVC8T245-small U622
+U 6 1 601E48B2
+P 1650 1775
+F 0 "U622" H 2050 2025 60  0000 C CNN
+F 1 "74LVC8T245-small" H 1475 2025 60  0000 C CNN
+F 2 "Package_SO:SSOP-24_5.3x8.2mm_P0.65mm" H 2100 3675 60  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/sn74lvc8t245.pdf" H 1650 2056 60  0001 C CNN
+F 4 "SN74LVC8T245PWR" H 1650 1775 50  0001 C CNN "manf#"
+	6    1650 1775
+	1    0    0    -1  
+$EndComp
+$Comp
+L myLib:74LVC8T245-small U621
+U 6 1 601E48B8
+P 3950 1775
+F 0 "U621" H 3575 2025 60  0000 C CNN
+F 1 "74LVC8T245-small" H 4175 2025 60  0000 C CNN
+F 2 "Package_SO:SSOP-24_5.3x8.2mm_P0.65mm" H 4400 3675 60  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/sn74lvc8t245.pdf" H 3950 2056 60  0001 C CNN
+F 4 "SN74LVC8T245PWR" H 3950 1775 50  0001 C CNN "manf#"
+	6    3950 1775
+	-1   0    0    -1  
+$EndComp
+$Comp
+L myLib:DS8641-small U602
+U 3 1 601E48BE
+P 2850 1775
+F 0 "U602" H 3100 2025 60  0000 C CNN
+F 1 "DS8641-small" H 2625 2025 60  0000 C CNN
+F 2 "Package_DIP:DIP-16_W7.62mm" H 2325 2150 60  0001 C CNN
+F 3 "http://pccomponents.com/datasheets/NATI-ds8641.pdf" H 2325 2150 60  0001 C CNN
+F 4 "DS8641" H 2850 1775 50  0001 C CNN "manf#"
+	3    2850 1775
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	1150 1875 2150 1875
+$Comp
+L myLib:74LVC8T245-small U622
+U 5 1 601E48C5
+P 1650 2225
+F 0 "U622" H 2050 2475 60  0000 C CNN
+F 1 "74LVC8T245-small" H 1475 2475 60  0000 C CNN
+F 2 "Package_SO:SSOP-24_5.3x8.2mm_P0.65mm" H 2100 4125 60  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/sn74lvc8t245.pdf" H 1650 2506 60  0001 C CNN
+F 4 "SN74LVC8T245PWR" H 1650 2225 50  0001 C CNN "manf#"
+	5    1650 2225
+	1    0    0    -1  
+$EndComp
+$Comp
+L myLib:74LVC8T245-small U621
+U 5 1 601E48CB
+P 3950 2225
+F 0 "U621" H 3575 2475 60  0000 C CNN
+F 1 "74LVC8T245-small" H 4175 2475 60  0000 C CNN
+F 2 "Package_SO:SSOP-24_5.3x8.2mm_P0.65mm" H 4400 4125 60  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/sn74lvc8t245.pdf" H 3950 2506 60  0001 C CNN
+F 4 "SN74LVC8T245PWR" H 3950 2225 50  0001 C CNN "manf#"
+	5    3950 2225
+	-1   0    0    -1  
+$EndComp
+$Comp
+L myLib:DS8641-small U602
+U 4 1 601E48D1
+P 2850 2225
+F 0 "U602" H 3100 2475 60  0000 C CNN
+F 1 "DS8641-small" H 2625 2475 60  0000 C CNN
+F 2 "Package_DIP:DIP-16_W7.62mm" H 2325 2600 60  0001 C CNN
+F 3 "http://pccomponents.com/datasheets/NATI-ds8641.pdf" H 2325 2600 60  0001 C CNN
+F 4 "DS8641" H 2850 2225 50  0001 C CNN "manf#"
+	4    2850 2225
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	1150 2325 2150 2325
+$Comp
+L myLib:74LVC8T245-small U624
+U 7 1 601E48D8
+P 1650 2675
+F 0 "U624" H 2050 2925 60  0000 C CNN
+F 1 "74LVC8T245-small" H 1475 2925 60  0000 C CNN
+F 2 "Package_SO:SSOP-24_5.3x8.2mm_P0.65mm" H 2100 4575 60  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/sn74lvc8t245.pdf" H 1650 2956 60  0001 C CNN
+F 4 "SN74LVC8T245PWR" H 1650 2675 50  0001 C CNN "manf#"
+	7    1650 2675
+	1    0    0    -1  
+$EndComp
+$Comp
+L myLib:74LVC8T245-small U623
+U 7 1 601E48DE
+P 3950 2675
+F 0 "U623" H 3575 2925 60  0000 C CNN
+F 1 "74LVC8T245-small" H 4125 2925 60  0000 C CNN
+F 2 "Package_SO:SSOP-24_5.3x8.2mm_P0.65mm" H 4400 4575 60  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/sn74lvc8t245.pdf" H 3950 2956 60  0001 C CNN
+F 4 "SN74LVC8T245PWR" H 3950 2675 50  0001 C CNN "manf#"
+	7    3950 2675
+	-1   0    0    -1  
+$EndComp
+$Comp
+L myLib:DS8641-small U604
+U 1 1 601E48E4
+P 2850 2675
+F 0 "U604" H 3100 2925 60  0000 C CNN
+F 1 "DS8641-small" H 2625 2925 60  0000 C CNN
+F 2 "Package_DIP:DIP-16_W7.62mm" H 2325 3050 60  0001 C CNN
+F 3 "http://pccomponents.com/datasheets/NATI-ds8641.pdf" H 2325 3050 60  0001 C CNN
+F 4 "DS8641" H 2850 2675 50  0001 C CNN "manf#"
+	1    2850 2675
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	1150 2775 2150 2775
+$Comp
+L myLib:74LVC8T245-small U624
+U 1 1 601E48EB
+P 1650 3125
+F 0 "U624" H 2050 3375 60  0000 C CNN
+F 1 "74LVC8T245-small" H 1475 3375 60  0000 C CNN
+F 2 "Package_SO:SSOP-24_5.3x8.2mm_P0.65mm" H 2100 5025 60  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/sn74lvc8t245.pdf" H 1650 3406 60  0001 C CNN
+F 4 "SN74LVC8T245PWR" H 1650 3125 50  0001 C CNN "manf#"
+	1    1650 3125
+	1    0    0    -1  
+$EndComp
+$Comp
+L myLib:74LVC8T245-small U623
+U 1 1 601E48F1
+P 3950 3125
+F 0 "U623" H 3575 3375 60  0000 C CNN
+F 1 "74LVC8T245-small" H 4125 3375 60  0000 C CNN
+F 2 "Package_SO:SSOP-24_5.3x8.2mm_P0.65mm" H 4400 5025 60  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/sn74lvc8t245.pdf" H 3950 3406 60  0001 C CNN
+F 4 "SN74LVC8T245PWR" H 3950 3125 50  0001 C CNN "manf#"
+	1    3950 3125
+	-1   0    0    -1  
+$EndComp
+$Comp
+L myLib:DS8641-small U603
+U 4 1 601E48F7
+P 2850 3125
+F 0 "U603" H 3100 3375 60  0000 C CNN
+F 1 "DS8641-small" H 2625 3375 60  0000 C CNN
+F 2 "Package_DIP:DIP-16_W7.62mm" H 2325 3500 60  0001 C CNN
+F 3 "http://pccomponents.com/datasheets/NATI-ds8641.pdf" H 2325 3500 60  0001 C CNN
+F 4 "DS8641" H 2850 3125 50  0001 C CNN "manf#"
+	4    2850 3125
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	1150 3225 2150 3225
+$Comp
+L myLib:74LVC8T245-small U622
+U 2 1 601E48FE
+P 1650 3575
+F 0 "U622" H 2050 3825 60  0000 C CNN
+F 1 "74LVC8T245-small" H 1475 3825 60  0000 C CNN
+F 2 "Package_SO:SSOP-24_5.3x8.2mm_P0.65mm" H 2100 5475 60  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/sn74lvc8t245.pdf" H 1650 3856 60  0001 C CNN
+F 4 "SN74LVC8T245PWR" H 1650 3575 50  0001 C CNN "manf#"
+	2    1650 3575
+	1    0    0    -1  
+$EndComp
+$Comp
+L myLib:74LVC8T245-small U621
+U 2 1 601E4904
+P 3950 3575
+F 0 "U621" H 3575 3825 60  0000 C CNN
+F 1 "74LVC8T245-small" H 4125 3825 60  0000 C CNN
+F 2 "Package_SO:SSOP-24_5.3x8.2mm_P0.65mm" H 4400 5475 60  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/sn74lvc8t245.pdf" H 3950 3856 60  0001 C CNN
+F 4 "SN74LVC8T245PWR" H 3950 3575 50  0001 C CNN "manf#"
+	2    3950 3575
+	-1   0    0    -1  
+$EndComp
+$Comp
+L myLib:DS8641-small U601
+U 3 1 601E490A
+P 2850 3575
+F 0 "U601" H 3125 3825 60  0000 C CNN
+F 1 "DS8641-small" H 2625 3825 60  0000 C CNN
+F 2 "Package_DIP:DIP-16_W7.62mm" H 2325 3950 60  0001 C CNN
+F 3 "http://pccomponents.com/datasheets/NATI-ds8641.pdf" H 2325 3950 60  0001 C CNN
+F 4 "DS8641" H 2850 3575 50  0001 C CNN "manf#"
+	3    2850 3575
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	1150 3675 2150 3675
+$Comp
+L myLib:74LVC8T245-small U622
+U 1 1 601E4911
+P 1650 4025
+F 0 "U622" H 2050 4275 60  0000 C CNN
+F 1 "74LVC8T245-small" H 1475 4275 60  0000 C CNN
+F 2 "Package_SO:SSOP-24_5.3x8.2mm_P0.65mm" H 2100 5925 60  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/sn74lvc8t245.pdf" H 1650 4306 60  0001 C CNN
+F 4 "SN74LVC8T245PWR" H 1650 4025 50  0001 C CNN "manf#"
+	1    1650 4025
+	1    0    0    -1  
+$EndComp
+$Comp
+L myLib:74LVC8T245-small U621
+U 1 1 601E4917
+P 3950 4025
+F 0 "U621" H 3575 4275 60  0000 C CNN
+F 1 "74LVC8T245-small" H 4175 4275 60  0000 C CNN
+F 2 "Package_SO:SSOP-24_5.3x8.2mm_P0.65mm" H 4400 5925 60  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/sn74lvc8t245.pdf" H 3950 4306 60  0001 C CNN
+F 4 "SN74LVC8T245PWR" H 3950 4025 50  0001 C CNN "manf#"
+	1    3950 4025
+	-1   0    0    -1  
+$EndComp
+$Comp
+L myLib:DS8641-small U601
+U 4 1 601E491D
+P 2850 4025
+F 0 "U601" H 3100 4275 60  0000 C CNN
+F 1 "DS8641-small" H 2625 4275 60  0000 C CNN
+F 2 "Package_DIP:DIP-16_W7.62mm" H 2325 4400 60  0001 C CNN
+F 3 "http://pccomponents.com/datasheets/NATI-ds8641.pdf" H 2325 4400 60  0001 C CNN
+F 4 "DS8641" H 2850 4025 50  0001 C CNN "manf#"
+	4    2850 4025
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	1150 4125 2150 4125
+$Comp
+L myLib:74LVC8T245-small U631
+U 2 1 601E4924
+P 1650 4475
+F 0 "U631" H 2050 4725 60  0000 C CNN
+F 1 "74LVC8T245-small" H 1475 4725 60  0000 C CNN
+F 2 "Package_SO:SSOP-24_5.3x8.2mm_P0.65mm" H 2100 6375 60  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/sn74lvc8t245.pdf" H 1650 4756 60  0001 C CNN
+F 4 "SN74LVC8T245PWR" H 1650 4475 50  0001 C CNN "manf#"
+	2    1650 4475
+	1    0    0    -1  
+$EndComp
+$Comp
+L myLib:74LVC8T245-small U630
+U 2 1 601E492A
+P 3950 4475
+F 0 "U630" H 3575 4725 60  0000 C CNN
+F 1 "74LVC8T245-small" H 4175 4725 60  0000 C CNN
+F 2 "Package_SO:SSOP-24_5.3x8.2mm_P0.65mm" H 4400 6375 60  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/sn74lvc8t245.pdf" H 3950 4756 60  0001 C CNN
+F 4 "SN74LVC8T245PWR" H 3950 4475 50  0001 C CNN "manf#"
+	2    3950 4475
+	-1   0    0    -1  
+$EndComp
+$Comp
+L myLib:DS8641-small U610
+U 3 1 601E4930
+P 2850 4475
+F 0 "U610" H 3100 4725 60  0000 C CNN
+F 1 "DS8641-small" H 2625 4725 60  0000 C CNN
+F 2 "Package_DIP:DIP-16_W7.62mm" H 2325 4850 60  0001 C CNN
+F 3 "http://pccomponents.com/datasheets/NATI-ds8641.pdf" H 2325 4850 60  0001 C CNN
+F 4 "DS8641" H 2850 4475 50  0001 C CNN "manf#"
+	3    2850 4475
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	1150 4575 2150 4575
+$Comp
+L myLib:74LVC8T245-small U624
+U 6 1 601E4937
+P 1650 4925
+F 0 "U624" H 2050 5175 60  0000 C CNN
+F 1 "74LVC8T245-small" H 1475 5175 60  0000 C CNN
+F 2 "Package_SO:SSOP-24_5.3x8.2mm_P0.65mm" H 2100 6825 60  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/sn74lvc8t245.pdf" H 1650 5206 60  0001 C CNN
+F 4 "SN74LVC8T245PWR" H 1650 4925 50  0001 C CNN "manf#"
+	6    1650 4925
+	1    0    0    -1  
+$EndComp
+$Comp
+L myLib:74LVC8T245-small U623
+U 6 1 601E493D
+P 3950 4925
+F 0 "U623" H 3575 5175 60  0000 C CNN
+F 1 "74LVC8T245-small" H 4175 5175 60  0000 C CNN
+F 2 "Package_SO:SSOP-24_5.3x8.2mm_P0.65mm" H 4400 6825 60  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/sn74lvc8t245.pdf" H 3950 5206 60  0001 C CNN
+F 4 "SN74LVC8T245PWR" H 3950 4925 50  0001 C CNN "manf#"
+	6    3950 4925
+	-1   0    0    -1  
+$EndComp
+$Comp
+L myLib:DS8641-small U604
+U 3 1 601E4943
+P 2850 4925
+F 0 "U604" H 3100 5175 60  0000 C CNN
+F 1 "DS8641-small" H 2625 5175 60  0000 C CNN
+F 2 "Package_DIP:DIP-16_W7.62mm" H 2325 5300 60  0001 C CNN
+F 3 "http://pccomponents.com/datasheets/NATI-ds8641.pdf" H 2325 5300 60  0001 C CNN
+F 4 "DS8641" H 2850 4925 50  0001 C CNN "manf#"
+	3    2850 4925
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	1150 5025 2150 5025
+$Comp
+L myLib:74LVC8T245-small U629
+U 7 1 601E494A
+P 1650 5375
+F 0 "U629" H 2050 5625 60  0000 C CNN
+F 1 "74LVC8T245-small" H 1475 5625 60  0000 C CNN
+F 2 "Package_SO:SSOP-24_5.3x8.2mm_P0.65mm" H 2100 7275 60  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/sn74lvc8t245.pdf" H 1650 5656 60  0001 C CNN
+F 4 "SN74LVC8T245PWR" H 1650 5375 50  0001 C CNN "manf#"
+	7    1650 5375
+	1    0    0    -1  
+$EndComp
+$Comp
+L myLib:74LVC8T245-small U628
+U 7 1 601E4950
+P 3950 5375
+F 0 "U628" H 3575 5625 60  0000 C CNN
+F 1 "74LVC8T245-small" H 4175 5625 60  0000 C CNN
+F 2 "Package_SO:SSOP-24_5.3x8.2mm_P0.65mm" H 4400 7275 60  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/sn74lvc8t245.pdf" H 3950 5656 60  0001 C CNN
+F 4 "SN74LVC8T245PWR" H 3950 5375 50  0001 C CNN "manf#"
+	7    3950 5375
+	-1   0    0    -1  
+$EndComp
+$Comp
+L myLib:DS8641-small U609
+U 1 1 601E4956
+P 2850 5375
+F 0 "U609" H 3100 5625 60  0000 C CNN
+F 1 "DS8641-small" H 2625 5625 60  0000 C CNN
+F 2 "Package_DIP:DIP-16_W7.62mm" H 2325 5750 60  0001 C CNN
+F 3 "http://pccomponents.com/datasheets/NATI-ds8641.pdf" H 2325 5750 60  0001 C CNN
+F 4 "DS8641" H 2850 5375 50  0001 C CNN "manf#"
+	1    2850 5375
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	1150 5475 2150 5475
+$Comp
+L myLib:74LVC8T245-small U624
+U 8 1 601E495D
+P 1650 5825
+F 0 "U624" H 2050 6075 60  0000 C CNN
+F 1 "74LVC8T245-small" H 1475 6075 60  0000 C CNN
+F 2 "Package_SO:SSOP-24_5.3x8.2mm_P0.65mm" H 2100 7725 60  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/sn74lvc8t245.pdf" H 1650 6106 60  0001 C CNN
+F 4 "SN74LVC8T245PWR" H 1650 5825 50  0001 C CNN "manf#"
+	8    1650 5825
+	1    0    0    -1  
+$EndComp
+$Comp
+L myLib:74LVC8T245-small U625
+U 1 1 601E4963
+P 3950 5825
+F 0 "U625" H 3575 6075 60  0000 C CNN
+F 1 "74LVC8T245-small" H 4175 6075 60  0000 C CNN
+F 2 "Package_SO:SSOP-24_5.3x8.2mm_P0.65mm" H 4400 7725 60  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/sn74lvc8t245.pdf" H 3950 6106 60  0001 C CNN
+F 4 "SN74LVC8T245PWR" H 3950 5825 50  0001 C CNN "manf#"
+	1    3950 5825
+	-1   0    0    -1  
+$EndComp
+$Comp
+L myLib:DS8641-small U605
+U 4 1 601E4969
+P 2850 5825
+F 0 "U605" H 3100 6075 60  0000 C CNN
+F 1 "DS8641-small" H 2625 6075 60  0000 C CNN
+F 2 "Package_DIP:DIP-16_W7.62mm" H 2325 6200 60  0001 C CNN
+F 3 "http://pccomponents.com/datasheets/NATI-ds8641.pdf" H 2325 6200 60  0001 C CNN
+F 4 "DS8641" H 2850 5825 50  0001 C CNN "manf#"
+	4    2850 5825
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	1150 5925 2150 5925
+$Comp
+L myLib:74LVC8T245-small U623
+U 8 1 601E4976
+P 3950 6275
+F 0 "U623" H 3575 6525 60  0000 C CNN
+F 1 "74LVC8T245-small" H 4175 6525 60  0000 C CNN
+F 2 "Package_SO:SSOP-24_5.3x8.2mm_P0.65mm" H 4400 8175 60  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/sn74lvc8t245.pdf" H 3950 6556 60  0001 C CNN
+F 4 "SN74LVC8T245PWR" H 3950 6275 50  0001 C CNN "manf#"
+	8    3950 6275
+	-1   0    0    -1  
+$EndComp
+$Comp
+L myLib:DS8641-small U604
+U 2 1 601E497C
+P 2850 6275
+F 0 "U604" H 3100 6525 60  0000 C CNN
+F 1 "DS8641-small" H 2625 6525 60  0000 C CNN
+F 2 "Package_DIP:DIP-16_W7.62mm" H 2325 6650 60  0001 C CNN
+F 3 "http://pccomponents.com/datasheets/NATI-ds8641.pdf" H 2325 6650 60  0001 C CNN
+F 4 "DS8641" H 2850 6275 50  0001 C CNN "manf#"
+	2    2850 6275
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	1150 6375 2150 6375
+$Comp
+L myLib:DS8641-small U606
+U 4 1 601E498F
+P 2850 6725
+F 0 "U606" H 3100 6975 60  0000 C CNN
+F 1 "DS8641-small" H 2625 6975 60  0000 C CNN
+F 2 "Package_DIP:DIP-16_W7.62mm" H 2325 7100 60  0001 C CNN
+F 3 "http://pccomponents.com/datasheets/NATI-ds8641.pdf" H 2325 7100 60  0001 C CNN
+F 4 "DS8641" H 2850 6725 50  0001 C CNN "manf#"
+	4    2850 6725
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	1150 6825 2150 6825
+$Comp
+L myLib:74LVC8T245-small U627
+U 4 1 601E499C
+P 3950 7175
+F 0 "U627" H 3575 7425 60  0000 C CNN
+F 1 "74LVC8T245-small" H 4175 7425 60  0000 C CNN
+F 2 "Package_SO:SSOP-24_5.3x8.2mm_P0.65mm" H 4400 9075 60  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/sn74lvc8t245.pdf" H 3950 7456 60  0001 C CNN
+F 4 "SN74LVC8T245PWR" H 3950 7175 50  0001 C CNN "manf#"
+	4    3950 7175
+	-1   0    0    -1  
+$EndComp
+$Comp
+L myLib:DS8641-small U606
+U 2 1 601E49A2
+P 2850 7175
+F 0 "U606" H 3100 7425 60  0000 C CNN
+F 1 "DS8641-small" H 2625 7425 60  0000 C CNN
+F 2 "Package_DIP:DIP-16_W7.62mm" H 2325 7550 60  0001 C CNN
+F 3 "http://pccomponents.com/datasheets/NATI-ds8641.pdf" H 2325 7550 60  0001 C CNN
+F 4 "DS8641" H 2850 7175 50  0001 C CNN "manf#"
+	2    2850 7175
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	1150 7275 2150 7275
+$Comp
+L myLib:74LVC8T245-small U630
+U 4 1 601E49AF
+P 3950 7625
+F 0 "U630" H 3575 7875 60  0000 C CNN
+F 1 "74LVC8T245-small" H 4175 7875 60  0000 C CNN
+F 2 "Package_SO:SSOP-24_5.3x8.2mm_P0.65mm" H 4400 9525 60  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/sn74lvc8t245.pdf" H 3950 7906 60  0001 C CNN
+F 4 "SN74LVC8T245PWR" H 3950 7625 50  0001 C CNN "manf#"
+	4    3950 7625
+	-1   0    0    -1  
+$EndComp
+$Comp
+L myLib:DS8641-small U610
+U 2 1 601E49B5
+P 2850 7625
+F 0 "U610" H 3100 7875 60  0000 C CNN
+F 1 "DS8641-small" H 2625 7875 60  0000 C CNN
+F 2 "Package_DIP:DIP-16_W7.62mm" H 2325 8000 60  0001 C CNN
+F 3 "http://pccomponents.com/datasheets/NATI-ds8641.pdf" H 2325 8000 60  0001 C CNN
+F 4 "DS8641" H 2850 7625 50  0001 C CNN "manf#"
+	2    2850 7625
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	1150 7725 2150 7725
+Text HLabel 1150 775  0    60   Input ~ 0
+TSYNC
+Text HLabel 1150 1225 0    60   Input ~ 0
+TDIN
+Text HLabel 1150 1675 0    60   Input ~ 0
+TDOUT
+Text HLabel 1150 2125 0    60   Input ~ 0
+TRPLY
+Text HLabel 1150 2575 0    60   Input ~ 0
+TREF
+Text HLabel 1150 3025 0    60   Input ~ 0
+TIRQ4
+Text HLabel 1150 3475 0    60   Input ~ 0
+TIRQ5
+Text Label 1150 3675 2    60   ~ 0
+BIRQ5
+Text Label 1150 975  2    60   ~ 0
+BSYNC
+Text Label 1150 1425 2    60   ~ 0
+BDIN
+Text Label 1150 1875 2    60   ~ 0
+BDOUT
+Text Label 1150 2325 2    60   ~ 0
+BRPLY
+Text Label 1150 3225 2    60   ~ 0
+BIRQ4
+Text Label 1150 2775 2    60   ~ 0
+BREF
+Text Label 1150 7725 2    60   ~ 0
+BEVNT
+Text HLabel 4450 7075 2    60   Output ~ 0
+RPOK
+Text HLabel 4450 6625 2    60   Output ~ 0
+RDCOK
+Text HLabel 4450 6175 2    60   Output ~ 0
+RHALT
+Text HLabel 4450 775  2    60   Output ~ 0
+RSYNC
+Text HLabel 4450 1225 2    60   Output ~ 0
+RDIN
+Text HLabel 4450 1675 2    60   Output ~ 0
+RDOUT
+Text HLabel 4450 2125 2    60   Output ~ 0
+RRPLY
+Text HLabel 4450 2575 2    60   Output ~ 0
+RREF
+Text HLabel 4450 5725 2    60   Output ~ 0
+RINIT
+Text HLabel 4450 4825 2    60   Output ~ 0
+RDMR
+Text HLabel 4450 5275 2    60   Output ~ 0
+RSACK
+Text HLabel 4450 3025 2    60   Output ~ 0
+RIRQ4
+Text HLabel 4450 3475 2    60   Output ~ 0
+RIRQ5
+Text HLabel 4450 3925 2    60   Output ~ 0
+RIRQ6
+Text HLabel 4450 4375 2    60   Output ~ 0
+RIRQ7
+Text HLabel 4450 7525 2    60   Output ~ 0
+REVNT
+Text HLabel 1150 5725 0    60   Input ~ 0
+TINIT
+Text Label 1150 7275 2    60   ~ 0
+BPOK
+Text Label 1150 6825 2    60   ~ 0
+BDCOK
+Text Label 1150 5925 2    60   ~ 0
+BINIT
+Text Label 1150 5025 2    60   ~ 0
+BDMR
+Text Label 1150 6375 2    60   ~ 0
+BHALT
+Text Label 1150 4575 2    60   ~ 0
+BIRQ7
+Text Label 1150 5475 2    60   ~ 0
+BSACK
+Text Label 1150 4125 2    60   ~ 0
+BIRQ6
+Text HLabel 1150 4375 0    60   Input ~ 0
+TIRQ7
+Text HLabel 1150 3925 0    60   Input ~ 0
+TIRQ6
+Text HLabel 1150 5275 0    60   Input ~ 0
+TSACK
+Text HLabel 1150 4825 0    60   Input ~ 0
+TDMR
+$Comp
+L myLib:74LVC8T245-small U623
+U 3 1 61E1C569
+P 3950 9000
+F 0 "U623" H 3575 9250 60  0000 C CNN
+F 1 "74LVC8T245-small" H 4125 9250 60  0000 C CNN
+F 2 "Package_SO:SSOP-24_5.3x8.2mm_P0.65mm" H 4400 10900 60  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/sn74lvc8t245.pdf" H 3950 9281 60  0001 C CNN
+F 4 "SN74LVC8T245PWR" H 3950 9000 50  0001 C CNN "manf#"
+	3    3950 9000
+	-1   0    0    -1  
+$EndComp
+$Comp
+L myLib:DS8641-small U603
+U 1 1 61E1C56F
+P 2850 9000
+F 0 "U603" H 3100 9250 60  0000 C CNN
+F 1 "DS8641-small" H 2625 9250 60  0000 C CNN
+F 2 "Package_DIP:DIP-16_W7.62mm" H 2325 9375 60  0001 C CNN
+F 3 "http://pccomponents.com/datasheets/NATI-ds8641.pdf" H 2325 9375 60  0001 C CNN
+F 4 "DS8641" H 2850 9000 50  0001 C CNN "manf#"
+	1    2850 9000
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	1150 9100 2150 9100
+$Comp
+L myLib:74LVC8T245-small U624
+U 4 1 61E1C576
+P 1650 9450
+F 0 "U624" H 2050 9700 60  0000 C CNN
+F 1 "74LVC8T245-small" H 1475 9700 60  0000 C CNN
+F 2 "Package_SO:SSOP-24_5.3x8.2mm_P0.65mm" H 2100 11350 60  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/sn74lvc8t245.pdf" H 1650 9731 60  0001 C CNN
+F 4 "SN74LVC8T245PWR" H 1650 9450 50  0001 C CNN "manf#"
+	4    1650 9450
+	1    0    0    -1  
+$EndComp
+$Comp
+L myLib:DS8641-small U603
+U 2 1 61E1C582
+P 2850 9450
+F 0 "U603" H 3100 9700 60  0000 C CNN
+F 1 "DS8641-small" H 2625 9700 60  0000 C CNN
+F 2 "Package_DIP:DIP-16_W7.62mm" H 2325 9825 60  0001 C CNN
+F 3 "http://pccomponents.com/datasheets/NATI-ds8641.pdf" H 2325 9825 60  0001 C CNN
+F 4 "DS8641" H 2850 9450 50  0001 C CNN "manf#"
+	2    2850 9450
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	1150 9550 2150 9550
+$Comp
+L myLib:74LVC8T245-small U625
+U 2 1 61E1C58F
+P 3950 9900
+F 0 "U625" H 3575 10150 60  0000 C CNN
+F 1 "74LVC8T245-small" H 4125 10150 60  0000 C CNN
+F 2 "Package_SO:SSOP-24_5.3x8.2mm_P0.65mm" H 4400 11800 60  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/sn74lvc8t245.pdf" H 3950 10181 60  0001 C CNN
+F 4 "SN74LVC8T245PWR" H 3950 9900 50  0001 C CNN "manf#"
+	2    3950 9900
+	-1   0    0    -1  
+$EndComp
+$Comp
+L myLib:DS8641-small U605
+U 3 1 61E1C595
+P 2850 9900
+F 0 "U605" H 3100 10150 60  0000 C CNN
+F 1 "DS8641-small" H 2625 10150 60  0000 C CNN
+F 2 "Package_DIP:DIP-16_W7.62mm" H 2325 10275 60  0001 C CNN
+F 3 "http://pccomponents.com/datasheets/NATI-ds8641.pdf" H 2325 10275 60  0001 C CNN
+F 4 "DS8641" H 2850 9900 50  0001 C CNN "manf#"
+	3    2850 9900
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	1150 10000 2150 10000
+$Comp
+L myLib:74LVC8T245-small U626
+U 2 1 61E1C59C
+P 1650 10350
+F 0 "U626" H 2050 10600 60  0000 C CNN
+F 1 "74LVC8T245-small" H 1475 10600 60  0000 C CNN
+F 2 "Package_SO:SSOP-24_5.3x8.2mm_P0.65mm" H 2100 12250 60  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/sn74lvc8t245.pdf" H 1650 10631 60  0001 C CNN
+F 4 "SN74LVC8T245PWR" H 1650 10350 50  0001 C CNN "manf#"
+	2    1650 10350
+	1    0    0    -1  
+$EndComp
+$Comp
+L myLib:DS8641-small U605
+U 2 1 61E1C5A8
+P 2850 10350
+F 0 "U605" H 3100 10600 60  0000 C CNN
+F 1 "DS8641-small" H 2625 10600 60  0000 C CNN
+F 2 "Package_DIP:DIP-16_W7.62mm" H 2325 10725 60  0001 C CNN
+F 3 "http://pccomponents.com/datasheets/NATI-ds8641.pdf" H 2325 10725 60  0001 C CNN
+F 4 "DS8641" H 2850 10350 50  0001 C CNN "manf#"
+	2    2850 10350
+	1    0    0    -1  
+$EndComp
+Text HLabel 1150 10250 0    60   Input ~ 0
+TDMGO
+Text HLabel 4450 8900 2    60   Output ~ 0
+RIAKI
+Text HLabel 4450 9800 2    60   Output ~ 0
+RDMGI
+Text Label 1150 9100 2    60   ~ 0
+BIAKI
+Text Label 1150 10000 2    60   ~ 0
+BDMGI
+Text Label 1150 9550 2    60   ~ 0
+BIAKO
+Text Label 1150 10450 2    60   ~ 0
+BDMGO
+NoConn ~ 3450 10350
+NoConn ~ 3450 9450
+Entry Wire Line
+	9600 5200 9500 5300
+Entry Wire Line
+	9600 3400 9500 3500
+Entry Wire Line
+	9600 3850 9500 3950
+Entry Wire Line
+	9600 4300 9500 4400
+Entry Wire Line
+	9600 4750 9500 4850
+Entry Wire Line
+	9600 7450 9500 7550
+Entry Wire Line
+	9600 5650 9500 5750
+Entry Wire Line
+	9600 6100 9500 6200
+Entry Wire Line
+	9600 6550 9500 6650
+Entry Wire Line
+	9600 7000 9500 7100
+Entry Wire Line
+	9600 9700 9500 9800
+Entry Wire Line
+	9600 7900 9500 8000
+Entry Wire Line
+	9600 8350 9500 8450
+Entry Wire Line
+	9600 8800 9500 8900
+Entry Wire Line
+	9600 9250 9500 9350
+Entry Wire Line
+	9600 10150 9500 10250
+Entry Wire Line
+	5350 2500 5450 2600
+Entry Wire Line
+	5350 2950 5450 3050
+Entry Wire Line
+	5350 3400 5450 3500
+Entry Wire Line
+	5350 3850 5450 3950
+Entry Wire Line
+	5350 4300 5450 4400
+Entry Wire Line
+	5350 4750 5450 4850
+Entry Wire Line
+	5350 5200 5450 5300
+Entry Wire Line
+	5350 5650 5450 5750
+Entry Wire Line
+	5350 6100 5450 6200
+Entry Wire Line
+	5350 6550 5450 6650
+Entry Wire Line
+	5350 7000 5450 7100
+Entry Wire Line
+	5350 7450 5450 7550
+Entry Wire Line
+	5350 7900 5450 8000
+Entry Wire Line
+	5350 8350 5450 8450
+Entry Wire Line
+	5350 8800 5450 8900
+Entry Wire Line
+	5350 9250 5450 9350
+Entry Wire Line
+	5350 9700 5450 9800
+Entry Wire Line
+	5350 10150 5450 10250
+Text HLabel 1150 9350 0    60   Input ~ 0
+TIAKO
+Wire Wire Line
+	2150 10450 1150 10450
+$Comp
+L myLib:74LVC8T245-small U622
+U 9 1 5F185589
+P 11025 4425
+F 0 "U622" H 10800 4150 60  0000 C CNN
+F 1 "74LVC8T245-small" H 11200 4675 60  0000 C CNN
+F 2 "Package_SO:SSOP-24_5.3x8.2mm_P0.65mm" H 11475 6325 60  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/sn74lvc8t245.pdf" H 11025 4706 60  0001 C CNN
+F 4 "SN74LVC8T245PWR" H 11025 4425 50  0001 C CNN "manf#"
+	9    11025 4425
+	1    0    0    -1  
+$EndComp
+$Comp
+L myLib:DS8641-small U602
+U 5 1 5F1905F2
+P 11900 1150
+F 0 "U602" H 11650 925 60  0000 C CNN
+F 1 "DS8641-small" H 11675 1400 60  0000 C CNN
+F 2 "Package_DIP:DIP-16_W7.62mm" H 11375 1525 60  0001 C CNN
+F 3 "http://pccomponents.com/datasheets/NATI-ds8641.pdf" H 11375 1525 60  0001 C CNN
+F 4 "DS8641" H 11900 1150 50  0001 C CNN "manf#"
+	5    11900 1150
+	1    0    0    -1  
+$EndComp
+$Comp
+L myLib:74LVC8T245-small U623
+U 9 1 5F2D6274
+P 11950 3225
+F 0 "U623" H 11700 2950 60  0000 C CNN
+F 1 "74LVC8T245-small" H 12125 3475 60  0000 C CNN
+F 2 "Package_SO:SSOP-24_5.3x8.2mm_P0.65mm" H 12400 5125 60  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/sn74lvc8t245.pdf" H 11950 3506 60  0001 C CNN
+F 4 "SN74LVC8T245PWR" H 11950 3225 50  0001 C CNN "manf#"
+	9    11950 3225
+	1    0    0    -1  
+$EndComp
+$Comp
+L myLib:DS8641-small U603
+U 5 1 5F2D627A
+P 12850 1150
+F 0 "U603" H 12600 925 60  0000 C CNN
+F 1 "DS8641-small" H 12625 1400 60  0000 C CNN
+F 2 "Package_DIP:DIP-16_W7.62mm" H 12325 1525 60  0001 C CNN
+F 3 "http://pccomponents.com/datasheets/NATI-ds8641.pdf" H 12325 1525 60  0001 C CNN
+F 4 "DS8641" H 12850 1150 50  0001 C CNN "manf#"
+	5    12850 1150
+	1    0    0    -1  
+$EndComp
+$Comp
+L myLib:74LVC8T245-small U624
+U 9 1 5F2E569C
+P 12000 4425
+F 0 "U624" H 11775 4150 60  0000 C CNN
+F 1 "74LVC8T245-small" H 12175 4675 60  0000 C CNN
+F 2 "Package_SO:SSOP-24_5.3x8.2mm_P0.65mm" H 12450 6325 60  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/sn74lvc8t245.pdf" H 12000 4706 60  0001 C CNN
+F 4 "SN74LVC8T245PWR" H 12000 4425 50  0001 C CNN "manf#"
+	9    12000 4425
+	1    0    0    -1  
+$EndComp
+$Comp
+L myLib:DS8641-small U604
+U 5 1 5F2E56A2
+P 13825 1150
+F 0 "U604" H 13575 925 60  0000 C CNN
+F 1 "DS8641-small" H 13600 1400 60  0000 C CNN
+F 2 "Package_DIP:DIP-16_W7.62mm" H 13300 1525 60  0001 C CNN
+F 3 "http://pccomponents.com/datasheets/NATI-ds8641.pdf" H 13300 1525 60  0001 C CNN
+F 4 "DS8641" H 13825 1150 50  0001 C CNN "manf#"
+	5    13825 1150
+	1    0    0    -1  
+$EndComp
+$Comp
+L myLib:74LVC8T245-small U625
+U 9 1 5F2F4A8C
+P 12925 3225
+F 0 "U625" H 12675 2950 60  0000 C CNN
+F 1 "74LVC8T245-small" H 13100 3475 60  0000 C CNN
+F 2 "Package_SO:SSOP-24_5.3x8.2mm_P0.65mm" H 13375 5125 60  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/sn74lvc8t245.pdf" H 12925 3506 60  0001 C CNN
+F 4 "SN74LVC8T245PWR" H 12925 3225 50  0001 C CNN "manf#"
+	9    12925 3225
+	1    0    0    -1  
+$EndComp
+$Comp
+L myLib:DS8641-small U605
+U 5 1 5F2F4A92
+P 14800 1150
+F 0 "U605" H 14550 925 60  0000 C CNN
+F 1 "DS8641-small" H 14575 1400 60  0000 C CNN
+F 2 "Package_DIP:DIP-16_W7.62mm" H 14275 1525 60  0001 C CNN
+F 3 "http://pccomponents.com/datasheets/NATI-ds8641.pdf" H 14275 1525 60  0001 C CNN
+F 4 "DS8641" H 14800 1150 50  0001 C CNN "manf#"
+	5    14800 1150
+	1    0    0    -1  
+$EndComp
+$Comp
+L myLib:74LVC8T245-small U626
+U 9 1 5F304754
+P 12975 4425
+F 0 "U626" H 12750 4150 60  0000 C CNN
+F 1 "74LVC8T245-small" H 13150 4675 60  0000 C CNN
+F 2 "Package_SO:SSOP-24_5.3x8.2mm_P0.65mm" H 13425 6325 60  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/sn74lvc8t245.pdf" H 12975 4706 60  0001 C CNN
+F 4 "SN74LVC8T245PWR" H 12975 4425 50  0001 C CNN "manf#"
+	9    12975 4425
+	1    0    0    -1  
+$EndComp
+$Comp
+L myLib:74LVC8T245-small U627
+U 9 1 5F316104
+P 13900 3225
+F 0 "U627" H 13650 2950 60  0000 C CNN
+F 1 "74LVC8T245-small" H 14075 3475 60  0000 C CNN
+F 2 "Package_SO:SSOP-24_5.3x8.2mm_P0.65mm" H 14350 5125 60  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/sn74lvc8t245.pdf" H 13900 3506 60  0001 C CNN
+F 4 "SN74LVC8T245PWR" H 13900 3225 50  0001 C CNN "manf#"
+	9    13900 3225
+	1    0    0    -1  
+$EndComp
+$Comp
+L myLib:DS8641-small U607
+U 5 1 5F31610A
+P 10925 2050
+F 0 "U607" H 10675 1825 60  0000 C CNN
+F 1 "DS8641-small" H 10700 2300 60  0000 C CNN
+F 2 "Package_DIP:DIP-16_W7.62mm" H 10400 2425 60  0001 C CNN
+F 3 "http://pccomponents.com/datasheets/NATI-ds8641.pdf" H 10400 2425 60  0001 C CNN
+F 4 "DS8641" H 10925 2050 50  0001 C CNN "manf#"
+	5    10925 2050
+	1    0    0    -1  
+$EndComp
+$Comp
+L myLib:74LVC8T245-small U628
+U 9 1 5F325F7E
+P 14875 3225
+F 0 "U628" H 14625 2950 60  0000 C CNN
+F 1 "74LVC8T245-small" H 15050 3475 60  0000 C CNN
+F 2 "Package_SO:SSOP-24_5.3x8.2mm_P0.65mm" H 15325 5125 60  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/sn74lvc8t245.pdf" H 14875 3506 60  0001 C CNN
+F 4 "SN74LVC8T245PWR" H 14875 3225 50  0001 C CNN "manf#"
+	9    14875 3225
+	1    0    0    -1  
+$EndComp
+$Comp
+L myLib:DS8641-small U608
+U 5 1 5F325F84
+P 11900 2050
+F 0 "U608" H 11625 1825 60  0000 C CNN
+F 1 "DS8641-small" H 11675 2300 60  0000 C CNN
+F 2 "Package_DIP:DIP-16_W7.62mm" H 11375 2425 60  0001 C CNN
+F 3 "http://pccomponents.com/datasheets/NATI-ds8641.pdf" H 11375 2425 60  0001 C CNN
+F 4 "DS8641" H 11900 2050 50  0001 C CNN "manf#"
+	5    11900 2050
+	1    0    0    -1  
+$EndComp
+$Comp
+L myLib:74LVC8T245-small U621
+U 9 1 5F336FB8
+P 10975 3225
+F 0 "U621" H 10750 2950 60  0000 C CNN
+F 1 "74LVC8T245-small" H 11150 3475 60  0000 C CNN
+F 2 "Package_SO:SSOP-24_5.3x8.2mm_P0.65mm" H 11425 5125 60  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/sn74lvc8t245.pdf" H 10975 3506 60  0001 C CNN
+F 4 "SN74LVC8T245PWR" H 10975 3225 50  0001 C CNN "manf#"
+	9    10975 3225
+	1    0    0    -1  
+$EndComp
+$Comp
+L myLib:DS8641-small U601
+U 5 1 5F336FBE
+P 10925 1150
+F 0 "U601" H 10675 925 60  0000 C CNN
+F 1 "DS8641-small" H 10700 1400 60  0000 C CNN
+F 2 "Package_DIP:DIP-16_W7.62mm" H 10400 1525 60  0001 C CNN
+F 3 "http://pccomponents.com/datasheets/NATI-ds8641.pdf" H 10400 1525 60  0001 C CNN
+F 4 "DS8641" H 10925 1150 50  0001 C CNN "manf#"
+	5    10925 1150
+	1    0    0    -1  
+$EndComp
+$Comp
+L myLib:74LVC8T245-small U629
+U 9 1 5F378C4A
+P 13950 4425
+F 0 "U629" H 13700 4150 60  0000 C CNN
+F 1 "74LVC8T245-small" H 14125 4675 60  0000 C CNN
+F 2 "Package_SO:SSOP-24_5.3x8.2mm_P0.65mm" H 14400 6325 60  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/sn74lvc8t245.pdf" H 13950 4706 60  0001 C CNN
+F 4 "SN74LVC8T245PWR" H 13950 4425 50  0001 C CNN "manf#"
+	9    13950 4425
+	1    0    0    -1  
+$EndComp
+$Comp
+L myLib:74LVC8T245-small U630
+U 9 1 5F386B80
+P 15850 3225
+F 0 "U630" H 15575 2950 60  0000 C CNN
+F 1 "74LVC8T245-small" H 16025 3475 60  0000 C CNN
+F 2 "Package_SO:SSOP-24_5.3x8.2mm_P0.65mm" H 16300 5125 60  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/sn74lvc8t245.pdf" H 15850 3506 60  0001 C CNN
+F 4 "SN74LVC8T245PWR" H 15850 3225 50  0001 C CNN "manf#"
+	9    15850 3225
+	1    0    0    -1  
+$EndComp
+$Comp
+L myLib:DS8641-small U610
+U 5 1 5F386B86
+P 13825 2050
+F 0 "U610" H 13550 1825 60  0000 C CNN
+F 1 "DS8641-small" H 13600 2300 60  0000 C CNN
+F 2 "Package_DIP:DIP-16_W7.62mm" H 13300 2425 60  0001 C CNN
+F 3 "http://pccomponents.com/datasheets/NATI-ds8641.pdf" H 13300 2425 60  0001 C CNN
+F 4 "DS8641" H 13825 2050 50  0001 C CNN "manf#"
+	5    13825 2050
+	1    0    0    -1  
+$EndComp
+$Comp
+L myLib:74LVC8T245-small U631
+U 9 1 5F394A74
+P 14925 4425
+F 0 "U631" H 14675 4150 60  0000 C CNN
+F 1 "74LVC8T245-small" H 15100 4675 60  0000 C CNN
+F 2 "Package_SO:SSOP-24_5.3x8.2mm_P0.65mm" H 15375 6325 60  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/sn74lvc8t245.pdf" H 14925 4706 60  0001 C CNN
+F 4 "SN74LVC8T245PWR" H 14925 4425 50  0001 C CNN "manf#"
+	9    14925 4425
+	1    0    0    -1  
+$EndComp
+$Comp
+L myLib:DS8641-small U611
+U 5 1 5F394A7A
+P 14800 2050
+F 0 "U611" H 14550 1825 60  0000 C CNN
+F 1 "DS8641-small" H 14575 2300 60  0000 C CNN
+F 2 "Package_DIP:DIP-16_W7.62mm" H 14275 2425 60  0001 C CNN
+F 3 "http://pccomponents.com/datasheets/NATI-ds8641.pdf" H 14275 2425 60  0001 C CNN
+F 4 "DS8641" H 14800 2050 50  0001 C CNN "manf#"
+	5    14800 2050
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	15850 2825 15850 2750
+Wire Wire Line
+	27700 6061 27700 6211
+Wire Wire Line
+	15950 2825 15950 2675
+Connection ~ 15950 2675
+Wire Wire Line
+	15950 2675 16050 2675
+Wire Wire Line
+	15075 2825 15075 2675
+Connection ~ 15075 2675
+Wire Wire Line
+	15075 2675 15950 2675
+Wire Wire Line
+	14975 2825 14975 2675
+Connection ~ 14975 2675
+Wire Wire Line
+	14975 2675 15075 2675
+Wire Wire Line
+	14875 2825 14875 2750
+Connection ~ 14875 2750
+Wire Wire Line
+	14875 2750 15850 2750
+Wire Wire Line
+	14100 2825 14100 2675
+Connection ~ 14100 2675
+Wire Wire Line
+	14100 2675 14975 2675
+Wire Wire Line
+	14000 2825 14000 2675
+Connection ~ 14000 2675
+Wire Wire Line
+	14000 2675 14100 2675
+Wire Wire Line
+	13900 2825 13900 2750
+Connection ~ 13900 2750
+Wire Wire Line
+	13900 2750 14875 2750
+Wire Wire Line
+	13125 2825 13125 2675
+Connection ~ 13125 2675
+Wire Wire Line
+	13125 2675 14000 2675
+Wire Wire Line
+	13025 2825 13025 2675
+Connection ~ 13025 2675
+Wire Wire Line
+	13025 2675 13125 2675
+Wire Wire Line
+	12925 2825 12925 2750
+Connection ~ 12925 2750
+Wire Wire Line
+	12925 2750 13900 2750
+Wire Wire Line
+	12150 2825 12150 2675
+Connection ~ 12150 2675
+Wire Wire Line
+	12150 2675 13025 2675
+Wire Wire Line
+	10450 2750 10975 2750
+Wire Wire Line
+	12050 2825 12050 2675
+Connection ~ 12050 2675
+Wire Wire Line
+	12050 2675 12150 2675
+Wire Wire Line
+	11950 2825 11950 2750
+Connection ~ 11950 2750
+Wire Wire Line
+	11950 2750 12925 2750
+Wire Wire Line
+	11175 2825 11175 2675
+Connection ~ 11175 2675
+Wire Wire Line
+	11175 2675 12050 2675
+Wire Wire Line
+	11075 2825 11075 2675
+Wire Wire Line
+	10675 2675 11075 2675
+Connection ~ 11075 2675
+Wire Wire Line
+	11075 2675 11175 2675
+Wire Wire Line
+	10975 2825 10975 2750
+Connection ~ 10975 2750
+Wire Wire Line
+	10975 2750 11950 2750
+Text Label 10675 2675 2    60   ~ 0
+5V0
+Text Label 10675 2750 2    60   ~ 0
+3V3
+Wire Wire Line
+	10475 3125 10475 3225
+Wire Wire Line
+	10475 3575 10975 3575
+Connection ~ 10475 3225
+Wire Wire Line
+	10475 3225 10475 3575
+Connection ~ 10975 3575
+Wire Wire Line
+	10975 3575 11075 3575
+Connection ~ 11075 3575
+Wire Wire Line
+	11075 3575 11175 3575
+Connection ~ 11175 3575
+Wire Wire Line
+	11175 3575 11450 3575
+Connection ~ 11950 3575
+Wire Wire Line
+	11950 3575 12050 3575
+Connection ~ 12050 3575
+Wire Wire Line
+	12050 3575 12150 3575
+Connection ~ 12150 3575
+Wire Wire Line
+	12150 3575 12425 3575
+Connection ~ 12925 3575
+Wire Wire Line
+	12925 3575 13025 3575
+Connection ~ 13025 3575
+Wire Wire Line
+	13025 3575 13125 3575
+Connection ~ 13125 3575
+Wire Wire Line
+	13125 3575 13400 3575
+Connection ~ 13900 3575
+Wire Wire Line
+	13900 3575 14000 3575
+Connection ~ 14000 3575
+Wire Wire Line
+	14000 3575 14100 3575
+Connection ~ 14100 3575
+Wire Wire Line
+	14100 3575 14375 3575
+Connection ~ 14875 3575
+Wire Wire Line
+	14875 3575 14975 3575
+Connection ~ 14975 3575
+Wire Wire Line
+	14975 3575 15075 3575
+Connection ~ 15075 3575
+Connection ~ 15850 3575
+Wire Wire Line
+	15850 3575 15950 3575
+Connection ~ 15950 3575
+Wire Wire Line
+	15950 3575 16050 3575
+Wire Wire Line
+	10525 4425 10525 4775
+Wire Wire Line
+	10525 4775 11025 4775
+Connection ~ 11025 4775
+Wire Wire Line
+	11025 4775 11125 4775
+Connection ~ 11125 4775
+Wire Wire Line
+	11125 4775 11225 4775
+Connection ~ 11225 4775
+Wire Wire Line
+	11225 4775 11500 4775
+Connection ~ 12000 4775
+Wire Wire Line
+	12000 4775 12100 4775
+Connection ~ 12100 4775
+Wire Wire Line
+	12100 4775 12200 4775
+Connection ~ 12200 4775
+Wire Wire Line
+	12200 4775 12475 4775
+Connection ~ 12975 4775
+Wire Wire Line
+	12975 4775 13075 4775
+Connection ~ 13075 4775
+Wire Wire Line
+	13075 4775 13175 4775
+Connection ~ 13175 4775
+Wire Wire Line
+	13175 4775 13450 4775
+Connection ~ 13950 4775
+Wire Wire Line
+	13950 4775 14050 4775
+Connection ~ 14050 4775
+Wire Wire Line
+	14050 4775 14150 4775
+Connection ~ 14150 4775
+Wire Wire Line
+	14150 4775 14425 4775
+Connection ~ 14925 4775
+Wire Wire Line
+	14925 4775 15025 4775
+Connection ~ 15025 4775
+Wire Wire Line
+	15025 4775 15125 4775
+Wire Wire Line
+	15125 4025 15125 3875
+Wire Wire Line
+	15025 4025 15025 3875
+Connection ~ 15025 3875
+Wire Wire Line
+	15025 3875 15125 3875
+Wire Wire Line
+	14925 4025 14925 3950
+Wire Wire Line
+	14150 4025 14150 3875
+Connection ~ 14150 3875
+Wire Wire Line
+	14150 3875 15025 3875
+Wire Wire Line
+	14050 4025 14050 3875
+Connection ~ 14050 3875
+Wire Wire Line
+	14050 3875 14150 3875
+Wire Wire Line
+	13950 4025 13950 3950
+Connection ~ 13950 3950
+Wire Wire Line
+	13950 3950 14425 3950
+Wire Wire Line
+	13175 4025 13175 3875
+Connection ~ 13175 3875
+Wire Wire Line
+	13175 3875 14050 3875
+Wire Wire Line
+	13075 4025 13075 3875
+Connection ~ 13075 3875
+Wire Wire Line
+	13075 3875 13175 3875
+Wire Wire Line
+	12975 4025 12975 3950
+Connection ~ 12975 3950
+Wire Wire Line
+	12975 3950 13450 3950
+Wire Wire Line
+	12200 4025 12200 3875
+Connection ~ 12200 3875
+Wire Wire Line
+	12200 3875 13075 3875
+Wire Wire Line
+	10475 3950 10525 3950
+Wire Wire Line
+	12100 4025 12100 3875
+Connection ~ 12100 3875
+Wire Wire Line
+	12100 3875 12200 3875
+Wire Wire Line
+	12000 4025 12000 3950
+Connection ~ 12000 3950
+Wire Wire Line
+	12000 3950 12475 3950
+Wire Wire Line
+	11225 4025 11225 3875
+Connection ~ 11225 3875
+Wire Wire Line
+	11225 3875 12100 3875
+Wire Wire Line
+	11125 4025 11125 3875
+Wire Wire Line
+	10475 3875 11125 3875
+Connection ~ 11125 3875
+Wire Wire Line
+	11125 3875 11225 3875
+Wire Wire Line
+	11025 4025 11025 3950
+Connection ~ 11025 3950
+Wire Wire Line
+	11025 3950 11500 3950
+Text Label 10475 3875 2    60   ~ 0
+5V0
+Text Label 10475 3950 2    60   ~ 0
+3V3
+Wire Wire Line
+	11450 3225 11450 3575
+Connection ~ 11450 3575
+Wire Wire Line
+	11450 3575 11950 3575
+Wire Wire Line
+	12425 3225 12425 3575
+Connection ~ 12425 3575
+Wire Wire Line
+	12425 3575 12925 3575
+Wire Wire Line
+	13400 3225 13400 3575
+Connection ~ 13400 3575
+Wire Wire Line
+	13400 3575 13900 3575
+Wire Wire Line
+	14375 3225 14375 3575
+Connection ~ 14375 3575
+Wire Wire Line
+	14375 3575 14875 3575
+Wire Wire Line
+	15350 3225 15350 3575
+Wire Wire Line
+	15075 3575 15350 3575
+Connection ~ 15350 3575
+Wire Wire Line
+	15350 3575 15850 3575
+Wire Wire Line
+	11450 3125 11450 3225
+Connection ~ 11450 3225
+Wire Wire Line
+	12425 3125 12425 3225
+Connection ~ 12425 3225
+Wire Wire Line
+	13400 3125 13400 3225
+Connection ~ 13400 3225
+Wire Wire Line
+	14375 3125 14375 3225
+Connection ~ 14375 3225
+Wire Wire Line
+	15350 3125 15350 3225
+Connection ~ 15350 3225
+Wire Wire Line
+	14425 4325 14425 3950
+Connection ~ 14425 3950
+Wire Wire Line
+	14425 3950 14925 3950
+Wire Wire Line
+	14425 4425 14425 4775
+Connection ~ 14425 4775
+Wire Wire Line
+	14425 4775 14925 4775
+Wire Wire Line
+	13450 4425 13450 4775
+Connection ~ 13450 4775
+Wire Wire Line
+	13450 4775 13950 4775
+Wire Wire Line
+	13450 4325 13450 3950
+Connection ~ 13450 3950
+Wire Wire Line
+	13450 3950 13950 3950
+Wire Wire Line
+	12475 4325 12475 3950
+Connection ~ 12475 3950
+Wire Wire Line
+	12475 3950 12975 3950
+Wire Wire Line
+	12475 4425 12475 4775
+Connection ~ 12475 4775
+Wire Wire Line
+	12475 4775 12975 4775
+Wire Wire Line
+	11500 4425 11500 4775
+Connection ~ 11500 4775
+Wire Wire Line
+	11500 4775 12000 4775
+Wire Wire Line
+	11500 4325 11500 3950
+Connection ~ 11500 3950
+Wire Wire Line
+	11500 3950 12000 3950
+Wire Wire Line
+	10525 4325 10525 3950
+Connection ~ 10525 3950
+Wire Wire Line
+	10525 3950 11025 3950
+Text Notes 12450 2650 2    60   ~ 0
+Receive Level Converters
+Text Notes 12525 3850 2    60   ~ 0
+Transmit Level Converters
+$Comp
+L myLib:DS8641-small U609
+U 5 1 5F378C50
+P 12850 2050
+F 0 "U609" H 12600 1825 60  0000 C CNN
+F 1 "DS8641-small" H 12625 2300 60  0000 C CNN
+F 2 "Package_DIP:DIP-16_W7.62mm" H 12325 2425 60  0001 C CNN
+F 3 "http://pccomponents.com/datasheets/NATI-ds8641.pdf" H 12325 2425 60  0001 C CNN
+F 4 "DS8641" H 12850 2050 50  0001 C CNN "manf#"
+	5    12850 2050
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR?
+U 1 1 60C1FEA9
+P 15125 4775
+AR Path="/5D8BBF40/60C1FEA9" Ref="#PWR?"  Part="1" 
+AR Path="/5DCB8CA6/5DCBEAC7/60C1FEA9" Ref="#PWR0217"  Part="1" 
+F 0 "#PWR0217" H 15125 4525 50  0001 C CNN
+F 1 "GND" H 15125 4625 50  0001 C CNN
+F 2 "" H 15125 4775 60  0000 C CNN
+F 3 "" H 15125 4775 60  0000 C CNN
+	1    15125 4775
+	1    0    0    -1  
+$EndComp
+Connection ~ 15125 4775
+$Comp
+L power:GND #PWR?
+U 1 1 60C34E0A
+P 16050 3575
+AR Path="/5D8BBF40/60C34E0A" Ref="#PWR?"  Part="1" 
+AR Path="/5DCB8CA6/5DCBEAC7/60C34E0A" Ref="#PWR0218"  Part="1" 
+F 0 "#PWR0218" H 16050 3325 50  0001 C CNN
+F 1 "GND" H 16050 3425 50  0001 C CNN
+F 2 "" H 16050 3575 60  0000 C CNN
+F 3 "" H 16050 3575 60  0000 C CNN
+	1    16050 3575
+	1    0    0    -1  
+$EndComp
+Connection ~ 16050 3575
+Wire Wire Line
+	15775 750  14800 750 
+Connection ~ 11900 750 
+Connection ~ 12850 750 
+Wire Wire Line
+	12850 750  11900 750 
+Connection ~ 13825 750 
+Wire Wire Line
+	13825 750  12850 750 
+Connection ~ 14800 750 
+Wire Wire Line
+	14800 750  13825 750 
+Wire Wire Line
+	10925 1500 11450 1500
+Connection ~ 11900 1500
+Wire Wire Line
+	11900 1500 12400 1500
+Connection ~ 12850 1500
+Wire Wire Line
+	12850 1500 13375 1500
+Connection ~ 13825 1500
+Wire Wire Line
+	13825 1500 14350 1500
+Connection ~ 14800 1500
+Wire Wire Line
+	14800 1500 15325 1500
+$Comp
+L power:GND #PWR?
+U 1 1 60C8210C
+P 15775 1500
+AR Path="/5D8BBF40/60C8210C" Ref="#PWR?"  Part="1" 
+AR Path="/5DCB8CA6/5DCBEAC7/60C8210C" Ref="#PWR0219"  Part="1" 
+F 0 "#PWR0219" H 15775 1250 50  0001 C CNN
+F 1 "GND" H 15775 1350 50  0001 C CNN
+F 2 "" H 15775 1500 60  0000 C CNN
+F 3 "" H 15775 1500 60  0000 C CNN
+	1    15775 1500
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	14800 1650 13825 1650
+Connection ~ 10925 1650
+Wire Wire Line
+	10925 1650 10550 1650
+Connection ~ 11900 1650
+Wire Wire Line
+	11900 1650 10925 1650
+Connection ~ 12850 1650
+Wire Wire Line
+	12850 1650 11900 1650
+Connection ~ 13825 1650
+Wire Wire Line
+	13825 1650 12850 1650
+Wire Wire Line
+	10925 2400 11450 2400
+Connection ~ 11900 2400
+Wire Wire Line
+	11900 2400 12400 2400
+Connection ~ 12850 2400
+Wire Wire Line
+	12850 2400 13375 2400
+Connection ~ 13825 2400
+Wire Wire Line
+	13825 2400 14350 2400
+$Comp
+L power:GND #PWR?
+U 1 1 60CB9C6C
+P 14800 2400
+AR Path="/5D8BBF40/60CB9C6C" Ref="#PWR?"  Part="1" 
+AR Path="/5DCB8CA6/5DCBEAC7/60CB9C6C" Ref="#PWR0220"  Part="1" 
+F 0 "#PWR0220" H 14800 2150 50  0001 C CNN
+F 1 "GND" H 14800 2250 50  0001 C CNN
+F 2 "" H 14800 2400 60  0000 C CNN
+F 3 "" H 14800 2400 60  0000 C CNN
+	1    14800 2400
+	1    0    0    -1  
+$EndComp
+Connection ~ 14800 2400
+Wire Wire Line
+	14350 1950 14350 2050
+Connection ~ 14350 2400
+Wire Wire Line
+	14350 2400 14800 2400
+Connection ~ 14350 2050
+Wire Wire Line
+	14350 2050 14350 2400
+Connection ~ 15325 1500
+Wire Wire Line
+	15325 1500 15775 1500
+Wire Wire Line
+	14350 1050 14350 1150
+Connection ~ 14350 1500
+Wire Wire Line
+	14350 1500 14800 1500
+Connection ~ 14350 1150
+Wire Wire Line
+	14350 1150 14350 1500
+Wire Wire Line
+	13375 1050 13375 1150
+Connection ~ 13375 1500
+Wire Wire Line
+	13375 1500 13825 1500
+Connection ~ 13375 1150
+Wire Wire Line
+	13375 1150 13375 1500
+Wire Wire Line
+	13375 1950 13375 2050
+Connection ~ 13375 2400
+Wire Wire Line
+	13375 2400 13825 2400
+Connection ~ 13375 2050
+Wire Wire Line
+	13375 2050 13375 2400
+Wire Wire Line
+	12400 1050 12400 1150
+Connection ~ 12400 1500
+Wire Wire Line
+	12400 1500 12850 1500
+Connection ~ 12400 1150
+Wire Wire Line
+	12400 1150 12400 1500
+Wire Wire Line
+	12400 1950 12400 2050
+Connection ~ 12400 2400
+Wire Wire Line
+	12400 2400 12850 2400
+Connection ~ 12400 2050
+Wire Wire Line
+	12400 2050 12400 2400
+Wire Wire Line
+	11450 1050 11450 1150
+Connection ~ 11450 1500
+Wire Wire Line
+	11450 1500 11900 1500
+Connection ~ 11450 1150
+Wire Wire Line
+	11450 1150 11450 1500
+Wire Wire Line
+	11450 1950 11450 2050
+Connection ~ 11450 2400
+Wire Wire Line
+	11450 2400 11900 2400
+Connection ~ 11450 2050
+Wire Wire Line
+	11450 2050 11450 2400
+Wire Wire Line
+	10475 1050 10475 1150
+Wire Wire Line
+	10475 1500 10925 1500
+Connection ~ 10475 1150
+Wire Wire Line
+	10475 1150 10475 1500
+Connection ~ 10925 1500
+Wire Wire Line
+	10475 1950 10475 2050
+Wire Wire Line
+	10475 2400 10925 2400
+Connection ~ 10475 2050
+Wire Wire Line
+	10475 2050 10475 2400
+Connection ~ 10925 2400
+$Comp
+L Device:C C?
+U 1 1 60F182D3
+P 10325 5150
+AR Path="/5DCB8CA6/5DCBEAC7/5DFF8FC5/60F182D3" Ref="C?"  Part="1" 
+AR Path="/5DCB8CA6/5DCBEAC7/60F182D3" Ref="C601"  Part="1" 
+F 0 "C601" H 10350 5250 50  0000 L CNN
+F 1 "100nF" H 10350 5050 50  0000 L CNN
+F 2 "Capacitor_SMD:C_0603_1608Metric" H 10363 5000 50  0001 C CNN
+F 3 "~" H 10325 5150 50  0001 C CNN
+	1    10325 5150
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:C C?
+U 1 1 610F7FFD
+P 10650 5150
+AR Path="/5DCB8CA6/5DCBEAC7/5DFF8FC5/610F7FFD" Ref="C?"  Part="1" 
+AR Path="/5DCB8CA6/5DCBEAC7/610F7FFD" Ref="C602"  Part="1" 
+F 0 "C602" H 10675 5250 50  0000 L CNN
+F 1 "100nF" H 10675 5050 50  0000 L CNN
+F 2 "Capacitor_SMD:C_0603_1608Metric" H 10688 5000 50  0001 C CNN
+F 3 "~" H 10650 5150 50  0001 C CNN
+	1    10650 5150
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:C C?
+U 1 1 610F8952
+P 10975 5150
+AR Path="/5DCB8CA6/5DCBEAC7/5DFF8FC5/610F8952" Ref="C?"  Part="1" 
+AR Path="/5DCB8CA6/5DCBEAC7/610F8952" Ref="C603"  Part="1" 
+F 0 "C603" H 11000 5250 50  0000 L CNN
+F 1 "100nF" H 11000 5050 50  0000 L CNN
+F 2 "Capacitor_SMD:C_0603_1608Metric" H 11013 5000 50  0001 C CNN
+F 3 "~" H 10975 5150 50  0001 C CNN
+	1    10975 5150
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:C C?
+U 1 1 610F9218
+P 11300 5150
+AR Path="/5DCB8CA6/5DCBEAC7/5DFF8FC5/610F9218" Ref="C?"  Part="1" 
+AR Path="/5DCB8CA6/5DCBEAC7/610F9218" Ref="C604"  Part="1" 
+F 0 "C604" H 11325 5250 50  0000 L CNN
+F 1 "100nF" H 11325 5050 50  0000 L CNN
+F 2 "Capacitor_SMD:C_0603_1608Metric" H 11338 5000 50  0001 C CNN
+F 3 "~" H 11300 5150 50  0001 C CNN
+	1    11300 5150
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:C C?
+U 1 1 610FFB95
+P 11625 5150
+AR Path="/5DCB8CA6/5DCBEAC7/5DFF8FC5/610FFB95" Ref="C?"  Part="1" 
+AR Path="/5DCB8CA6/5DCBEAC7/610FFB95" Ref="C605"  Part="1" 
+F 0 "C605" H 11650 5250 50  0000 L CNN
+F 1 "100nF" H 11650 5050 50  0000 L CNN
+F 2 "Capacitor_SMD:C_0603_1608Metric" H 11663 5000 50  0001 C CNN
+F 3 "~" H 11625 5150 50  0001 C CNN
+	1    11625 5150
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:C C?
+U 1 1 610FFB9B
+P 11950 5150
+AR Path="/5DCB8CA6/5DCBEAC7/5DFF8FC5/610FFB9B" Ref="C?"  Part="1" 
+AR Path="/5DCB8CA6/5DCBEAC7/610FFB9B" Ref="C606"  Part="1" 
+F 0 "C606" H 11975 5250 50  0000 L CNN
+F 1 "100nF" H 11975 5050 50  0000 L CNN
+F 2 "Capacitor_SMD:C_0603_1608Metric" H 11988 5000 50  0001 C CNN
+F 3 "~" H 11950 5150 50  0001 C CNN
+	1    11950 5150
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:C C?
+U 1 1 610FFBA1
+P 12275 5150
+AR Path="/5DCB8CA6/5DCBEAC7/5DFF8FC5/610FFBA1" Ref="C?"  Part="1" 
+AR Path="/5DCB8CA6/5DCBEAC7/610FFBA1" Ref="C607"  Part="1" 
+F 0 "C607" H 12300 5250 50  0000 L CNN
+F 1 "100nF" H 12300 5050 50  0000 L CNN
+F 2 "Capacitor_SMD:C_0603_1608Metric" H 12313 5000 50  0001 C CNN
+F 3 "~" H 12275 5150 50  0001 C CNN
+	1    12275 5150
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:C C?
+U 1 1 610FFBA7
+P 12600 5150
+AR Path="/5DCB8CA6/5DCBEAC7/5DFF8FC5/610FFBA7" Ref="C?"  Part="1" 
+AR Path="/5DCB8CA6/5DCBEAC7/610FFBA7" Ref="C608"  Part="1" 
+F 0 "C608" H 12625 5250 50  0000 L CNN
+F 1 "100nF" H 12625 5050 50  0000 L CNN
+F 2 "Capacitor_SMD:C_0603_1608Metric" H 12638 5000 50  0001 C CNN
+F 3 "~" H 12600 5150 50  0001 C CNN
+	1    12600 5150
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:C C?
+U 1 1 611469BD
+P 12925 5150
+AR Path="/5DCB8CA6/5DCBEAC7/5DFF8FC5/611469BD" Ref="C?"  Part="1" 
+AR Path="/5DCB8CA6/5DCBEAC7/611469BD" Ref="C609"  Part="1" 
+F 0 "C609" H 12950 5250 50  0000 L CNN
+F 1 "100nF" H 12950 5050 50  0000 L CNN
+F 2 "Capacitor_SMD:C_0603_1608Metric" H 12963 5000 50  0001 C CNN
+F 3 "~" H 12925 5150 50  0001 C CNN
+	1    12925 5150
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:C C?
+U 1 1 611469C3
+P 13250 5150
+AR Path="/5DCB8CA6/5DCBEAC7/5DFF8FC5/611469C3" Ref="C?"  Part="1" 
+AR Path="/5DCB8CA6/5DCBEAC7/611469C3" Ref="C610"  Part="1" 
+F 0 "C610" H 13275 5250 50  0000 L CNN
+F 1 "100nF" H 13275 5050 50  0000 L CNN
+F 2 "Capacitor_SMD:C_0603_1608Metric" H 13288 5000 50  0001 C CNN
+F 3 "~" H 13250 5150 50  0001 C CNN
+	1    13250 5150
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:C C?
+U 1 1 611469C9
+P 13575 5150
+AR Path="/5DCB8CA6/5DCBEAC7/5DFF8FC5/611469C9" Ref="C?"  Part="1" 
+AR Path="/5DCB8CA6/5DCBEAC7/611469C9" Ref="C611"  Part="1" 
+F 0 "C611" H 13600 5250 50  0000 L CNN
+F 1 "100nF" H 13600 5050 50  0000 L CNN
+F 2 "Capacitor_SMD:C_0603_1608Metric" H 13613 5000 50  0001 C CNN
+F 3 "~" H 13575 5150 50  0001 C CNN
+	1    13575 5150
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	13575 5000 13250 5000
+Connection ~ 10325 5000
+Wire Wire Line
+	10325 5000 10250 5000
+Connection ~ 10650 5000
+Wire Wire Line
+	10650 5000 10325 5000
+Connection ~ 10975 5000
+Wire Wire Line
+	10975 5000 10650 5000
+Connection ~ 11300 5000
+Wire Wire Line
+	11300 5000 10975 5000
+Connection ~ 11625 5000
+Wire Wire Line
+	11625 5000 11300 5000
+Connection ~ 11950 5000
+Wire Wire Line
+	11950 5000 11625 5000
+Connection ~ 12275 5000
+Wire Wire Line
+	12275 5000 11950 5000
+Connection ~ 12600 5000
+Wire Wire Line
+	12600 5000 12275 5000
+Connection ~ 12925 5000
+Wire Wire Line
+	12925 5000 12600 5000
+Connection ~ 13250 5000
+Wire Wire Line
+	13250 5000 12925 5000
+Wire Wire Line
+	10325 5300 10650 5300
+Connection ~ 10650 5300
+Wire Wire Line
+	10650 5300 10975 5300
+Connection ~ 10975 5300
+Wire Wire Line
+	10975 5300 11300 5300
+Connection ~ 11300 5300
+Wire Wire Line
+	11300 5300 11625 5300
+Connection ~ 11625 5300
+Wire Wire Line
+	11625 5300 11950 5300
+Connection ~ 11950 5300
+Wire Wire Line
+	11950 5300 12275 5300
+Connection ~ 12275 5300
+Wire Wire Line
+	12275 5300 12600 5300
+Connection ~ 12600 5300
+Wire Wire Line
+	12600 5300 12925 5300
+Connection ~ 12925 5300
+Wire Wire Line
+	12925 5300 13250 5300
+Connection ~ 13250 5300
+Wire Wire Line
+	13250 5300 13575 5300
+$Comp
+L power:GND #PWR?
+U 1 1 611AE2EE
+P 13575 5300
+AR Path="/5D8BBF40/611AE2EE" Ref="#PWR?"  Part="1" 
+AR Path="/5DCB8CA6/5DCBEAC7/611AE2EE" Ref="#PWR0221"  Part="1" 
+F 0 "#PWR0221" H 13575 5050 50  0001 C CNN
+F 1 "GND" H 13575 5150 50  0001 C CNN
+F 2 "" H 13575 5300 60  0000 C CNN
+F 3 "" H 13575 5300 60  0000 C CNN
+	1    13575 5300
+	1    0    0    -1  
+$EndComp
+Connection ~ 13575 5300
+$Comp
+L Device:C C?
+U 1 1 611BEB52
+P 10325 5625
+AR Path="/5DCB8CA6/5DCBEAC7/5DFF8FC5/611BEB52" Ref="C?"  Part="1" 
+AR Path="/5DCB8CA6/5DCBEAC7/611BEB52" Ref="C612"  Part="1" 
+F 0 "C612" H 10350 5725 50  0000 L CNN
+F 1 "100nF" H 10350 5525 50  0000 L CNN
+F 2 "Capacitor_SMD:C_0603_1608Metric" H 10363 5475 50  0001 C CNN
+F 3 "~" H 10325 5625 50  0001 C CNN
+	1    10325 5625
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:C C?
+U 1 1 611BEB58
+P 10650 5625
+AR Path="/5DCB8CA6/5DCBEAC7/5DFF8FC5/611BEB58" Ref="C?"  Part="1" 
+AR Path="/5DCB8CA6/5DCBEAC7/611BEB58" Ref="C613"  Part="1" 
+F 0 "C613" H 10675 5725 50  0000 L CNN
+F 1 "100nF" H 10675 5525 50  0000 L CNN
+F 2 "Capacitor_SMD:C_0603_1608Metric" H 10688 5475 50  0001 C CNN
+F 3 "~" H 10650 5625 50  0001 C CNN
+	1    10650 5625
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:C C?
+U 1 1 611BEB5E
+P 10975 5625
+AR Path="/5DCB8CA6/5DCBEAC7/5DFF8FC5/611BEB5E" Ref="C?"  Part="1" 
+AR Path="/5DCB8CA6/5DCBEAC7/611BEB5E" Ref="C614"  Part="1" 
+F 0 "C614" H 11000 5725 50  0000 L CNN
+F 1 "100nF" H 11000 5525 50  0000 L CNN
+F 2 "Capacitor_SMD:C_0603_1608Metric" H 11013 5475 50  0001 C CNN
+F 3 "~" H 10975 5625 50  0001 C CNN
+	1    10975 5625
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:C C?
+U 1 1 611BEB64
+P 11300 5625
+AR Path="/5DCB8CA6/5DCBEAC7/5DFF8FC5/611BEB64" Ref="C?"  Part="1" 
+AR Path="/5DCB8CA6/5DCBEAC7/611BEB64" Ref="C615"  Part="1" 
+F 0 "C615" H 11325 5725 50  0000 L CNN
+F 1 "100nF" H 11325 5525 50  0000 L CNN
+F 2 "Capacitor_SMD:C_0603_1608Metric" H 11338 5475 50  0001 C CNN
+F 3 "~" H 11300 5625 50  0001 C CNN
+	1    11300 5625
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:C C?
+U 1 1 611BEB6A
+P 11625 5625
+AR Path="/5DCB8CA6/5DCBEAC7/5DFF8FC5/611BEB6A" Ref="C?"  Part="1" 
+AR Path="/5DCB8CA6/5DCBEAC7/611BEB6A" Ref="C616"  Part="1" 
+F 0 "C616" H 11650 5725 50  0000 L CNN
+F 1 "100nF" H 11650 5525 50  0000 L CNN
+F 2 "Capacitor_SMD:C_0603_1608Metric" H 11663 5475 50  0001 C CNN
+F 3 "~" H 11625 5625 50  0001 C CNN
+	1    11625 5625
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:C C?
+U 1 1 611BEB70
+P 11950 5625
+AR Path="/5DCB8CA6/5DCBEAC7/5DFF8FC5/611BEB70" Ref="C?"  Part="1" 
+AR Path="/5DCB8CA6/5DCBEAC7/611BEB70" Ref="C617"  Part="1" 
+F 0 "C617" H 11975 5725 50  0000 L CNN
+F 1 "100nF" H 11975 5525 50  0000 L CNN
+F 2 "Capacitor_SMD:C_0603_1608Metric" H 11988 5475 50  0001 C CNN
+F 3 "~" H 11950 5625 50  0001 C CNN
+	1    11950 5625
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:C C?
+U 1 1 611BEB76
+P 12275 5625
+AR Path="/5DCB8CA6/5DCBEAC7/5DFF8FC5/611BEB76" Ref="C?"  Part="1" 
+AR Path="/5DCB8CA6/5DCBEAC7/611BEB76" Ref="C618"  Part="1" 
+F 0 "C618" H 12300 5725 50  0000 L CNN
+F 1 "100nF" H 12300 5525 50  0000 L CNN
+F 2 "Capacitor_SMD:C_0603_1608Metric" H 12313 5475 50  0001 C CNN
+F 3 "~" H 12275 5625 50  0001 C CNN
+	1    12275 5625
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:C C?
+U 1 1 611BEB7C
+P 12600 5625
+AR Path="/5DCB8CA6/5DCBEAC7/5DFF8FC5/611BEB7C" Ref="C?"  Part="1" 
+AR Path="/5DCB8CA6/5DCBEAC7/611BEB7C" Ref="C619"  Part="1" 
+F 0 "C619" H 12625 5725 50  0000 L CNN
+F 1 "100nF" H 12625 5525 50  0000 L CNN
+F 2 "Capacitor_SMD:C_0603_1608Metric" H 12638 5475 50  0001 C CNN
+F 3 "~" H 12600 5625 50  0001 C CNN
+	1    12600 5625
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:C C?
+U 1 1 611BEB82
+P 12925 5625
+AR Path="/5DCB8CA6/5DCBEAC7/5DFF8FC5/611BEB82" Ref="C?"  Part="1" 
+AR Path="/5DCB8CA6/5DCBEAC7/611BEB82" Ref="C620"  Part="1" 
+F 0 "C620" H 12950 5725 50  0000 L CNN
+F 1 "100nF" H 12950 5525 50  0000 L CNN
+F 2 "Capacitor_SMD:C_0603_1608Metric" H 12963 5475 50  0001 C CNN
+F 3 "~" H 12925 5625 50  0001 C CNN
+	1    12925 5625
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:C C?
+U 1 1 611BEB88
+P 13250 5625
+AR Path="/5DCB8CA6/5DCBEAC7/5DFF8FC5/611BEB88" Ref="C?"  Part="1" 
+AR Path="/5DCB8CA6/5DCBEAC7/611BEB88" Ref="C621"  Part="1" 
+F 0 "C621" H 13275 5725 50  0000 L CNN
+F 1 "100nF" H 13275 5525 50  0000 L CNN
+F 2 "Capacitor_SMD:C_0603_1608Metric" H 13288 5475 50  0001 C CNN
+F 3 "~" H 13250 5625 50  0001 C CNN
+	1    13250 5625
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:C C?
+U 1 1 611BEB8E
+P 13575 5625
+AR Path="/5DCB8CA6/5DCBEAC7/5DFF8FC5/611BEB8E" Ref="C?"  Part="1" 
+AR Path="/5DCB8CA6/5DCBEAC7/611BEB8E" Ref="C622"  Part="1" 
+F 0 "C622" H 13600 5725 50  0000 L CNN
+F 1 "100nF" H 13600 5525 50  0000 L CNN
+F 2 "Capacitor_SMD:C_0603_1608Metric" H 13613 5475 50  0001 C CNN
+F 3 "~" H 13575 5625 50  0001 C CNN
+	1    13575 5625
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	13575 5475 13250 5475
+Connection ~ 10325 5475
+Wire Wire Line
+	10325 5475 10250 5475
+Connection ~ 10650 5475
+Wire Wire Line
+	10650 5475 10325 5475
+Connection ~ 10975 5475
+Wire Wire Line
+	10975 5475 10650 5475
+Connection ~ 11300 5475
+Wire Wire Line
+	11300 5475 10975 5475
+Connection ~ 11625 5475
+Wire Wire Line
+	11625 5475 11300 5475
+Connection ~ 11950 5475
+Wire Wire Line
+	11950 5475 11625 5475
+Connection ~ 12275 5475
+Wire Wire Line
+	12275 5475 11950 5475
+Connection ~ 12600 5475
+Wire Wire Line
+	12600 5475 12275 5475
+Connection ~ 12925 5475
+Wire Wire Line
+	12925 5475 12600 5475
+Connection ~ 13250 5475
+Wire Wire Line
+	13250 5475 12925 5475
+Wire Wire Line
+	10325 5775 10650 5775
+Connection ~ 10650 5775
+Wire Wire Line
+	10650 5775 10975 5775
+Connection ~ 10975 5775
+Wire Wire Line
+	10975 5775 11300 5775
+Connection ~ 11300 5775
+Wire Wire Line
+	11300 5775 11625 5775
+Connection ~ 11625 5775
+Wire Wire Line
+	11625 5775 11950 5775
+Connection ~ 11950 5775
+Wire Wire Line
+	11950 5775 12275 5775
+Connection ~ 12275 5775
+Wire Wire Line
+	12275 5775 12600 5775
+Connection ~ 12600 5775
+Wire Wire Line
+	12600 5775 12925 5775
+Connection ~ 12925 5775
+Wire Wire Line
+	12925 5775 13250 5775
+Connection ~ 13250 5775
+Wire Wire Line
+	13250 5775 13575 5775
+$Comp
+L power:GND #PWR?
+U 1 1 611BEBBC
+P 13575 5775
+AR Path="/5D8BBF40/611BEBBC" Ref="#PWR?"  Part="1" 
+AR Path="/5DCB8CA6/5DCBEAC7/611BEBBC" Ref="#PWR0222"  Part="1" 
+F 0 "#PWR0222" H 13575 5525 50  0001 C CNN
+F 1 "GND" H 13575 5625 50  0001 C CNN
+F 2 "" H 13575 5775 60  0000 C CNN
+F 3 "" H 13575 5775 60  0000 C CNN
+	1    13575 5775
+	1    0    0    -1  
+$EndComp
+Connection ~ 13575 5775
+$Comp
+L Device:C C?
+U 1 1 611E96F8
+P 10325 6100
+AR Path="/5DCB8CA6/5DCBEAC7/5DFF8FC5/611E96F8" Ref="C?"  Part="1" 
+AR Path="/5DCB8CA6/5DCBEAC7/611E96F8" Ref="C623"  Part="1" 
+F 0 "C623" H 10350 6200 50  0000 L CNN
+F 1 "100nF" H 10350 6000 50  0000 L CNN
+F 2 "Capacitor_SMD:C_0603_1608Metric" H 10363 5950 50  0001 C CNN
+F 3 "~" H 10325 6100 50  0001 C CNN
+	1    10325 6100
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:C C?
+U 1 1 611E96FE
+P 10650 6100
+AR Path="/5DCB8CA6/5DCBEAC7/5DFF8FC5/611E96FE" Ref="C?"  Part="1" 
+AR Path="/5DCB8CA6/5DCBEAC7/611E96FE" Ref="C624"  Part="1" 
+F 0 "C624" H 10675 6200 50  0000 L CNN
+F 1 "100nF" H 10675 6000 50  0000 L CNN
+F 2 "Capacitor_SMD:C_0603_1608Metric" H 10688 5950 50  0001 C CNN
+F 3 "~" H 10650 6100 50  0001 C CNN
+	1    10650 6100
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:C C?
+U 1 1 611E9704
+P 10975 6100
+AR Path="/5DCB8CA6/5DCBEAC7/5DFF8FC5/611E9704" Ref="C?"  Part="1" 
+AR Path="/5DCB8CA6/5DCBEAC7/611E9704" Ref="C625"  Part="1" 
+F 0 "C625" H 11000 6200 50  0000 L CNN
+F 1 "100nF" H 11000 6000 50  0000 L CNN
+F 2 "Capacitor_SMD:C_0603_1608Metric" H 11013 5950 50  0001 C CNN
+F 3 "~" H 10975 6100 50  0001 C CNN
+	1    10975 6100
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:C C?
+U 1 1 611E970A
+P 11300 6100
+AR Path="/5DCB8CA6/5DCBEAC7/5DFF8FC5/611E970A" Ref="C?"  Part="1" 
+AR Path="/5DCB8CA6/5DCBEAC7/611E970A" Ref="C626"  Part="1" 
+F 0 "C626" H 11325 6200 50  0000 L CNN
+F 1 "100nF" H 11325 6000 50  0000 L CNN
+F 2 "Capacitor_SMD:C_0603_1608Metric" H 11338 5950 50  0001 C CNN
+F 3 "~" H 11300 6100 50  0001 C CNN
+	1    11300 6100
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:C C?
+U 1 1 611E9710
+P 11625 6100
+AR Path="/5DCB8CA6/5DCBEAC7/5DFF8FC5/611E9710" Ref="C?"  Part="1" 
+AR Path="/5DCB8CA6/5DCBEAC7/611E9710" Ref="C627"  Part="1" 
+F 0 "C627" H 11650 6200 50  0000 L CNN
+F 1 "100nF" H 11650 6000 50  0000 L CNN
+F 2 "Capacitor_SMD:C_0603_1608Metric" H 11663 5950 50  0001 C CNN
+F 3 "~" H 11625 6100 50  0001 C CNN
+	1    11625 6100
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:C C?
+U 1 1 611E9716
+P 11950 6100
+AR Path="/5DCB8CA6/5DCBEAC7/5DFF8FC5/611E9716" Ref="C?"  Part="1" 
+AR Path="/5DCB8CA6/5DCBEAC7/611E9716" Ref="C628"  Part="1" 
+F 0 "C628" H 11975 6200 50  0000 L CNN
+F 1 "100nF" H 11975 6000 50  0000 L CNN
+F 2 "Capacitor_SMD:C_0603_1608Metric" H 11988 5950 50  0001 C CNN
+F 3 "~" H 11950 6100 50  0001 C CNN
+	1    11950 6100
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:C C?
+U 1 1 611E971C
+P 12275 6100
+AR Path="/5DCB8CA6/5DCBEAC7/5DFF8FC5/611E971C" Ref="C?"  Part="1" 
+AR Path="/5DCB8CA6/5DCBEAC7/611E971C" Ref="C629"  Part="1" 
+F 0 "C629" H 12300 6200 50  0000 L CNN
+F 1 "100nF" H 12300 6000 50  0000 L CNN
+F 2 "Capacitor_SMD:C_0603_1608Metric" H 12313 5950 50  0001 C CNN
+F 3 "~" H 12275 6100 50  0001 C CNN
+	1    12275 6100
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:C C?
+U 1 1 611E9722
+P 12600 6100
+AR Path="/5DCB8CA6/5DCBEAC7/5DFF8FC5/611E9722" Ref="C?"  Part="1" 
+AR Path="/5DCB8CA6/5DCBEAC7/611E9722" Ref="C630"  Part="1" 
+F 0 "C630" H 12625 6200 50  0000 L CNN
+F 1 "100nF" H 12625 6000 50  0000 L CNN
+F 2 "Capacitor_SMD:C_0603_1608Metric" H 12638 5950 50  0001 C CNN
+F 3 "~" H 12600 6100 50  0001 C CNN
+	1    12600 6100
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:C C?
+U 1 1 611E9728
+P 12925 6100
+AR Path="/5DCB8CA6/5DCBEAC7/5DFF8FC5/611E9728" Ref="C?"  Part="1" 
+AR Path="/5DCB8CA6/5DCBEAC7/611E9728" Ref="C631"  Part="1" 
+F 0 "C631" H 12950 6200 50  0000 L CNN
+F 1 "100nF" H 12950 6000 50  0000 L CNN
+F 2 "Capacitor_SMD:C_0603_1608Metric" H 12963 5950 50  0001 C CNN
+F 3 "~" H 12925 6100 50  0001 C CNN
+	1    12925 6100
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:C C?
+U 1 1 611E972E
+P 13250 6100
+AR Path="/5DCB8CA6/5DCBEAC7/5DFF8FC5/611E972E" Ref="C?"  Part="1" 
+AR Path="/5DCB8CA6/5DCBEAC7/611E972E" Ref="C632"  Part="1" 
+F 0 "C632" H 13275 6200 50  0000 L CNN
+F 1 "100nF" H 13275 6000 50  0000 L CNN
+F 2 "Capacitor_SMD:C_0603_1608Metric" H 13288 5950 50  0001 C CNN
+F 3 "~" H 13250 6100 50  0001 C CNN
+	1    13250 6100
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:C C?
+U 1 1 611E9734
+P 13575 6100
+AR Path="/5DCB8CA6/5DCBEAC7/5DFF8FC5/611E9734" Ref="C?"  Part="1" 
+AR Path="/5DCB8CA6/5DCBEAC7/611E9734" Ref="C633"  Part="1" 
+F 0 "C633" H 13600 6200 50  0000 L CNN
+F 1 "100nF" H 13600 6000 50  0000 L CNN
+F 2 "Capacitor_SMD:C_0603_1608Metric" H 13613 5950 50  0001 C CNN
+F 3 "~" H 13575 6100 50  0001 C CNN
+	1    13575 6100
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	13575 5950 13250 5950
+Connection ~ 10325 5950
+Wire Wire Line
+	10325 5950 10250 5950
+Connection ~ 10650 5950
+Wire Wire Line
+	10650 5950 10325 5950
+Connection ~ 10975 5950
+Wire Wire Line
+	10975 5950 10650 5950
+Connection ~ 11300 5950
+Wire Wire Line
+	11300 5950 10975 5950
+Connection ~ 11625 5950
+Wire Wire Line
+	11625 5950 11300 5950
+Connection ~ 11950 5950
+Wire Wire Line
+	11950 5950 11625 5950
+Connection ~ 12275 5950
+Wire Wire Line
+	12275 5950 11950 5950
+Connection ~ 12600 5950
+Wire Wire Line
+	12600 5950 12275 5950
+Connection ~ 12925 5950
+Wire Wire Line
+	12925 5950 12600 5950
+Connection ~ 13250 5950
+Wire Wire Line
+	13250 5950 12925 5950
+Wire Wire Line
+	10325 6250 10650 6250
+Connection ~ 10650 6250
+Wire Wire Line
+	10650 6250 10975 6250
+Connection ~ 10975 6250
+Wire Wire Line
+	10975 6250 11300 6250
+Connection ~ 11300 6250
+Wire Wire Line
+	11300 6250 11625 6250
+Connection ~ 11625 6250
+Wire Wire Line
+	11625 6250 11950 6250
+Connection ~ 11950 6250
+Wire Wire Line
+	11950 6250 12275 6250
+Connection ~ 12275 6250
+Wire Wire Line
+	12275 6250 12600 6250
+Connection ~ 12600 6250
+Wire Wire Line
+	12600 6250 12925 6250
+Connection ~ 12925 6250
+Wire Wire Line
+	12925 6250 13250 6250
+Connection ~ 13250 6250
+Wire Wire Line
+	13250 6250 13575 6250
+$Comp
+L power:GND #PWR?
+U 1 1 611E9762
+P 13575 6250
+AR Path="/5D8BBF40/611E9762" Ref="#PWR?"  Part="1" 
+AR Path="/5DCB8CA6/5DCBEAC7/611E9762" Ref="#PWR0223"  Part="1" 
+F 0 "#PWR0223" H 13575 6000 50  0001 C CNN
+F 1 "GND" H 13575 6100 50  0001 C CNN
+F 2 "" H 13575 6250 60  0000 C CNN
+F 3 "" H 13575 6250 60  0000 C CNN
+	1    13575 6250
+	1    0    0    -1  
+$EndComp
+Connection ~ 13575 6250
+Text Label 10250 5950 2    60   ~ 0
+3V3
+Text Label 10250 5475 2    60   ~ 0
+5V0
+Text HLabel 10450 2750 0    60   Input ~ 0
+3V3
+Text HLabel 4450 7975 2    60   Output ~ 0
+RBS7
+Text HLabel 4450 8425 2    60   Output ~ 0
+RWTBT
+Wire Wire Line
+	10550 750  10925 750 
+Connection ~ 10925 750 
+Wire Wire Line
+	10925 750  11900 750 
+Connection ~ 15775 1500
+Wire Wire Line
+	15325 1050 15325 1150
+Wire Wire Line
+	15325 1150 15325 1500
+Connection ~ 15325 1150
+$Comp
+L myLib:DS8641-small U606
+U 5 1 5F30475A
+P 15775 1150
+F 0 "U606" H 15525 925 60  0000 C CNN
+F 1 "DS8641-small" H 15550 1400 60  0000 C CNN
+F 2 "Package_DIP:DIP-16_W7.62mm" H 15250 1525 60  0001 C CNN
+F 3 "http://pccomponents.com/datasheets/NATI-ds8641.pdf" H 15250 1525 60  0001 C CNN
+F 4 "DS8641" H 15775 1150 50  0001 C CNN "manf#"
+	5    15775 1150
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	16050 2675 16050 2825
+Text Label 10550 1650 2    60   ~ 0
+5V0
+Text Label 10550 750  2    60   ~ 0
+5V0
+Text Label 10250 5000 2    60   ~ 0
+5V0
+Text Label 2150 6275 2    60   ~ 0
+GND
+Text Label 2150 6725 2    60   ~ 0
+GND
+Text Label 2150 7175 2    60   ~ 0
+GND
+Text Label 2150 7625 2    60   ~ 0
+GND
+Text Label 2150 9000 2    60   ~ 0
+GND
+Text Label 2150 9900 2    60   ~ 0
+GND
+Text Label 5350 1350 2    60   ~ 0
+TDAL[0..21]
+Text Label 9700 575  2    60   ~ 0
+RDAL[0..21]
 Wire Bus Line
-	1400 900  4075 900 
+	9800 575  9600 575 
+Wire Wire Line
+	5450 1250 5775 1250
 Wire Bus Line
-	3900 700  5850 700 
+	9600 575  9600 10300
 Wire Bus Line
-	4100 1000 4100 3300
-Wire Bus Line
-	5575 800  5575 3350
-Wire Bus Line
-	3900 800  3900 7300
-Wire Bus Line
-	2425 1000 2425 7250
+	5350 675  5350 10325
+$Comp
+L myLib:74LVC8T245-small U625
+U 7 1 601E4989
+P 3950 6725
+F 0 "U625" H 3575 6975 60  0000 C CNN
+F 1 "74LVC8T245-small" H 4175 6975 60  0000 C CNN
+F 2 "Package_SO:SSOP-24_5.3x8.2mm_P0.65mm" H 4400 8625 60  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/sn74lvc8t245.pdf" H 3950 7006 60  0001 C CNN
+F 4 "SN74LVC8T245PWR" H 3950 6725 50  0001 C CNN "manf#"
+	7    3950 6725
+	-1   0    0    -1  
+$EndComp
 $EndSCHEMATC

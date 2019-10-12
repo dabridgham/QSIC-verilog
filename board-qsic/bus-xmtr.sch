@@ -4,7 +4,7 @@ EELAYER 30 0
 EELAYER END
 $Descr A 11000 8500
 encoding utf-8
-Sheet 45 53
+Sheet 45 12
 Title "Bus Transmitter and Level Converter"
 Date "2019-09-30"
 Rev ""
