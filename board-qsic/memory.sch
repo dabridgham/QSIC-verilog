@@ -474,8 +474,6 @@ Entry Wire Line
 Entry Wire Line
 	6525 4950 6625 5050
 Entry Wire Line
-	6525 5050 6625 5150
-Entry Wire Line
 	6525 5150 6625 5250
 Entry Wire Line
 	6525 5250 6625 5350
@@ -675,8 +673,6 @@ Wire Wire Line
 	7000 5350 6625 5350
 Wire Wire Line
 	7000 5250 6625 5250
-Wire Wire Line
-	7000 5150 6625 5150
 Wire Wire Line
 	7000 5050 6625 5050
 Wire Wire Line
@@ -1162,6 +1158,23 @@ Wire Wire Line
 Wire Wire Line
 	9400 3150 9400 3250
 Connection ~ 9525 1450
+$Comp
+L power:GND #PWR0152
+U 1 1 5DB3990D
+P 6750 5100
+F 0 "#PWR0152" H 6750 4850 50  0001 C CNN
+F 1 "GND" H 6750 4950 50  0001 C CNN
+F 2 "" H 6750 5100 50  0000 C CNN
+F 3 "" H 6750 5100 50  0000 C CNN
+	1    6750 5100
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	6750 5100 6900 5100
+Wire Wire Line
+	6900 5100 6900 5150
+Wire Wire Line
+	6900 5150 7000 5150
 Wire Bus Line
 	5000 1650 8575 1650
 Wire Bus Line

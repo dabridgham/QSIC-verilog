@@ -2111,8 +2111,6 @@ F 4 "XC7A75T-2CSG324C" H 13500 3700 50  0001 C CNN "manf#"
 	2    13500 3700
 	1    0    0    -1  
 $EndComp
-Text Label 15500 2700 0    60   ~ 0
-pin11
 Text Label 9975 2975 2    60   ~ 0
 LED_0
 Text Label 9975 3300 2    60   ~ 0
@@ -2376,4 +2374,18 @@ NoConn ~ 7275 2000
 NoConn ~ 7275 1800
 NoConn ~ 7275 1700
 NoConn ~ 7275 1600
+$Comp
+L power:GND #PWR0151
+U 1 1 5DACEE72
+P 3175 2100
+F 0 "#PWR0151" H 3175 1850 50  0001 C CNN
+F 1 "GND" H 3180 1927 50  0001 C CNN
+F 2 "" H 3175 2100 50  0001 C CNN
+F 3 "" H 3175 2100 50  0001 C CNN
+	1    3175 2100
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	3275 2100 3175 2100
+NoConn ~ 15500 2700
 $EndSCHEMATC

@@ -4137,10 +4137,6 @@ Wire Bus Line
 	9800 575  9600 575 
 Wire Wire Line
 	5450 1250 5775 1250
-Wire Bus Line
-	9600 575  9600 10300
-Wire Bus Line
-	5350 675  5350 10325
 $Comp
 L myLib:74LVC8T245-small U625
 U 7 1 601E4989
@@ -4153,4 +4149,8 @@ F 4 "SN74LVC8T245PWR" H 3950 6725 50  0001 C CNN "manf#"
 	7    3950 6725
 	-1   0    0    -1  
 $EndComp
+Wire Bus Line
+	9600 575  9600 10300
+Wire Bus Line
+	5350 675  5350 10325
 $EndSCHEMATC
