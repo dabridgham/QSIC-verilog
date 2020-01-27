@@ -927,6 +927,21 @@ X OUT1 9 600 300 200 L 50 50 1 1 O
 ENDDRAW
 ENDDEF
 #
+# Mechanical_Fiducial
+#
+DEF Mechanical_Fiducial FID 0 20 Y Y 1 F N
+F0 "FID" 0 200 50 H V C CNN
+F1 "Mechanical_Fiducial" 0 125 50 H V C CNN
+F2 "" 0 0 50 H I C CNN
+F3 "" 0 0 50 H I C CNN
+$FPLIST
+ Fiducial*
+$ENDFPLIST
+DRAW
+C 0 0 50 0 1 20 f
+ENDDRAW
+ENDDEF
+#
 # Oscillator_ASE-xxxMHz
 #
 DEF Oscillator_ASE-xxxMHz X 0 10 Y Y 1 F N
