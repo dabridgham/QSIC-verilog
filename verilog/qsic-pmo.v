@@ -94,7 +94,7 @@ module pmo
    // Clocking
    //
 
-   wire 	pll_fb, clk200, clk400, uiclk, clk48, clk20;
+   wire 	pll_fb, clk200, clk400, clk48, clk20;
    
    BUFG fxclk_buf (
 		   .I(clk48_in),
@@ -152,11 +152,11 @@ module pmo
    always @(posedge clk20)
      count = count + 1;
         
-   assign led_3_2 = count[21];
-   assign led_3_4 = rk_match;
+   assign led_3_2 = mmcm_locked; // count[21];
+   assign led_3_4 = ui_clk; // rk_match;
 //   assign led_3_6 = 0;
 //   assign led_3_8 = TSYNC;
-   assign led_3_9 = sRDIN;
+   assign led_3_9 = count[21]; // sRDIN;
 //   assign led_3_10 = TDMR;
 
    assign tp_b30 = ip_latch;
@@ -273,7 +273,7 @@ module pmo
    // include these devices
 //`define SW_REG 1
 `define RKV11 1
-`define SD0 1
+//`define SD0 1
 //`define SD1 1
 `define RAM_DISK 1
 `define SDRAM 1
@@ -518,6 +518,7 @@ module pmo
    wire        s_axi_rvalid;
    wire        s_axi_rready;
    wire        ui_clk, ui_clk_sync_rst;
+   wire        mmcm_locked;
 
    ztex_sdram u_ztex_sdram
      (
@@ -540,7 +541,7 @@ module pmo
       // Application interface ports
       .ui_clk                         (ui_clk),	       // output	ui_clk
       .ui_clk_sync_rst                (ui_clk_sync_rst), // output	ui_clk_sync_rst
-      .mmcm_locked                    (),	       // output	mmcm_locked
+      .mmcm_locked                    (mmcm_locked),   // output	mmcm_locked
       .aresetn                        (1),	       // input		aresetn
       .app_sr_req                     (0),	       // input		app_sr_req
       .app_ref_req                    (0),	       // input		app_ref_req
@@ -594,23 +595,25 @@ module pmo
       .sys_clk_i                      (clk400),
       // Reference Clock Ports
       .clk_ref_i                      (clk200),
-      .sys_rst                        (0), // input sys_rst
+      .sys_rst                        (~RINIT), // input sys_rst
       .device_temp		      ()
       );
 
-   reg 	       rd_dev_ready = 1;
-   wire        rd_read, rd_write, rd_cmd_ready;
+   wire       rd_dev_ready = mmcm_locked; // make this be mmcm_locked? !!!
+   wire       rd_read, rd_write, rd_cmd_ready;
    wire [31:0] rd_lba = LBA;
    wire [15:0] rd_read_data;
    wire        rd_write_data_enable;
    wire        rd_read_data_enable;
    wire        rd_fifo_clk;
+   wire [9:0]  rd_debug;
 
    ramdisk_sdram ramdisk
      (// AXI4 connection to the SDRAM
       // user interface signals
       .ui_clk(ui_clk),
       .ui_clk_sync_rst(ui_clk_sync_rst),
+      .mmcm_locked(mmcm_locked),
       .s_axi_awid(s_axi_awid),
       .s_axi_awaddr(s_axi_awaddr),
       .s_axi_awlen(s_axi_awlen),
@@ -658,7 +661,8 @@ module pmo
       .write_data(sd_write_data),
       .write_data_enable(rd_write_data_enable),
       .read_data(rd_read_data),
-      .read_data_enable(rd_read_data_enable));
+      .read_data_enable(rd_read_data_enable),
+      .debug_output(rd_debug));
 
 
 
@@ -735,12 +739,12 @@ module pmo
  `ifdef SD0
       rk0_load_table[0] = { `pack_enable, 16'd203, `pack_sd0, 32'h0002_0000 };
   `ifdef RAM_DISK
-      rk0_load_table[1] = { `pack_enable, 16'd32, `pack_ramdisk, 32'h0000_0000 };
+      rk0_load_table[1] = { `pack_enable, 16'd203, `pack_ramdisk, 32'h0000_0000 };
   `else
       rk0_load_table[1] = { `pack_enable, 16'd203, `pack_sd0, 32'h0002_2000 };
   `endif
  `else
-      rk0_load_table[0] = { `pack_enable, 16'd32, `pack_ramdisk, 32'h0000_0000 };
+      rk0_load_table[0] = { `pack_enable, 16'd203, `pack_ramdisk, 32'h0000_0000 };
       rk0_load_table[1] = { `pack_disable, 16'd203, `pack_sd0, 32'h0002_2000 };
  `endif
       rk0_load_table[2] = { `pack_disable, 16'd203, `pack_sd0, 32'h0002_4000 };
@@ -808,7 +812,7 @@ module pmo
 	       1'b0, RSACK, RDMGI, RDMR, 1'b0, RINIT, 1'b0, RDCOK, RPOK, 14'b0 },
 	     { DALtx & ZWTBT, DALtx & ZBS7, TSYNC, TDIN, TDOUT, TRPLY, TREF, 1'b0,
 	       TIAKO, TIRQ7, TIRQ6, TIRQ5, TIRQ4, 1'b0, TSACK, TDMGO, TDMR,
-	       10'b0, sd0_err, 1'b0 });
+	       rd_debug, sd0_err, 1'b0 });
 
    // Lamptest Indicator Panel - turn on all the lights
    wire lt_latch, lt_clk, lt_out;
