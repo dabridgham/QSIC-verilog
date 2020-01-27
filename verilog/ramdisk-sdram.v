@@ -2,7 +2,7 @@
 //
 // A RAM Disk using external SDRAM.
 //
-// Copyright 2019 Noel Chiappa and David Bridgham
+// Copyright 2019-2020 Noel Chiappa and David Bridgham
 
 `timescale 1 ns / 1 ns
 
@@ -12,9 +12,10 @@ module ramdisk_sdram
    // user interface signals
    input 	     ui_clk,
    input 	     ui_clk_sync_rst,
-     // Slave Interface Write Address Ports
+   input 	     mmcm_locked,
+   // Slave Interface Write Address Ports
    output [3:0]      s_axi_awid,
-   output reg [27:0] s_axi_awaddr,
+   output [27:0]     s_axi_awaddr,
    output [7:0]      s_axi_awlen,
    output [2:0]      s_axi_awsize,
    output [1:0]      s_axi_awburst,
@@ -37,7 +38,7 @@ module ramdisk_sdram
    input 	     s_axi_bvalid,
    // Slave Interface Read Address Ports
    output [3:0]      s_axi_arid,
-   output reg [27:0] s_axi_araddr,
+   output [27:0]     s_axi_araddr,
    output [7:0]      s_axi_arlen,
    output [2:0]      s_axi_arsize,
    output [1:0]      s_axi_arburst,
@@ -64,7 +65,8 @@ module ramdisk_sdram
    input [15:0]      write_data,
    output reg 	     write_data_enable,
    output reg [15:0] read_data,
-   output reg 	     read_data_enable
+   output reg 	     read_data_enable,
+   output [9:0]      debug_output
    );
 
    wire 	     ramclk = ui_clk;
@@ -91,57 +93,58 @@ module ramdisk_sdram
    assign s_axi_arcache = 0;
    assign s_axi_arprot = 0;
    assign s_axi_arqos = 0;
+   assign s_axi_araddr = { block_address[18:0], 9'o000 };
 
    // Read State Machine
    reg 		      reading = 0, start_read = 0, read_even = 0;
    reg [6:0] 	      read_count = 0;
    reg [15:0] 	      odd_save;
    reg 		      read_done;
+   // testing !!!
+   reg [9:0] 	      save_data;
+   reg [2:0] 	      saving = 1;
+   
    always @(posedge ramclk) begin
+      read_data_enable <= 0;
+      s_axi_arvalid <= 0;
+      s_axi_rready <= 0;
+
       case (1'b1)
 	reset:
 	  begin
-	     read_data_enable <= 0;
 	     reading <= 0;
 	     start_read <= 0;
 	     read_even <= 0;
-	     s_axi_arvalid <= 0;
-	     s_axi_rready <= 0;
 	  end
 
 	start_read:
-	  if (s_axi_arready) begin
-	     s_axi_arvalid <= 0;
+	  if (s_axi_rvalid) begin
 	     start_read <= 0;
-	     read_count <= 0;
-	     read_done <= 0;
-	     read_even <= 1;
 	     s_axi_rready <= 1;
+	     read_even <= 1;
+	     { read_done, read_count } <= read_count + 1;
 	  end
 
 	reading:
-	  if (s_axi_rvalid) begin
-	     s_axi_rready <= 0;
+	  if (read_even) begin
+	     read_even <= 0;
 	     read_data_enable <= 1;
-	     if (read_even) begin
-		{ odd_save, read_data } <= s_axi_rdata;
-		{ read_done, read_count } <= read_count + 1;
-	     end else begin
-		read_data <= odd_save;
-		if (read_done)
-		  reading <= 0;
-		else
-		  s_axi_rready <= 1;
-	     end
-	     read_even <= ~read_even;
-	  end else
-	    read_data_enable <= 0;
-
+	     { odd_save, read_data } <= s_axi_rdata;
+	  end else begin
+	     read_data_enable <= 1;
+	     read_data <= odd_save;
+	     if (read_done)
+	       reading <= 0;
+	     else
+	       start_read <= 1;
+	  end
+	
 	default:
-	  if (s_read_cmd) begin
+	  if (s_read_cmd && s_axi_arready) begin
 	     reading <= 1;
 	     start_read <= 1;
-	     s_axi_araddr <= { block_address[18:0], 9'o000 };
+	     read_count <= 0;
+	     read_done <= 0;
 	     s_axi_arvalid <= 1;	     
 	  end
       endcase // case (1'b1)
@@ -156,6 +159,7 @@ module ramdisk_sdram
    assign s_axi_awcache = 0;
    assign s_axi_awprot = 0;
    assign s_axi_awqos = 0;
+   assign s_axi_awaddr = { block_address[18:0], 9'o000 };
 
    // Write Data
    assign s_axi_wstrb = 4'b1111; // write all 4 bytes
@@ -165,61 +169,97 @@ module ramdisk_sdram
 				// do anything with them.
 
    // Write State Machine
-   reg		      writing = 0, start_write = 0, write_even = 0;
+   reg		      writing = 0, start_write = 0, write_even = 0, write_finish = 0, write_delay = 0;
    reg [6:0] 	      write_count = 0;
-   reg 		      write_done;
+   wire [6:0] 	      write_count_next;
+   wire 	      write_last;
+   assign { write_last, write_count_next } = write_count + 1;
+   reg 		      write_done = 0;
    always @(posedge ramclk) begin
+      write_data_enable <= 0;
+      s_axi_awvalid <= 0;
+      s_axi_wvalid <= 0;
+      s_axi_wlast <= 0;
+
       case (1'b1)
 	reset:
 	  begin
-	     write_data_enable <= 0;
+	     saving <= 2;	// debug !!!
 	     writing <= 0;
 	     start_write <= 0;
 	     write_even <= 0;
- 	     s_axi_awvalid <= 0;
-	     s_axi_wvalid <= 0;
-	     s_axi_wlast <= 0;
+	     write_done <= 0;
+	     write_finish <= 0;
+	     write_delay <= 0;
 	  end
 
+	// wait until the write request clears before finishing up and clearing writing
+	write_done:
+	  if (!s_write_cmd) begin
+	     writing <= 0;
+	     write_done <= 0;
+	  end
+	
+	// just toss in a one-cycle delay
+	write_delay:
+	  write_delay <= 0;
+
 	start_write:
-	  begin
-	     write_data_enable <= 1;
-	     if (write_even) begin
-		s_axi_wdata[15:0] <= write_data;
-	     end else begin
-		s_axi_wdata[31:16] <= write_data;
-		s_axi_wvalid <= 1;
-		s_axi_wlast <= write_done;
-		start_write <= 0;
-	     end
-	     write_even <= ~write_even;
+	  if (s_axi_awready) begin
+	     start_write <= 0;
+	     write_even <= 1;
+	     write_count <= 0;
+	     write_done <= 0;
+	  end else
+	    s_axi_awvalid <= 1;	// hold awvalid until arready is asserted
+
+	write_finish:
+	  if (s_axi_wready) begin
+	     write_count <= write_count_next;
+	     write_done <= write_last;
+	     write_finish <= 0;
+	  end else begin
+	     s_axi_wvalid <= 1;
+	     s_axi_wlast <= write_last;
 	  end
 
 	writing:
 	  begin
-	     write_data_enable <= 0;
-	     if (s_axi_wready) begin
-		s_axi_wvalid <= 0;
-		if (write_done)
-		  writing <= 0;
-		else
-		  start_write <= 1;
-		{ write_done, write_count } <= write_count + 1;
+	     write_even <= ~write_even;
+	     
+	     if (write_even) begin
+		s_axi_wdata[15:0] <= write_data;
+		write_data_enable <= 1;
+		write_delay <= 1;
+	     end else begin
+		write_finish <= 1;
+		s_axi_wdata[31:16] <= write_data;
+		s_axi_wvalid <= 1;
+		s_axi_wlast <= write_last;
+		if (!write_last)
+		  write_data_enable <= 1;
+
+		// debug !!!
+		if (saving) begin
+		   save_data <= write_data[9:0];
+		   saving <= saving - 1;
+		end
 	     end
 	  end
-
+	     
 	default:
 	  if (s_write_cmd) begin
+	     start_write <= 1;
 	     writing <= 1;
 	     write_even <= 1;
-	     write_count <= 1;
+	     write_count <= 0;
 	     write_done <= 0;
-	     start_write <= 1;
-	     s_axi_awaddr <= { block_address[18:0], 9'o000 };
-	     s_axi_wlast <= 0;
  	     s_axi_awvalid <= 1;
+	     write_data_enable <= 1; // clock out the first word in the write fifo
 	  end
       endcase // case (1'b1)
    end
 	     
+   assign debug_output = save_data;
+
 endmodule // ramdisk_sdram
