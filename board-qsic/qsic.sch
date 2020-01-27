@@ -348,4 +348,104 @@ Connection ~ 4525 5575
 Connection ~ 4525 5275
 Text Label 4425 4775 0    60   ~ 0
 3V3
+$Comp
+L Device:R R?
+U 1 1 5DB4FA0E
+P 4775 3100
+AR Path="/5DCB8CA6/5DB4FA0E" Ref="R?"  Part="1" 
+AR Path="/5DB4FA0E" Ref="R104"  Part="1" 
+F 0 "R104" H 4845 3146 50  0000 L CNN
+F 1 "10k" H 4845 3055 50  0000 L CNN
+F 2 "Resistor_SMD:R_0603_1608Metric" V 4705 3100 50  0001 C CNN
+F 3 "~" H 4775 3100 50  0001 C CNN
+	1    4775 3100
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:R R?
+U 1 1 5DB5007F
+P 5100 3100
+AR Path="/5DCB8CA6/5DB5007F" Ref="R?"  Part="1" 
+AR Path="/5DB5007F" Ref="R105"  Part="1" 
+F 0 "R105" H 5170 3146 50  0000 L CNN
+F 1 "10k" H 5170 3055 50  0000 L CNN
+F 2 "Resistor_SMD:R_0603_1608Metric" V 5030 3100 50  0001 C CNN
+F 3 "~" H 5100 3100 50  0001 C CNN
+	1    5100 3100
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	4425 3575 4775 3575
+Wire Wire Line
+	4775 3575 4775 3250
+Wire Wire Line
+	4425 3675 5100 3675
+Wire Wire Line
+	5100 3675 5100 3250
+Text Label 4700 2900 2    60   ~ 0
+3V3
+Wire Wire Line
+	4700 2900 4775 2900
+Wire Wire Line
+	5100 2900 5100 2950
+Wire Wire Line
+	4775 2950 4775 2900
+Connection ~ 4775 2900
+Wire Wire Line
+	4775 2900 5100 2900
+$Comp
+L Mechanical:Fiducial FID101
+U 1 1 5DBEFBB8
+P 5675 6900
+F 0 "FID101" H 5760 6946 50  0000 L CNN
+F 1 "Fiducial" H 5760 6855 50  0000 L CNN
+F 2 "Fiducial:Fiducial_1mm_Mask2mm" H 5675 6900 50  0001 C CNN
+F 3 "~" H 5675 6900 50  0001 C CNN
+	1    5675 6900
+	1    0    0    -1  
+$EndComp
+$Comp
+L Mechanical:Fiducial FID102
+U 1 1 5DBF958E
+P 5675 7125
+F 0 "FID102" H 5760 7171 50  0000 L CNN
+F 1 "Fiducial" H 5760 7080 50  0000 L CNN
+F 2 "Fiducial:Fiducial_1mm_Mask2mm" H 5675 7125 50  0001 C CNN
+F 3 "~" H 5675 7125 50  0001 C CNN
+	1    5675 7125
+	1    0    0    -1  
+$EndComp
+$Comp
+L Mechanical:Fiducial FID103
+U 1 1 5DBF9A00
+P 5675 7350
+F 0 "FID103" H 5760 7396 50  0000 L CNN
+F 1 "Fiducial" H 5760 7305 50  0000 L CNN
+F 2 "Fiducial:Fiducial_1mm_Mask2mm" H 5675 7350 50  0001 C CNN
+F 3 "~" H 5675 7350 50  0001 C CNN
+	1    5675 7350
+	1    0    0    -1  
+$EndComp
+$Comp
+L Mechanical:Fiducial FID104
+U 1 1 5DBF9E8E
+P 5675 7575
+F 0 "FID104" H 5760 7621 50  0000 L CNN
+F 1 "Fiducial" H 5760 7530 50  0000 L CNN
+F 2 "Fiducial:Fiducial_1mm_Mask2mm" H 5675 7575 50  0001 C CNN
+F 3 "~" H 5675 7575 50  0001 C CNN
+	1    5675 7575
+	1    0    0    -1  
+$EndComp
+$Comp
+L Mechanical:Fiducial FID105
+U 1 1 5DBFCFB6
+P 5675 7800
+F 0 "FID105" H 5760 7846 50  0000 L CNN
+F 1 "Fiducial" H 5760 7755 50  0000 L CNN
+F 2 "Fiducial:Fiducial_1mm_Mask2mm" H 5675 7800 50  0001 C CNN
+F 3 "~" H 5675 7800 50  0001 C CNN
+	1    5675 7800
+	1    0    0    -1  
+$EndComp
 $EndSCHEMATC
