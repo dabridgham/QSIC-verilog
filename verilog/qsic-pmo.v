@@ -273,7 +273,7 @@ module pmo
    // include these devices
 //`define SW_REG 1
 `define RKV11 1
-//`define SD0 1
+`define SD0 1
 //`define SD1 1
 `define RAM_DISK 1
 `define SDRAM 1
@@ -718,13 +718,13 @@ module pmo
    // Load Table - Just a start for now and needs to be configurable at runtime !!!
    //
 
-   // The largest offset values (less the size of the disk pack) are:
+   // Sizes, in blocks, of Storage Devices:
    //  8GB: h0100_0000
    // 16GB: h0200_0000
    // 32GB: h0400_0000
    //
    // Disk Pack Sizes:
-   // RK05: h0200 (rounded up)
+   // RK05: h1308 == d4872 blocks (about 2.5MB)
 `define pack_enable 1'b1
 `define pack_disable 1'b0
 `define pack_sd0 2'o0
