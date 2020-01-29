@@ -96,7 +96,7 @@ module ramdisk_sdram
    assign s_axi_araddr = { block_address[18:0], 9'o000 };
 
    // Read State Machine
-   reg 		      reading = 0, start_read = 0, read_even = 0;
+   reg 		      reading = 0, start_read = 0, read_even = 0, read_finish = 0;
    reg [6:0] 	      read_count = 0;
    reg [15:0] 	      odd_save;
    reg 		      read_done;
@@ -114,7 +114,15 @@ module ramdisk_sdram
 	  begin
 	     reading <= 0;
 	     start_read <= 0;
+	     read_finish <= 0;
 	     read_even <= 0;
+	  end
+
+	// wait until the read request clears before clearing reading
+	read_finish:
+	  if (!s_read_cmd) begin
+	     reading <= 0;
+	     read_finish <= 0;
 	  end
 
 	start_read:
@@ -134,7 +142,7 @@ module ramdisk_sdram
 	     read_data_enable <= 1;
 	     read_data <= odd_save;
 	     if (read_done)
-	       reading <= 0;
+	       read_finish <= 1;
 	     else
 	       start_read <= 1;
 	  end
@@ -260,6 +268,6 @@ module ramdisk_sdram
       endcase // case (1'b1)
    end
 	     
-   assign debug_output = save_data;
+   assign debug_output = { reading, start_read, read_even, read_count };
 
 endmodule // ramdisk_sdram
