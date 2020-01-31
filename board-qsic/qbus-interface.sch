@@ -1,5 +1,4 @@
 EESchema Schematic File Version 4
-LIBS:qsic-cache
 EELAYER 30 0
 EELAYER END
 $Descr B 17000 11000
