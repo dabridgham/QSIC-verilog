@@ -1,36 +1,6 @@
-EESchema Schematic File Version 2
-LIBS:power
-LIBS:device
-LIBS:transistors
-LIBS:conn
-LIBS:linear
-LIBS:regul
-LIBS:74xx
-LIBS:cmos4000
-LIBS:adc-dac
-LIBS:memory
-LIBS:xilinx
-LIBS:microcontrollers
-LIBS:dsp
-LIBS:microchip
-LIBS:analog_switches
-LIBS:motorola
-LIBS:texas
-LIBS:intel
-LIBS:audio
-LIBS:interface
-LIBS:digital-audio
-LIBS:philips
-LIBS:display
-LIBS:cypress
-LIBS:siliconi
-LIBS:opto
-LIBS:atmel
-LIBS:contrib
-LIBS:valves
-LIBS:myLib
+EESchema Schematic File Version 4
 LIBS:proto-cache
-EELAYER 25 0
+EELAYER 30 0
 EELAYER END
 $Descr B 17000 11000
 encoding utf-8
@@ -180,7 +150,7 @@ NoConn ~ 7850 7700
 NoConn ~ 7850 8250
 NoConn ~ 7850 8350
 $Comp
-L +5V #PWR160
+L proto-rescue:+5V #PWR160
 U 1 1 5615E22F
 P 8000 8450
 F 0 "#PWR160" H 8000 8300 50  0001 C CNN
@@ -191,7 +161,7 @@ F 3 "" H 8000 8450 60  0000 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L GND #PWR167
+L proto-rescue:GND #PWR167
 U 1 1 5615E357
 P 7950 9450
 F 0 "#PWR167" H 7950 9200 50  0001 C CNN
@@ -202,7 +172,7 @@ F 3 "" H 7950 9450 60  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L 74LVC7T245 U115
+L proto-rescue:74LVC7T245 U115
 U 1 1 561672AB
 P 11700 2850
 F 0 "U115" H 11650 2850 60  0000 L BNN
@@ -213,7 +183,7 @@ F 3 "" H 11700 2850 60  0000 C CNN
 	-1   0    0    -1  
 $EndComp
 $Comp
-L 74LVC7T245 U116
+L proto-rescue:74LVC7T245 U116
 U 1 1 56167359
 P 15400 2850
 F 0 "U116" H 15350 2850 60  0000 L BNN
@@ -224,7 +194,7 @@ F 3 "" H 15400 2850 60  0000 C CNN
 	-1   0    0    -1  
 $EndComp
 $Comp
-L +5V #PWR107
+L proto-rescue:+5V #PWR107
 U 1 1 56167C45
 P 11850 2100
 F 0 "#PWR107" H 11850 1950 50  0001 C CNN
@@ -235,7 +205,7 @@ F 3 "" H 11850 2100 60  0000 C CNN
 	-1   0    0    -1  
 $EndComp
 $Comp
-L +3.3V #PWR106
+L proto-rescue:+3.3V #PWR106
 U 1 1 56167E0B
 P 11500 2100
 F 0 "#PWR106" H 11500 1950 50  0001 C CNN
@@ -246,7 +216,7 @@ F 3 "" H 11500 2100 60  0000 C CNN
 	-1   0    0    -1  
 $EndComp
 $Comp
-L 74LVC7T245 U117
+L proto-rescue:74LVC7T245 U117
 U 1 1 56167EBD
 P 11700 5050
 F 0 "U117" H 11650 5050 60  0000 L BNN
@@ -257,7 +227,7 @@ F 3 "" H 11700 5050 60  0000 C CNN
 	-1   0    0    -1  
 $EndComp
 $Comp
-L +5V #PWR123
+L proto-rescue:+5V #PWR123
 U 1 1 56167EC3
 P 11850 4300
 F 0 "#PWR123" H 11850 4150 50  0001 C CNN
@@ -268,7 +238,7 @@ F 3 "" H 11850 4300 60  0000 C CNN
 	-1   0    0    -1  
 $EndComp
 $Comp
-L +3.3V #PWR122
+L proto-rescue:+3.3V #PWR122
 U 1 1 56167ED1
 P 11500 4300
 F 0 "#PWR122" H 11500 4150 50  0001 C CNN
@@ -279,7 +249,7 @@ F 3 "" H 11500 4300 60  0000 C CNN
 	-1   0    0    -1  
 $EndComp
 $Comp
-L GND #PWR118
+L proto-rescue:GND #PWR118
 U 1 1 5616B45B
 P 16000 3400
 F 0 "#PWR118" H 16000 3150 50  0001 C CNN
@@ -290,7 +260,7 @@ F 3 "" H 16000 3400 60  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L +5V #PWR108
+L proto-rescue:+5V #PWR108
 U 1 1 5616B84C
 P 15200 2100
 F 0 "#PWR108" H 15200 1950 50  0001 C CNN
@@ -301,7 +271,7 @@ F 3 "" H 15200 2100 60  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L +3.3V #PWR109
+L proto-rescue:+3.3V #PWR109
 U 1 1 5616B884
 P 15550 2100
 F 0 "#PWR109" H 15550 1950 50  0001 C CNN
@@ -312,7 +282,7 @@ F 3 "" H 15550 2100 60  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L 74LVC7T245 U118
+L proto-rescue:74LVC7T245 U118
 U 1 1 5616C1E9
 P 15400 5050
 F 0 "U118" H 15350 5050 60  0000 L BNN
@@ -323,7 +293,7 @@ F 3 "" H 15400 5050 60  0000 C CNN
 	-1   0    0    -1  
 $EndComp
 $Comp
-L GND #PWR132
+L proto-rescue:GND #PWR132
 U 1 1 5616C1F7
 P 16000 5600
 F 0 "#PWR132" H 16000 5350 50  0001 C CNN
@@ -334,7 +304,7 @@ F 3 "" H 16000 5600 60  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L +5V #PWR124
+L proto-rescue:+5V #PWR124
 U 1 1 5616C200
 P 15200 4300
 F 0 "#PWR124" H 15200 4150 50  0001 C CNN
@@ -345,7 +315,7 @@ F 3 "" H 15200 4300 60  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L +3.3V #PWR125
+L proto-rescue:+3.3V #PWR125
 U 1 1 5616C206
 P 15550 4300
 F 0 "#PWR125" H 15550 4150 50  0001 C CNN
@@ -356,7 +326,7 @@ F 3 "" H 15550 4300 60  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L 74LVC7T245 U119
+L proto-rescue:74LVC7T245 U119
 U 1 1 5616E092
 P 15400 8400
 F 0 "U119" H 15350 8400 60  0000 L BNN
@@ -376,7 +346,7 @@ NoConn ~ 16000 8400
 NoConn ~ 16000 8500
 NoConn ~ 16000 8600
 $Comp
-L GND #PWR166
+L proto-rescue:GND #PWR166
 U 1 1 5616E5A5
 P 16000 8950
 F 0 "#PWR166" H 16000 8700 50  0001 C CNN
@@ -387,7 +357,7 @@ F 3 "" H 16000 8950 60  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L +3.3V #PWR155
+L proto-rescue:+3.3V #PWR155
 U 1 1 5616E62D
 P 15550 7650
 F 0 "#PWR155" H 15550 7500 50  0001 C CNN
@@ -398,7 +368,7 @@ F 3 "" H 15550 7650 60  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L +5V #PWR154
+L proto-rescue:+5V #PWR154
 U 1 1 5616E674
 P 15200 7650
 F 0 "#PWR154" H 15200 7500 50  0001 C CNN
@@ -411,7 +381,7 @@ $EndComp
 NoConn ~ 14300 6350
 NoConn ~ 13600 6850
 $Comp
-L +5V #PWR136
+L proto-rescue:+5V #PWR136
 U 1 1 5616FA10
 P 9900 5800
 F 0 "#PWR136" H 9900 5650 50  0001 C CNN
@@ -422,7 +392,7 @@ F 3 "" H 9900 5800 60  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L GND #PWR142
+L proto-rescue:GND #PWR142
 U 1 1 5616FA6B
 P 9900 6500
 F 0 "#PWR142" H 9900 6250 50  0001 C CNN
@@ -433,7 +403,7 @@ F 3 "" H 9900 6500 60  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L R R105
+L proto-rescue:R R105
 U 1 1 5616FAA0
 P 9900 5950
 F 0 "R105" V 9980 5950 50  0000 C CNN
@@ -444,7 +414,7 @@ F 3 "" H 9900 5950 30  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L R R106
+L proto-rescue:R R106
 U 1 1 5616FB02
 P 9900 6350
 F 0 "R106" V 9980 6350 50  0000 C CNN
@@ -455,7 +425,7 @@ F 3 "" H 9900 6350 30  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L +5V #PWR137
+L proto-rescue:+5V #PWR137
 U 1 1 56170193
 P 10300 5800
 F 0 "#PWR137" H 10300 5650 50  0001 C CNN
@@ -466,7 +436,7 @@ F 3 "" H 10300 5800 60  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L GND #PWR143
+L proto-rescue:GND #PWR143
 U 1 1 56170199
 P 10300 6500
 F 0 "#PWR143" H 10300 6250 50  0001 C CNN
@@ -477,7 +447,7 @@ F 3 "" H 10300 6500 60  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L R R107
+L proto-rescue:R R107
 U 1 1 5617019F
 P 10300 5950
 F 0 "R107" V 10380 5950 50  0000 C CNN
@@ -488,7 +458,7 @@ F 3 "" H 10300 5950 30  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L R R108
+L proto-rescue:R R108
 U 1 1 561701A5
 P 10300 6350
 F 0 "R108" V 10380 6350 50  0000 C CNN
@@ -499,7 +469,7 @@ F 3 "" H 10300 6350 30  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L +5V #PWR134
+L proto-rescue:+5V #PWR134
 U 1 1 56170277
 P 9100 5800
 F 0 "#PWR134" H 9100 5650 50  0001 C CNN
@@ -510,7 +480,7 @@ F 3 "" H 9100 5800 60  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L GND #PWR140
+L proto-rescue:GND #PWR140
 U 1 1 5617027D
 P 9100 6500
 F 0 "#PWR140" H 9100 6250 50  0001 C CNN
@@ -521,7 +491,7 @@ F 3 "" H 9100 6500 60  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L R R101
+L proto-rescue:R R101
 U 1 1 56170283
 P 9100 5950
 F 0 "R101" V 9180 5950 50  0000 C CNN
@@ -532,7 +502,7 @@ F 3 "" H 9100 5950 30  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L R R102
+L proto-rescue:R R102
 U 1 1 56170289
 P 9100 6350
 F 0 "R102" V 9180 6350 50  0000 C CNN
@@ -545,7 +515,7 @@ $EndComp
 Text Label 9150 6150 0    60   ~ 0
 BDMGI
 $Comp
-L +5V #PWR135
+L proto-rescue:+5V #PWR135
 U 1 1 56170293
 P 9500 5800
 F 0 "#PWR135" H 9500 5650 50  0001 C CNN
@@ -556,7 +526,7 @@ F 3 "" H 9500 5800 60  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L GND #PWR141
+L proto-rescue:GND #PWR141
 U 1 1 56170299
 P 9500 6500
 F 0 "#PWR141" H 9500 6250 50  0001 C CNN
@@ -567,7 +537,7 @@ F 3 "" H 9500 6500 60  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L R R103
+L proto-rescue:R R103
 U 1 1 5617029F
 P 9500 5950
 F 0 "R103" V 9580 5950 50  0000 C CNN
@@ -578,7 +548,7 @@ F 3 "" H 9500 5950 30  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L R R104
+L proto-rescue:R R104
 U 1 1 561702A5
 P 9500 6350
 F 0 "R104" V 9580 6350 50  0000 C CNN
@@ -595,7 +565,7 @@ BDMGO
 Text Label 9950 6150 0    60   ~ 0
 BIAKI
 $Comp
-L LT1129MPST-3.3 U120
+L proto-rescue:LT1129MPST-3.3 U120
 U 1 1 56171129
 P 4350 9800
 F 0 "U120" H 4100 10000 40  0000 C CNN
@@ -606,7 +576,7 @@ F 3 "" H 4350 9800 60  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L CP1_Small C101
+L proto-rescue:CP1_Small C101
 U 1 1 561711D3
 P 3800 9900
 F 0 "C101" H 3810 9970 50  0000 L CNN
@@ -617,7 +587,7 @@ F 3 "" H 3800 9900 60  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L CP1_Small C102
+L proto-rescue:CP1_Small C102
 U 1 1 5617125E
 P 4900 9900
 F 0 "C102" H 4910 9970 50  0000 L CNN
@@ -628,7 +598,7 @@ F 3 "" H 4900 9900 60  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L GND #PWR171
+L proto-rescue:GND #PWR171
 U 1 1 561712F1
 P 3800 10000
 F 0 "#PWR171" H 3800 9750 50  0001 C CNN
@@ -639,7 +609,7 @@ F 3 "" H 3800 10000 60  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L GND #PWR173
+L proto-rescue:GND #PWR173
 U 1 1 56171359
 P 4350 10100
 F 0 "#PWR173" H 4350 9850 50  0001 C CNN
@@ -650,7 +620,7 @@ F 3 "" H 4350 10100 60  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L GND #PWR172
+L proto-rescue:GND #PWR172
 U 1 1 561713FF
 P 4900 10000
 F 0 "#PWR172" H 4900 9750 50  0001 C CNN
@@ -661,7 +631,7 @@ F 3 "" H 4900 10000 60  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L +3.3V #PWR170
+L proto-rescue:+3.3V #PWR170
 U 1 1 56171467
 P 5000 9750
 F 0 "#PWR170" H 5000 9600 50  0001 C CNN
@@ -672,7 +642,7 @@ F 3 "" H 5000 9750 60  0000 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L +5V #PWR169
+L proto-rescue:+5V #PWR169
 U 1 1 561714CF
 P 3700 9750
 F 0 "#PWR169" H 3700 9600 50  0001 C CNN
@@ -683,7 +653,7 @@ F 3 "" H 3700 9750 60  0000 C CNN
 	0    -1   -1   0   
 $EndComp
 $Comp
-L +5V #PWR175
+L proto-rescue:+5V #PWR175
 U 1 1 56171BDC
 P 1900 10200
 F 0 "#PWR175" H 1900 10050 50  0001 C CNN
@@ -694,7 +664,7 @@ F 3 "" H 1900 10200 60  0000 C CNN
 	-1   0    0    1   
 $EndComp
 $Comp
-L PWR_FLAG #FLG102
+L proto-rescue:PWR_FLAG #FLG102
 U 1 1 56171C8F
 P 1900 10200
 F 0 "#FLG102" H 1900 10295 50  0001 C CNN
@@ -705,7 +675,7 @@ F 3 "" H 1900 10200 60  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L PWR_FLAG #FLG103
+L proto-rescue:PWR_FLAG #FLG103
 U 1 1 56171CFE
 P 2300 10200
 F 0 "#FLG103" H 2300 10295 50  0001 C CNN
@@ -716,7 +686,7 @@ F 3 "" H 2300 10200 60  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L GND #PWR176
+L proto-rescue:GND #PWR176
 U 1 1 56171DC3
 P 2300 10200
 F 0 "#PWR176" H 2300 9950 50  0001 C CNN
@@ -727,7 +697,7 @@ F 3 "" H 2300 10200 60  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L QBUS B101
+L proto-rescue:QBUS B101
 U 1 1 561D5FE7
 P 7650 8050
 F 0 "B101" H 7075 7850 60  0000 C CNN
@@ -738,7 +708,7 @@ F 3 "" H 7650 7900 60  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L 74LVC7T245 U107
+L proto-rescue:74LVC7T245 U107
 U 1 1 561D6410
 P 4300 1700
 F 0 "U107" H 4250 1700 60  0000 L BNN
@@ -749,7 +719,7 @@ F 3 "" H 4300 1700 60  0000 C CNN
 	-1   0    0    -1  
 $EndComp
 $Comp
-L GND #PWR110
+L proto-rescue:GND #PWR110
 U 1 1 561D6451
 P 4900 2200
 F 0 "#PWR110" H 4900 1950 50  0001 C CNN
@@ -760,7 +730,7 @@ F 3 "" H 4900 2200 60  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L +5V #PWR102
+L proto-rescue:+5V #PWR102
 U 1 1 561D645B
 P 4100 950
 F 0 "#PWR102" H 4100 800 50  0001 C CNN
@@ -771,7 +741,7 @@ F 3 "" H 4100 950 60  0000 C CNN
 	-1   0    0    -1  
 $EndComp
 $Comp
-L +3.3V #PWR103
+L proto-rescue:+3.3V #PWR103
 U 1 1 561D6461
 P 4450 950
 F 0 "#PWR103" H 4450 800 50  0001 C CNN
@@ -782,7 +752,7 @@ F 3 "" H 4450 950 60  0000 C CNN
 	-1   0    0    -1  
 $EndComp
 $Comp
-L 74LVC7T245 U108
+L proto-rescue:74LVC7T245 U108
 U 1 1 561D6B76
 P 4300 4800
 F 0 "U108" H 4250 4800 60  0000 L BNN
@@ -793,7 +763,7 @@ F 3 "" H 4300 4800 60  0000 C CNN
 	-1   0    0    -1  
 $EndComp
 $Comp
-L GND #PWR130
+L proto-rescue:GND #PWR130
 U 1 1 561D6BB6
 P 4900 5300
 F 0 "#PWR130" H 4900 5050 50  0001 C CNN
@@ -804,7 +774,7 @@ F 3 "" H 4900 5300 60  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L +5V #PWR120
+L proto-rescue:+5V #PWR120
 U 1 1 561D6BC0
 P 4100 4050
 F 0 "#PWR120" H 4100 3900 50  0001 C CNN
@@ -815,7 +785,7 @@ F 3 "" H 4100 4050 60  0000 C CNN
 	-1   0    0    -1  
 $EndComp
 $Comp
-L +3.3V #PWR121
+L proto-rescue:+3.3V #PWR121
 U 1 1 561D6BC6
 P 4450 4050
 F 0 "#PWR121" H 4450 3900 50  0001 C CNN
@@ -826,7 +796,7 @@ F 3 "" H 4450 4050 60  0000 C CNN
 	-1   0    0    -1  
 $EndComp
 $Comp
-L 74LVC7T245 U109
+L proto-rescue:74LVC7T245 U109
 U 1 1 561D6EF0
 P 4300 7900
 F 0 "U109" H 4250 7900 60  0000 L BNN
@@ -837,7 +807,7 @@ F 3 "" H 4300 7900 60  0000 C CNN
 	-1   0    0    -1  
 $EndComp
 $Comp
-L GND #PWR159
+L proto-rescue:GND #PWR159
 U 1 1 561D6F30
 P 4900 8400
 F 0 "#PWR159" H 4900 8150 50  0001 C CNN
@@ -848,7 +818,7 @@ F 3 "" H 4900 8400 60  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L +5V #PWR144
+L proto-rescue:+5V #PWR144
 U 1 1 561D6F3A
 P 4100 7150
 F 0 "#PWR144" H 4100 7000 50  0001 C CNN
@@ -859,7 +829,7 @@ F 3 "" H 4100 7150 60  0000 C CNN
 	-1   0    0    -1  
 $EndComp
 $Comp
-L +3.3V #PWR145
+L proto-rescue:+3.3V #PWR145
 U 1 1 561D6F40
 P 4450 7150
 F 0 "#PWR145" H 4450 7000 50  0001 C CNN
@@ -1024,7 +994,7 @@ ZBS7
 Text GLabel 4900 8100 2    60   BiDi ~ 0
 ZWTBT
 $Comp
-L GND #PWR117
+L proto-rescue:GND #PWR117
 U 1 1 562003B5
 P 12300 3350
 F 0 "#PWR117" H 12300 3100 50  0001 C CNN
@@ -1035,7 +1005,7 @@ F 3 "" H 12300 3350 60  0000 C CNN
 	-1   0    0    -1  
 $EndComp
 $Comp
-L GND #PWR131
+L proto-rescue:GND #PWR131
 U 1 1 56200411
 P 12300 5550
 F 0 "#PWR131" H 12300 5300 50  0001 C CNN
@@ -1046,7 +1016,7 @@ F 3 "" H 12300 5550 60  0000 C CNN
 	-1   0    0    -1  
 $EndComp
 $Comp
-L GND #PWR139
+L proto-rescue:GND #PWR139
 U 1 1 56202038
 P 12900 6450
 F 0 "#PWR139" H 12900 6200 50  0001 C CNN
@@ -1066,7 +1036,7 @@ iDALtx
 Text GLabel 11100 5050 0    60   Input ~ 0
 DALtx
 $Comp
-L Am2908 U101
+L proto-rescue:Am2908 U101
 U 1 1 56208200
 P 1750 1500
 F 0 "U101" H 2250 2100 60  0000 C CNN
@@ -1079,7 +1049,7 @@ $EndComp
 Text Label 1050 1200 2    60   ~ 0
 iDALst
 $Comp
-L Am2908 U104
+L proto-rescue:Am2908 U104
 U 1 1 56208FA5
 P 2500 2750
 F 0 "U104" H 3000 3350 60  0000 C CNN
@@ -1117,7 +1087,7 @@ Text Label 1050 2750 2    60   ~ 0
 iDALtx
 NoConn ~ 7850 7600
 $Comp
-L DS8641-LR U2
+L proto-rescue:DS8641-LR U2
 U 1 1 5627F4F2
 P 13600 1450
 F 0 "U2" H 14000 2200 60  0000 C CNN
@@ -1128,7 +1098,7 @@ F 3 "" H 13075 1975 60  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L DS8641-LR U3
+L proto-rescue:DS8641-LR U3
 U 1 1 5627F9A7
 P 13600 3050
 F 0 "U3" H 14000 3800 60  0000 C CNN
@@ -1139,7 +1109,7 @@ F 3 "" H 13075 3575 60  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L DS8641-LR U4
+L proto-rescue:DS8641-LR U4
 U 1 1 5627FA37
 P 13600 4850
 F 0 "U4" H 14000 5600 60  0000 C CNN
@@ -1150,7 +1120,7 @@ F 3 "" H 13075 5375 60  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L DS8641-LR U5
+L proto-rescue:DS8641-LR U5
 U 1 1 5627FAA8
 P 13600 6450
 F 0 "U5" H 14000 7200 60  0000 C CNN
@@ -1161,7 +1131,7 @@ F 3 "" H 13075 6975 60  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L DS8641-LR U1
+L proto-rescue:DS8641-LR U1
 U 1 1 5627FF80
 P 13600 8200
 F 0 "U1" H 14000 8950 60  0000 C CNN
@@ -1172,7 +1142,7 @@ F 3 "" H 13075 8725 60  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L GND #PWR158
+L proto-rescue:GND #PWR158
 U 1 1 562805C2
 P 12900 8200
 F 0 "#PWR158" H 12900 7950 50  0001 C CNN
@@ -1183,7 +1153,7 @@ F 3 "" H 12900 8200 60  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L GND #PWR156
+L proto-rescue:GND #PWR156
 U 1 1 56280649
 P 12900 7700
 F 0 "#PWR156" H 12900 7450 50  0001 C CNN
@@ -1199,7 +1169,7 @@ NoConn ~ 16000 2950
 NoConn ~ 14800 2950
 NoConn ~ 14300 2950
 $Comp
-L GND #PWR114
+L proto-rescue:GND #PWR114
 U 1 1 56283543
 P 12900 2550
 F 0 "#PWR114" H 12900 2300 50  0001 C CNN
@@ -1210,7 +1180,7 @@ F 3 "" H 12900 2550 60  0000 C CNN
 	-1   0    0    -1  
 $EndComp
 $Comp
-L GND #PWR126
+L proto-rescue:GND #PWR126
 U 1 1 562836EA
 P 12900 4350
 F 0 "#PWR126" H 12900 4100 50  0001 C CNN
@@ -1221,7 +1191,7 @@ F 3 "" H 12900 4350 60  0000 C CNN
 	-1   0    0    -1  
 $EndComp
 $Comp
-L GND #PWR138
+L proto-rescue:GND #PWR138
 U 1 1 562839B4
 P 12900 5950
 F 0 "#PWR138" H 12900 5700 50  0001 C CNN
@@ -1232,7 +1202,7 @@ F 3 "" H 12900 5950 60  0000 C CNN
 	-1   0    0    -1  
 $EndComp
 $Comp
-L GND #PWR104
+L proto-rescue:GND #PWR104
 U 1 1 5628510E
 P 12900 950
 F 0 "#PWR104" H 12900 700 50  0001 C CNN
@@ -1243,7 +1213,7 @@ F 3 "" H 12900 950 60  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L +5V #PWR147
+L proto-rescue:+5V #PWR147
 U 1 1 5640AB38
 P 9800 7200
 F 0 "#PWR147" H 9800 7050 50  0001 C CNN
@@ -1254,7 +1224,7 @@ F 3 "" H 9800 7200 60  0000 C CNN
 	0    1    -1   0   
 $EndComp
 $Comp
-L +5V #PWR146
+L proto-rescue:+5V #PWR146
 U 1 1 5640ABE8
 P 9200 7200
 F 0 "#PWR146" H 9200 7050 50  0001 C CNN
@@ -1265,7 +1235,7 @@ F 3 "" H 9200 7200 60  0000 C CNN
 	0    -1   -1   0   
 $EndComp
 $Comp
-L GND #PWR148
+L proto-rescue:GND #PWR148
 U 1 1 5640ACD1
 P 9200 7300
 F 0 "#PWR148" H 9200 7050 50  0001 C CNN
@@ -1276,7 +1246,7 @@ F 3 "" H 9200 7300 60  0000 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L GND #PWR150
+L proto-rescue:GND #PWR150
 U 1 1 5640AD3F
 P 10750 7300
 F 0 "#PWR150" H 10750 7050 50  0001 C CNN
@@ -1287,7 +1257,7 @@ F 3 "" H 10750 7300 60  0000 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L GND #PWR149
+L proto-rescue:GND #PWR149
 U 1 1 5640ADAD
 P 9800 7300
 F 0 "#PWR149" H 9800 7050 50  0001 C CNN
@@ -1298,7 +1268,7 @@ F 3 "" H 9800 7300 60  0000 C CNN
 	0    -1   1    0   
 $EndComp
 $Comp
-L GND #PWR151
+L proto-rescue:GND #PWR151
 U 1 1 5640AE1B
 P 11350 7300
 F 0 "#PWR151" H 11350 7050 50  0001 C CNN
@@ -1309,7 +1279,7 @@ F 3 "" H 11350 7300 60  0000 C CNN
 	0    -1   1    0   
 $EndComp
 $Comp
-L GND #PWR162
+L proto-rescue:GND #PWR162
 U 1 1 5640AEAA
 P 9800 8700
 F 0 "#PWR162" H 9800 8450 50  0001 C CNN
@@ -1320,7 +1290,7 @@ F 3 "" H 9800 8700 60  0000 C CNN
 	0    -1   1    0   
 $EndComp
 $Comp
-L GND #PWR161
+L proto-rescue:GND #PWR161
 U 1 1 5640AF18
 P 9200 8700
 F 0 "#PWR161" H 9200 8450 50  0001 C CNN
@@ -1331,7 +1301,7 @@ F 3 "" H 9200 8700 60  0000 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L GND #PWR165
+L proto-rescue:GND #PWR165
 U 1 1 5640B105
 P 11350 8800
 F 0 "#PWR165" H 11350 8550 50  0001 C CNN
@@ -1342,7 +1312,7 @@ F 3 "" H 11350 8800 60  0000 C CNN
 	0    -1   1    0   
 $EndComp
 $Comp
-L GND #PWR164
+L proto-rescue:GND #PWR164
 U 1 1 5640B194
 P 10750 8800
 F 0 "#PWR164" H 10750 8550 50  0001 C CNN
@@ -1353,7 +1323,7 @@ F 3 "" H 10750 8800 60  0000 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L GND #PWR177
+L proto-rescue:GND #PWR177
 U 1 1 5640B223
 P 9800 10300
 F 0 "#PWR177" H 9800 10050 50  0001 C CNN
@@ -1364,7 +1334,7 @@ F 3 "" H 9800 10300 60  0000 C CNN
 	0    -1   1    0   
 $EndComp
 $Comp
-L GND #PWR179
+L proto-rescue:GND #PWR179
 U 1 1 5640B291
 P 11350 10300
 F 0 "#PWR179" H 11350 10050 50  0001 C CNN
@@ -1375,7 +1345,7 @@ F 3 "" H 11350 10300 60  0000 C CNN
 	0    -1   1    0   
 $EndComp
 $Comp
-L GND #PWR178
+L proto-rescue:GND #PWR178
 U 1 1 5640B2FF
 P 10750 10300
 F 0 "#PWR178" H 10750 10050 50  0001 C CNN
@@ -1386,7 +1356,7 @@ F 3 "" H 10750 10300 60  0000 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L SW_PUSH_SMALL SW101
+L proto-rescue:SW_PUSH_SMALL SW101
 U 1 1 5640B478
 P 11850 7300
 F 0 "SW101" H 12000 7410 30  0000 C CNN
@@ -1397,7 +1367,7 @@ F 3 "" H 11850 7300 60  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L GND #PWR152
+L proto-rescue:GND #PWR152
 U 1 1 5640B598
 P 11950 7400
 F 0 "#PWR152" H 11950 7150 50  0001 C CNN
@@ -1408,7 +1378,7 @@ F 3 "" H 11950 7400 60  0000 C CNN
 	-1   0    0    -1  
 $EndComp
 $Comp
-L CONN_ZTEX_AB P1
+L proto-rescue:CONN_ZTEX_AB P1
 U 1 1 56412F9B
 P 9450 8750
 F 0 "P1" H 9550 10400 50  0000 L CNN
@@ -1419,7 +1389,7 @@ F 3 "" H 9450 8350 60  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L CONN_ZTEX_CD P2
+L proto-rescue:CONN_ZTEX_CD P2
 U 1 1 5641301A
 P 11000 8750
 F 0 "P2" H 11100 10400 50  0000 L CNN
@@ -1569,7 +1539,7 @@ NoConn ~ 11350 10200
 Text Notes 9700 7000 0    60   ~ 12
 ZTEX Module Connector
 $Comp
-L MAX3488 U112
+L proto-rescue:MAX3488 U112
 U 1 1 56885BC8
 P 6600 2850
 F 0 "U112" H 6900 3150 60  0000 C CNN
@@ -1580,7 +1550,7 @@ F 3 "" H 6650 3100 60  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L MAX3488 U111
+L proto-rescue:MAX3488 U111
 U 1 1 56885C8A
 P 6600 2000
 F 0 "U111" H 6900 2300 60  0000 C CNN
@@ -1591,7 +1561,7 @@ F 3 "" H 6650 2250 60  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L MAX3488 U110
+L proto-rescue:MAX3488 U110
 U 1 1 56885D18
 P 6600 1150
 F 0 "U110" H 6900 1450 60  0000 C CNN
@@ -1602,7 +1572,7 @@ F 3 "" H 6650 1400 60  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L CONN_02X04 P101
+L proto-rescue:CONN_02X04 P101
 U 1 1 568869F1
 P 8400 1350
 F 0 "P101" H 8400 1600 50  0000 C CNN
@@ -1613,7 +1583,7 @@ F 3 "" H 8400 150 60  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L CONN_02X05 P102
+L proto-rescue:CONN_02X05 P102
 U 1 1 56886ABA
 P 8450 2600
 F 0 "P102" H 8450 2900 50  0000 C CNN
@@ -1624,7 +1594,7 @@ F 3 "" H 8450 1400 60  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L GND #PWR113
+L proto-rescue:GND #PWR113
 U 1 1 569BC8A9
 P 2000 2550
 F 0 "#PWR113" H 2000 2300 50  0001 C CNN
@@ -1635,7 +1605,7 @@ F 3 "" H 2000 2550 60  0000 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L GND #PWR105
+L proto-rescue:GND #PWR105
 U 1 1 569BCB08
 P 1250 1300
 F 0 "#PWR105" H 1250 1050 50  0001 C CNN
@@ -1648,7 +1618,7 @@ $EndComp
 Text Label 1050 4600 2    60   ~ 0
 iDALtx
 $Comp
-L Am2908 U102
+L proto-rescue:Am2908 U102
 U 1 1 569BD42B
 P 1750 4600
 F 0 "U102" H 2250 5200 60  0000 C CNN
@@ -1661,7 +1631,7 @@ $EndComp
 Text Label 1050 4300 2    60   ~ 0
 iDALst
 $Comp
-L Am2908 U105
+L proto-rescue:Am2908 U105
 U 1 1 569BD446
 P 2500 5850
 F 0 "U105" H 3000 6450 60  0000 C CNN
@@ -1682,7 +1652,7 @@ Text Label 1050 5750 2    60   ~ 0
 Text Label 1050 5850 2    60   ~ 0
 iDALtx
 $Comp
-L GND #PWR133
+L proto-rescue:GND #PWR133
 U 1 1 569BD481
 P 2000 5650
 F 0 "#PWR133" H 2000 5400 50  0001 C CNN
@@ -1693,7 +1663,7 @@ F 3 "" H 2000 5650 60  0000 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L GND #PWR127
+L proto-rescue:GND #PWR127
 U 1 1 569BD487
 P 1250 4400
 F 0 "#PWR127" H 1250 4150 50  0001 C CNN
@@ -1706,7 +1676,7 @@ $EndComp
 Text Label 1050 7700 2    60   ~ 0
 iDALtx
 $Comp
-L Am2908 U103
+L proto-rescue:Am2908 U103
 U 1 1 569BDB49
 P 1750 7700
 F 0 "U103" H 2250 8300 60  0000 C CNN
@@ -1719,7 +1689,7 @@ $EndComp
 Text Label 1050 7400 2    60   ~ 0
 iDALst
 $Comp
-L Am2908 U106
+L proto-rescue:Am2908 U106
 U 1 1 569BDB64
 P 2500 8950
 F 0 "U106" H 3000 9550 60  0000 C CNN
@@ -1740,7 +1710,7 @@ Text Label 1050 8850 2    60   ~ 0
 Text Label 1050 8950 2    60   ~ 0
 iDALtx
 $Comp
-L GND #PWR163
+L proto-rescue:GND #PWR163
 U 1 1 569BDB9F
 P 2000 8750
 F 0 "#PWR163" H 2000 8500 50  0001 C CNN
@@ -1751,7 +1721,7 @@ F 3 "" H 2000 8750 60  0000 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L GND #PWR153
+L proto-rescue:GND #PWR153
 U 1 1 569BDBA5
 P 1250 7500
 F 0 "#PWR153" H 1250 7250 50  0001 C CNN
@@ -1789,7 +1759,7 @@ NoConn ~ 6350 2850
 NoConn ~ 7100 2750
 NoConn ~ 7100 2900
 $Comp
-L +12V #PWR111
+L proto-rescue:+12V #PWR111
 U 1 1 56A168EC
 P 8000 2250
 F 0 "#PWR111" H 8000 2100 50  0001 C CNN
@@ -1800,7 +1770,7 @@ F 3 "" H 8000 2250 60  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L +12V #PWR112
+L proto-rescue:+12V #PWR112
 U 1 1 56A16973
 P 8900 2250
 F 0 "#PWR112" H 8900 2100 50  0001 C CNN
@@ -1811,7 +1781,7 @@ F 3 "" H 8900 2250 60  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L GND #PWR115
+L proto-rescue:GND #PWR115
 U 1 1 56A16A1A
 P 8100 2900
 F 0 "#PWR115" H 8100 2650 50  0001 C CNN
@@ -1822,7 +1792,7 @@ F 3 "" H 8100 2900 60  0000 C CNN
 	-1   0    0    -1  
 $EndComp
 $Comp
-L GND #PWR116
+L proto-rescue:GND #PWR116
 U 1 1 56A16A9A
 P 8800 2900
 F 0 "#PWR116" H 8800 2650 50  0001 C CNN
@@ -1833,7 +1803,7 @@ F 3 "" H 8800 2900 60  0000 C CNN
 	-1   0    0    -1  
 $EndComp
 $Comp
-L +12V #PWR157
+L proto-rescue:+12V #PWR157
 U 1 1 56A17D45
 P 8000 8050
 F 0 "#PWR157" H 8000 7900 50  0001 C CNN
@@ -1860,7 +1830,7 @@ IPlatchN
 NoConn ~ 8150 1500
 NoConn ~ 8650 1500
 $Comp
-L VDD #PWR168
+L proto-rescue:VDD #PWR168
 U 1 1 56BCEF63
 P 4900 9650
 F 0 "#PWR168" H 4900 9500 50  0001 C CNN
@@ -1877,7 +1847,7 @@ IPdata
 Text GLabel 11350 8300 2    60   Output ~ 0
 IPlatch
 $Comp
-L Micro_SD_Card CON101
+L proto-rescue:Micro_SD_Card CON101
 U 1 1 587BA235
 P 9350 4350
 F 0 "CON101" H 8700 4950 50  0000 C CNN
@@ -1888,7 +1858,7 @@ F 3 "" H 9350 4350 50  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L DIL8 P103
+L proto-rescue:DIL8 P103
 U 1 1 587BA9B2
 P 6950 4600
 F 0 "P103" H 6950 4850 50  0000 C CNN
@@ -1899,7 +1869,7 @@ F 3 "" H 6950 4600 50  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L R R109
+L proto-rescue:R R109
 U 1 1 587BAD2A
 P 6350 4200
 F 0 "R109" V 6430 4200 50  0000 C CNN
@@ -1910,7 +1880,7 @@ F 3 "" H 6350 4200 30  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L R R111
+L proto-rescue:R R111
 U 1 1 587BAEA7
 P 6550 4200
 F 0 "R111" V 6630 4200 50  0000 C CNN
@@ -1921,7 +1891,7 @@ F 3 "" H 6550 4200 30  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L R R112
+L proto-rescue:R R112
 U 1 1 587BAF3C
 P 7350 4200
 F 0 "R112" V 7430 4200 50  0000 C CNN
@@ -1932,7 +1902,7 @@ F 3 "" H 7350 4200 30  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L R R113
+L proto-rescue:R R113
 U 1 1 587BAFD4
 P 7550 4200
 F 0 "R113" V 7630 4200 50  0000 C CNN
@@ -1943,7 +1913,7 @@ F 3 "" H 7550 4200 30  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L R R110
+L proto-rescue:R R110
 U 1 1 587BB06F
 P 6450 4950
 F 0 "R110" V 6530 4950 50  0000 C CNN
@@ -1976,7 +1946,7 @@ Text Label 6300 4550 2    60   ~ 0
 Text Label 6300 4650 2    60   ~ 0
 SD_DI
 $Comp
-L GND #PWR129
+L proto-rescue:GND #PWR129
 U 1 1 587BD145
 P 6450 5200
 F 0 "#PWR129" H 6450 4950 50  0001 C CNN
@@ -1999,7 +1969,7 @@ SD_CLK
 Text Notes 7150 3800 0    60   ~ 12
 SD Card Carrier Module
 $Comp
-L +3.3V #PWR119
+L proto-rescue:+3.3V #PWR119
 U 1 1 587BF569
 P 6950 4000
 F 0 "#PWR119" H 6950 3850 50  0001 C CNN
@@ -2010,7 +1980,7 @@ F 3 "" H 6950 4000 60  0000 C CNN
 	-1   0    0    -1  
 $EndComp
 $Comp
-L +12V #PWR174
+L proto-rescue:+12V #PWR174
 U 1 1 587BEDA6
 P 1500 10200
 F 0 "#PWR174" H 1500 10050 50  0001 C CNN
@@ -2021,7 +1991,7 @@ F 3 "" H 1500 10200 60  0000 C CNN
 	-1   0    0    1   
 $EndComp
 $Comp
-L PWR_FLAG #FLG101
+L proto-rescue:PWR_FLAG #FLG101
 U 1 1 587BF183
 P 1500 10200
 F 0 "#FLG101" H 1500 10295 50  0001 C CNN
@@ -2044,7 +2014,7 @@ SD_NC2
 Text Label 9200 10100 2    60   ~ 0
 ~CS~/CD
 $Comp
-L Led_Small D101
+L proto-rescue:Led_Small D101
 U 1 1 587FF53A
 P 10100 950
 F 0 "D101" H 10050 1075 50  0000 L CNN
@@ -2063,7 +2033,7 @@ led_3_4
 Text GLabel 10750 8300 0    60   Input ~ 0
 led_3_9
 $Comp
-L Led_Small D102
+L proto-rescue:Led_Small D102
 U 1 1 58800030
 P 10100 1250
 F 0 "D102" H 10050 1375 50  0000 L CNN
@@ -2074,7 +2044,7 @@ F 3 "" V 10100 1250 50  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L Led_Small D103
+L proto-rescue:Led_Small D103
 U 1 1 588000D8
 P 10100 1550
 F 0 "D103" H 10050 1675 50  0000 L CNN
@@ -2085,7 +2055,7 @@ F 3 "" V 10100 1550 50  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L Led_Small D104
+L proto-rescue:Led_Small D104
 U 1 1 5880018B
 P 10100 1850
 F 0 "D104" H 10050 1975 50  0000 L CNN
@@ -2096,7 +2066,7 @@ F 3 "" V 10100 1850 50  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L R R114
+L proto-rescue:R R114
 U 1 1 58800209
 P 10450 950
 F 0 "R114" V 10530 950 50  0000 C CNN
@@ -2107,7 +2077,7 @@ F 3 "" H 10450 950 50  0000 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L R R115
+L proto-rescue:R R115
 U 1 1 588002CD
 P 10450 1250
 F 0 "R115" V 10530 1250 50  0000 C CNN
@@ -2118,7 +2088,7 @@ F 3 "" H 10450 1250 50  0000 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L R R116
+L proto-rescue:R R116
 U 1 1 58800381
 P 10450 1550
 F 0 "R116" V 10530 1550 50  0000 C CNN
@@ -2129,7 +2099,7 @@ F 3 "" H 10450 1550 50  0000 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L R R117
+L proto-rescue:R R117
 U 1 1 5880043C
 P 10450 1850
 F 0 "R117" V 10530 1850 50  0000 C CNN
@@ -2140,7 +2110,7 @@ F 3 "" H 10450 1850 50  0000 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L +3.3V #PWR101
+L proto-rescue:+3.3V #PWR101
 U 1 1 5880052C
 P 10700 850
 F 0 "#PWR101" H 10700 700 50  0001 C CNN
@@ -2998,7 +2968,7 @@ Wire Notes Line
 Text Notes 9650 750  0    60   ~ 12
 On Debug Board
 $Comp
-L GND #PWR128
+L proto-rescue:GND #PWR128
 U 1 1 5A14C479
 P 10150 5100
 F 0 "#PWR128" H 10150 4850 50  0001 C CNN

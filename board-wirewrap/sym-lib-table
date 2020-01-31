@@ -1,4 +1,3 @@
 (sym_lib_table
   (lib (name proto-rescue)(type Legacy)(uri ${KIPRJMOD}/proto-rescue.lib)(options "")(descr ""))
-  (lib (name myLib)(type Legacy)(uri /home/dab/me/kicad/myLib.lib)(options "")(descr ""))
 )
