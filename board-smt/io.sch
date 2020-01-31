@@ -1,10 +1,10 @@
 EESchema Schematic File Version 4
 LIBS:qsic-cache
-EELAYER 26 0
+EELAYER 30 0
 EELAYER END
 $Descr A 11000 8500
 encoding utf-8
-Sheet 6 6
+Sheet 7 7
 Title "I/O Ports"
 Date "2017-10-31"
 Rev "0.1"
@@ -15,7 +15,7 @@ Comment3 ""
 Comment4 ""
 $EndDescr
 $Comp
-L myLib:XC7A75T-CSG324 U401
+L qsic-rescue:XC7A75T-CSG324-myLib U401
 U 7 1 58C5DB74
 P 900 900
 F 0 "U401" H 1100 1100 60  0000 C CNN
@@ -26,9 +26,11 @@ F 3 "" V 1600 600 60  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L conn:CONN_02X05 P2
+L qsic-rescue:CONN_02X05-conn P2
 U 1 1 58C5E53F
 P 9300 5200
+AR Path="/58C5E53F" Ref="P2"  Part="1" 
+AR Path="/58C5D743/58C5E53F" Ref="P2"  Part="1" 
 F 0 "P2" H 9300 5500 50  0000 C CNN
 F 1 "Indicator Panel" H 9300 4900 50  0000 C CNN
 F 2 "Pin_Headers:Pin_Header_Angled_2x05" H 9300 4000 50  0001 C CNN
@@ -37,7 +39,7 @@ F 3 "" H 9300 4000 50  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L device:R R613
+L qsic-rescue:R-device R613
 U 1 1 58C7BE06
 P 7600 1000
 F 0 "R613" V 7680 1000 50  0000 C CNN
@@ -48,7 +50,7 @@ F 3 "" H 7600 1000 50  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L device:R R611
+L qsic-rescue:R-device R611
 U 1 1 58C76012
 P 7400 1000
 F 0 "R611" V 7480 1000 50  0000 C CNN
@@ -59,7 +61,7 @@ F 3 "" H 7400 1000 50  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L device:R R615
+L qsic-rescue:R-device R615
 U 1 1 58C7BEA8
 P 7800 1000
 F 0 "R615" V 7880 1000 50  0000 C CNN
@@ -70,7 +72,7 @@ F 3 "" H 7800 1000 50  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L device:R R617
+L qsic-rescue:R-device R617
 U 1 1 58C7BED4
 P 8000 1000
 F 0 "R617" V 8080 1000 50  0000 C CNN
@@ -81,7 +83,7 @@ F 3 "" H 8000 1000 50  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L device:R R618
+L qsic-rescue:R-device R618
 U 1 1 58C7BF74
 P 8000 2100
 F 0 "R618" V 8080 2100 50  0000 C CNN
@@ -188,7 +190,7 @@ Wire Wire Line
 	8000 800  8000 850 
 Connection ~ 8000 800 
 $Comp
-L device:R R614
+L qsic-rescue:R-device R614
 U 1 1 58C7CF7D
 P 7600 2750
 F 0 "R614" V 7680 2750 50  0000 C CNN
@@ -199,7 +201,7 @@ F 3 "" H 7600 2750 50  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L device:R R612
+L qsic-rescue:R-device R612
 U 1 1 58C7CF84
 P 7400 2750
 F 0 "R612" V 7480 2750 50  0000 C CNN
@@ -210,7 +212,7 @@ F 3 "" H 7400 2750 50  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L device:R R616
+L qsic-rescue:R-device R616
 U 1 1 58C7CF8B
 P 7800 2750
 F 0 "R616" V 7880 2750 50  0000 C CNN
@@ -221,7 +223,7 @@ F 3 "" H 7800 2750 50  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L device:R R619
+L qsic-rescue:R-device R619
 U 1 1 58C7CF92
 P 8000 2750
 F 0 "R619" V 8080 2750 50  0000 C CNN
@@ -232,7 +234,7 @@ F 3 "" H 8000 2750 50  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L device:R R620
+L qsic-rescue:R-device R620
 U 1 1 58C7CF99
 P 8000 3850
 F 0 "R620" V 8080 3850 50  0000 C CNN
@@ -457,7 +459,7 @@ Wire Wire Line
 	7050 4550 6950 4550
 Connection ~ 6950 4550
 $Comp
-L device:R R602
+L qsic-rescue:R-device R602
 U 1 1 58C6C931
 P 5300 6300
 F 0 "R602" V 5380 6300 50  0000 C CNN
@@ -468,7 +470,7 @@ F 3 "" H 5300 6300 50  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L device:R R601
+L qsic-rescue:R-device R601
 U 1 1 58C6C9B5
 P 5100 6300
 F 0 "R601" V 5180 6300 50  0000 C CNN
@@ -678,7 +680,7 @@ F 3 "" V 5350 2650 50  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L device:R R603
+L qsic-rescue:R-device R603
 U 1 1 58C74888
 P 5800 900
 F 0 "R603" V 5880 900 50  0000 C CNN
@@ -689,7 +691,7 @@ F 3 "" H 5800 900 50  0000 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L device:R R604
+L qsic-rescue:R-device R604
 U 1 1 58C74923
 P 5800 1150
 F 0 "R604" V 5880 1150 50  0000 C CNN
@@ -700,7 +702,7 @@ F 3 "" H 5800 1150 50  0000 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L device:R R605
+L qsic-rescue:R-device R605
 U 1 1 58C74A8B
 P 5800 1400
 F 0 "R605" V 5880 1400 50  0000 C CNN
@@ -711,7 +713,7 @@ F 3 "" H 5800 1400 50  0000 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L device:R R606
+L qsic-rescue:R-device R606
 U 1 1 58C74A92
 P 5800 1650
 F 0 "R606" V 5880 1650 50  0000 C CNN
@@ -722,7 +724,7 @@ F 3 "" H 5800 1650 50  0000 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L device:R R607
+L qsic-rescue:R-device R607
 U 1 1 58C74B93
 P 5800 1900
 F 0 "R607" V 5880 1900 50  0000 C CNN
@@ -733,7 +735,7 @@ F 3 "" H 5800 1900 50  0000 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L device:R R608
+L qsic-rescue:R-device R608
 U 1 1 58C74B9A
 P 5800 2150
 F 0 "R608" V 5880 2150 50  0000 C CNN
@@ -744,7 +746,7 @@ F 3 "" H 5800 2150 50  0000 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L device:R R609
+L qsic-rescue:R-device R609
 U 1 1 58C74C56
 P 5800 2400
 F 0 "R609" V 5880 2400 50  0000 C CNN
@@ -755,7 +757,7 @@ F 3 "" H 5800 2400 50  0000 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L device:R R610
+L qsic-rescue:R-device R610
 U 1 1 58C74C5D
 P 5800 2650
 F 0 "R610" V 5880 2650 50  0000 C CNN
@@ -856,7 +858,7 @@ F 3 "" H 7250 4650 60  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L myLib:USB3340 U602
+L qsic-rescue:USB3340-myLib U602
 U 1 1 5AC7CFB5
 P 3350 6800
 F 0 "U602" H 3350 6850 50  0000 C CNN

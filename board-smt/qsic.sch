@@ -1,10 +1,10 @@
 EESchema Schematic File Version 4
 LIBS:qsic-cache
-EELAYER 26 0
+EELAYER 30 0
 EELAYER END
 $Descr A 11000 8500
 encoding utf-8
-Sheet 1 6
+Sheet 1 7
 Title "QBUS Interface"
 Date "2017-10-31"
 Rev "0.1"
@@ -208,7 +208,7 @@ F0 "Memory" 60
 F1 "memory.sch" 60
 $EndSheet
 $Comp
-L myLib:XC7A75T-CSG324 U401
+L qsic-rescue:XC7A75T-CSG324-myLib U401
 U 4 1 58C75923
 P 7900 5800
 F 0 "U401" H 8100 6000 60  0000 C CNN
@@ -219,7 +219,7 @@ F 3 "" V 8600 5500 60  0001 C CNN
 	-1   0    0    1   
 $EndComp
 $Comp
-L myLib:XC7A75T-CSG324 U401
+L qsic-rescue:XC7A75T-CSG324-myLib U401
 U 5 1 58C75986
 P 10300 5800
 F 0 "U401" H 10500 6000 60  0000 C CNN

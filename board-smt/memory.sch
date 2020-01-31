@@ -1,10 +1,10 @@
 EESchema Schematic File Version 4
 LIBS:qsic-cache
-EELAYER 26 0
+EELAYER 30 0
 EELAYER END
 $Descr A 11000 8500
 encoding utf-8
-Sheet 4 6
+Sheet 4 7
 Title "Memory"
 Date "2017-10-31"
 Rev "0.1"
@@ -15,7 +15,7 @@ Comment3 ""
 Comment4 ""
 $EndDescr
 $Comp
-L myLib:XC7A75T-CSG324 U?
+L qsic-rescue:XC7A75T-CSG324-myLib U?
 U 8 1 58C4BEB9
 P 800 800
 AR Path="/58C3BD01/58C4BEB9" Ref="U?"  Part="8" 
@@ -339,7 +339,7 @@ DQSU
 Text Label 6050 3250 0    60   ~ 0
 DQSU#
 $Comp
-L device:C_Small C501
+L qsic-rescue:C_Small-device C501
 U 1 1 58C4D47E
 P 3600 6100
 F 0 "C501" H 3610 6170 50  0000 L CNN
@@ -350,7 +350,7 @@ F 3 "" H 3600 6100 50  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L device:C_Small C502
+L qsic-rescue:C_Small-device C502
 U 1 1 58C4D4C3
 P 3600 6550
 F 0 "C502" H 3610 6620 50  0000 L CNN
@@ -361,7 +361,7 @@ F 3 "" H 3600 6550 50  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L device:R R503
+L qsic-rescue:R-device R503
 U 1 1 58C4D4F2
 P 3950 6100
 F 0 "R503" V 4030 6100 50  0000 C CNN
@@ -372,7 +372,7 @@ F 3 "" H 3950 6100 50  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L device:R R504
+L qsic-rescue:R-device R504
 U 1 1 58C4D525
 P 3950 6550
 F 0 "R504" V 4030 6550 50  0000 C CNN
@@ -394,7 +394,7 @@ F 3 "" H 3750 5850 50  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L device:R R502
+L qsic-rescue:R-device R502
 U 1 1 58C4DBA8
 P 3800 3500
 F 0 "R502" V 3880 3500 50  0000 C CNN
@@ -405,7 +405,7 @@ F 3 "" H 3800 3500 50  0000 C CNN
 	0    1    1    0   
 $EndComp
 $Comp
-L device:R R505
+L qsic-rescue:R-device R505
 U 1 1 58C4DC41
 P 4100 3150
 F 0 "R505" V 4180 3150 50  0000 C CNN
@@ -427,7 +427,7 @@ F 3 "" H 3900 3200 50  0000 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L device:R R501
+L qsic-rescue:R-device R501
 U 1 1 58C4DD47
 P 3800 4000
 F 0 "R501" V 3880 4000 50  0000 C CNN
