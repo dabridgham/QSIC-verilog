@@ -736,23 +736,14 @@ module pmo
    // statically like this !!!
    reg [50:0]  rk0_load_table [0:7];
    initial begin
- `ifdef SD0
       rk0_load_table[0] = { `pack_enable, 16'd203, `pack_sd0, 32'h0002_0000 };
-  `ifdef RAM_DISK
       rk0_load_table[1] = { `pack_enable, 16'd203, `pack_ramdisk, 32'h0000_0000 };
-  `else
-      rk0_load_table[1] = { `pack_enable, 16'd203, `pack_sd0, 32'h0002_2000 };
-  `endif
- `else
-      rk0_load_table[0] = { `pack_enable, 16'd203, `pack_ramdisk, 32'h0000_0000 };
-      rk0_load_table[1] = { `pack_disable, 16'd203, `pack_sd0, 32'h0002_2000 };
- `endif
-      rk0_load_table[2] = { `pack_disable, 16'd203, `pack_sd0, 32'h0002_4000 };
-      rk0_load_table[3] = { `pack_disable, 16'd203, `pack_sd0, 32'h0002_6000 };
-      rk0_load_table[4] = { `pack_disable, 16'd203, `pack_sd0, 32'h0002_8000 };
+      rk0_load_table[2] = { `pack_enable, 16'd203, `pack_sd0, 32'h0002_4000 };
+      rk0_load_table[3] = { `pack_enable, 16'd203, `pack_sd0, 32'h0002_6000 };
+      rk0_load_table[4] = { `pack_enable, 16'd203, `pack_sd0, 32'h0002_8000 };
       rk0_load_table[5] = { `pack_disable, 16'd203, `pack_sd0, 32'h0002_a000 };
       rk0_load_table[6] = { `pack_disable, 16'd203, `pack_sd0, 32'h0002_c000 };
-      rk0_load_table[7] = { `pack_disable, 16'd203, `pack_sd0, 32'h0002_e000 };
+      rk0_load_table[7] = { `pack_enable, 16'd203, `pack_ramdisk, 32'h0000_2000 };
    end
 
    wire        pack_enable = rk0_load_table[rk0_dev_sel][50];
