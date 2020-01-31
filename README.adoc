@@ -1,4 +1,4 @@
-= QSIC - QBUS Storage Interface Card
+= QSIC - QBUS Storage and I/O Card
 
 The QSIC is a QBUS card with an FPGA and SD cards that emulates the old DEC disk
 controllers and drives.  A companion
@@ -6,11 +6,12 @@ http://github.com/dabridgham/Indicator-Panel[indicator panel] is also
 available for those who want the blinkenlights.
 
 [horizontal]
-board-prototype:: KiCAD designs for a prototype board with 8641 bus transceivers
-board-qsic:: KiCAD design for the QSIC hardware
-board-smt:: KiCAD design where I've been experimenting with discrete bus drivers
-board-wirewrap:: KiCAD designs for the wire-wrap prototype board
-documentation:: Users Manual for the QSIC/USIC
+board-prototype:: KiCad design for a prototype board with 8641 bus
+		  transceivers (old idea)
+board-qsic:: KiCad design for the QSIC hardware
+board-smt:: KiCad design where I've been experimenting with discrete bus drivers
+board-wirewrap:: KiCad design for the wire-wrap prototype board
+documentation:: Programming Manual for the QSIC/USIC
 indicator-panel:: This directory is obsolete as the indicator panel has
 		  been moved to its own project
 papers:: A paper on QBUS and Unibus arbitration
