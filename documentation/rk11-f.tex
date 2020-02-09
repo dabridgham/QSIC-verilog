@@ -33,16 +33,17 @@ but if this turns out to not be the case we'll return to this issue.
 
 \section{Configuration}
 
-By default, eight I/O registers begin at $777400_8$.  The default
-interrupt vector is $220_8$ and the interrupt priority is 4.  The USIC
-can be configured for 18-bit or 22-bit addresses.  The RK11-F as a
-whole may be disabled if it's not wanted.
+By default, eight I/O registers begin at $777400_8$\footnote{Assuming
+  we include two RK11s by default, I should add the default values for
+  the second RK11 too.}.  The default interrupt vector is $220_8$ and
+the interrupt priority is 4.  The USIC can be configured for 18-bit or
+22-bit addresses.  The RK11-F as a whole may be disabled if it's not
+wanted.
 
 \section{Programming}
 
 The address shown for each register is the default address for the
-first RK11 controller.\footnote{Assuming we include two RK11s by
-  default, I should add the default values for the second RK11 too.}
+first RK11 controller.
 
 \subsection{Drive Status Register (RKDS)}
 \regaddr{777400}

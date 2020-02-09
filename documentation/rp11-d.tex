@@ -3,7 +3,7 @@
 % RP11-D Programming Manual for the QSIC/USIC
 
 \chapter{RP11-D}
-\section{Intro}
+
 The RP11-D is the implementation of the RP11 disk controller inside the QSIC
 and USIC. The RP11 never existed on the QBUS at all, but it is being
 supported there because it's a nice simple controller, and can be very simply
@@ -17,9 +17,9 @@ supported by the ENABLE+ functionality available on the USIC.
 The extended address needs more bits alongside the existing Bus Address
 Register; these are stored in a new register, the 'Extended Address Register'
 (RPXA). To find a place for this, the RP11-D takes advantage of the fact that
-the original RP11-C hardware actually responds from $0776700_8$ up to
-$0776736_8$, but there are no actual registers from $0776700_8$ to
-$0776706_8$, so we can put any additional registers needed in that range.
+the original RP11-C hardware actually responds from $776700_8$ up to
+$776736_8$, but there are no actual registers from $776700_8$ to
+$776706_8$, so we can put any additional registers needed in that range.
 
 We've also extended it further to allow for much larger disks. This is done
 by the simple expedient of extending the track and cylinder fields into all
@@ -30,6 +30,124 @@ bits of linear block address, or a maximum disk size of $2^{37}$ bytes or
 128GiBytes. (Obviously you'll need the ability to modify your disk driver to
 take advantage of this.) Another added register allows the device driver to
 see the configured pack size of each pack.
+
+\section{Configuration}
+
+The RP11-D has a set of configuration registers that take the place of the jumpers
+and DIP switches of earlier disk controllers.  Additionally, there are configuration
+registers that map logical disk drives to disk packs located on the various storage
+media.
+
+This block of registers is referred to from the top-level configuration block as
+described in \S\ref{conf}, page \pageref{conf}.  In this way, each RP11 has its own set
+of configuration registers and they can move around in the configuration address
+space without needing to redefine anything here.  Addresses shown here are relative
+to the beginning of this block of RP11-D configuration.
+
+\subsection{Device}
+
+\regaddr{Start+0}
+
+\begin{register16}
+  \bit{15}{ENA}
+  \bit{14}{Q22}
+  \bit{13}{EXT}
+  \bits{0}{12}{Base Address}
+\end{register16}
+
+\begin{bittable}
+  15 & Enable & Enables this RP11-D \\
+
+  14 & Q22 & Enables 22-bit operation, else the RP11-D acts as an 18-bit device.  On
+  the QBUS, Q22 would be normal while on the Unibus, 18-bits would be normal.
+  
+  Selecting Q22 on the Unibus while the Enable+ is also enabled, directs the RP11-D
+  to DMA directly to 22-bit memory with physical addresses, not going through the
+  Enable+ DMA mapping registers.  An ersatz MASSBUS disk, if you will.  Enabling
+  22-bit addressing on the Unibus without the Enable+ is currently undefined. \\
+
+  13 & Extended & Enables extended disk packs.  This breaks compatibility with
+  previous RP11s but allows for much larger disks if you're able to modify your disk
+  driver. \\
+
+  00-12 & Base Address & The base address of the RP11-D's registers in the I/O page
+  on the QBUS or Unibus. \\
+
+\end{bittable}
+
+\regaddr{Start+1}
+
+\begin{register16}
+  \bits{11}{15}{---}
+  \bits{9}{10}{INT PRI}
+  \bits{0}{8}{Interrupt Vector}
+\end{register16}
+
+\begin{bittable}
+  09-10 & INT PRI & The interrupt priority.\newline
+  {\tt
+    \begin{tabular}{ll}
+      Priority 4 & 00 \\
+      Priority 5 & 01 \\
+      Priority 6 & 10 \\
+      Priority 7 & 11 \\
+  \end{tabular}} \\
+
+  00-08 & Interrupt Vector & The interrupt vector to use. \\
+\end{bittable}
+
+\subsection{Load Table}
+
+The Load Table immediately follows the device configuration and tells the RP11-D
+about simulated ``disk packs'' that are loaded into its ``drives''.  It has eight
+entries, corresponding to the eight disk drives the disk controller supports.  Each
+entry is four consecutive configuration words.
+
+\regaddr{Start+2,6,10,14,18,22,26,30}
+
+\begin{register16}
+  \bit{15}{ENA}
+  \bit{14}{EXT}
+  \bit{13}{RP03}
+  \bits{3}{12}{---}
+  \bits{0}{2}{SD}
+\end{register16}
+\begin{register16}
+  \bits{0}{15}{Offset Low}
+\end{register16}
+\begin{register16}
+  \bits{0}{15}{Offset High}
+\end{register16}
+\begin{register16}
+  \bits{0}{15}{Size}
+\end{register16}
+
+\begin{bittable}
+  15 & ENA & This pack is enabled. \\
+
+  14 & EXT & This is an extended disk pack.  Only allowed if the RP11-D is configured to allow
+  extended packs. \\
+
+  13 & RP03 & If this is not an extended disk pack, this specifies an RP03 disk (406
+  cylinders, \verb|~|40MB) as opposed to an RP02 disk (203 cylinders, \verb|~|20MB). \\
+
+  00-02 & SD & The Storage Device the pack lives on.  See the table at
+  \S\ref{storagedevice}. \\
+
+   & Offset & The offset, in blocks, of the pack from the beginning of its Storage
+  Device. \\
+
+   & Size & For extended disk packs, this is the largest cylinder number (one less than the
+  number of cylinders).  It is set to 0 for legacy RP02 or RP03 disk packs, allowing for a
+  mix of legacy and extended disk packs on the same RP11-D controller.
+
+  On extended disk packs, the RP11-D has 4 bits to specify the sector address and 8 bits for
+  the track.  All values are used (16 sectors per track and 256 tracks) so there are
+  $2^{12}$ or 4,096 blocks per cylinder.
+
+  The smallest disk supported is 4~MiB with 2 cylinders (since a size of 0 specifies
+  a legacy disk pack) while the largest is 65,536 cylinders or 128~GiB.  \\
+\end{bittable}
 
 \section{Programming}
 
@@ -55,7 +173,7 @@ Neither the 36-bit mode, nor header commands (i.e. Header bit in the RPCS
 set), nor either parity, is supported.
 
 The default interrupt vector is $254_8$ and the interrupt priority 
-is 5. Both the interrupt priority and vector are configurable (not yet).
+is 5. Both the interrupt priority and vector are configurable.
 
 \section{Registers}
 
@@ -126,7 +244,7 @@ it's always a physical address anyway.
   \bit{10}{SU SU}
   \bit{11}{SU SI}
   \bit{12}{HNF}
-  \bit{13}{SU PR03}
+  \bit{13}{SU RP03}
   \bit{14}{SU OL}
   \bit{15}{SU RDY}
 \end{register16}
@@ -187,11 +305,11 @@ The RPER is a read-only register (except in maintenance mode, which
 is not currently supported).
 
 \begin{bittable}
-  00 & Disk Error & OR of HNF and SU IN, so always 0. \\
+  00 & Disk Error & OR of HNF and SU SI, so always 0. \\
 
   01 & End of Pack & Indicates that, during a Read, Write, Read Check,
     or Write Check function, operations on sector $11_8$, track $23_8$,
-    and cylinder $624_8$ were finished, and the RPWC has not yet overflowed.
+    and cylinder $625_8$ were finished, and the RPWC has not yet overflowed.
     This is essentially an attempt to overflow out of a drive. \\
 
   02 & Nonexistent Memory & Set if memory does not respond
@@ -204,7 +322,7 @@ is not currently supported).
   04 & Timing Error & Unused, set to 0. \\
 
   05 & Checksum Error & Indicates a checksum error while reading
-  data during a Read Check or Read function. The RP11-F does not do
+  data during a Read Check or Read function. The RP11-D does not do
   its own checksums on the data and this bit reflects the checksum
   from the SD Card or USB checksum.\footnote{Not yet implemented.} \\
 
@@ -227,7 +345,7 @@ is not currently supported).
   to initiate an operation to a track larger than $23_8$. \\
 
   13 & Non-existent Cylinder & Indicates that an attempt was made
-  to initiate a transfer to a cylinder larger than $624_8$. \\
+  to initiate a transfer to a cylinder larger than $625_8$. \\
 
   14 & File Unsafe Violation & Unused, set to 0. \\
 
@@ -259,10 +377,7 @@ is not currently supported).
     sets Not Ready bit (which does not appear to be in any register;
     perhaps the Ready bit in the CSR is the inversion of that).
     Write-only, always reads as 0 (it is not stored; rather, the level during
-    the bus write operation is used as a pulse).
-    \footnote{The RP11-C manual lists GO as write-only. The RP11-C
-    allows it to be read. Oh wait, I know why they did that.
-    I need to fix the code.} \\
+    the bus write operation is used as a pulse). \\
 
   01-03 & Function & The function to be executed when Go is
   set.\newline
@@ -332,11 +447,10 @@ is not currently supported).
 \end{register16}
 
 \begin{bittable}
-  00-15 & BA00-BA15 & The low 16-bits of the bus address to be used
-  for data transfers.  The MEX bits (bits 04 and 05 of RPCS) extend
-  the address to 18-bits and, if enabled, the BAE bits (bits 00-05 of
-  RPXA) extend the address to 22-bits (QSIC only). Bit 00 is always 0
-  as all transfers are a full word. \\
+  00-15 & BA00-BA15 & The low 16-bits of the bus address to be used for data
+  transfers.  The MEX bits (bits 04 and 05 of RPCS) extend the address to 18-bits
+  and, if enabled, the BAE bits (bits 00-05 of RPXA) extend the address to
+  22-bits. Bit 00 is always 0 as all transfers are a full word. \\
 \end{bittable}
 
 \subsection{Cylinder Address Register (RPCA)}
