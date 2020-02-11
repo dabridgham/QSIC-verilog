@@ -29,18 +29,18 @@ enabled unless the RP11-D is configured for extended packs.) The result is 28
 bits of linear block address, or a maximum disk size of $2^{37}$ bytes or
 128GiBytes. (Obviously you'll need the ability to modify your disk driver to
 take advantage of this.) Another added register allows the device driver to
-see the configured pack size of each pack.
+see the configured pack size of each disk pack.
 
 \section{Configuration}
 
 The RP11-D has a set of configuration registers that take the place of the jumpers
 and DIP switches of earlier disk controllers.  Additionally, there are configuration
-registers that map logical disk drives to disk packs located on the various storage
-media.
+registers that make up a ``load table'' that maps logical disk drives to disk packs
+located on the various storage media.
 
-This block of registers is referred to from the top-level configuration block as
-described in \S\ref{conf}, page \pageref{conf}.  In this way, each RP11 has its own set
-of configuration registers and they can move around in the configuration address
+This block of registers is referenced from the top-level configuration block as
+described in \S\ref{conf}, page \pageref{conf}.  In this way, each RP11 has its own
+set of configuration registers and they can move around in the configuration address
 space without needing to redefine anything here.  Addresses shown here are relative
 to the beginning of this block of RP11-D configuration.
 
@@ -56,14 +56,14 @@ to the beginning of this block of RP11-D configuration.
 \end{register16}
 
 \begin{bittable}
-  15 & Enable & Enables this RP11-D \\
+  15 & Enable & Enables this RP11-D. \\
 
-  14 & Q22 & Enables 22-bit operation, else the RP11-D acts as an 18-bit device.  On
-  the QBUS, Q22 would be normal while on the Unibus, 18-bits would be normal.
+  14 & Q22 & Enables 22-bit operation, otherwise the RP11-D acts as an 18-bit device.
+  On the QBUS, Q22 would be normal while on the Unibus, 18-bits would be normal.
   
   Selecting Q22 on the Unibus while the Enable+ is also enabled, directs the RP11-D
   to DMA directly to 22-bit memory with physical addresses, not going through the
-  Enable+ DMA mapping registers.  An ersatz MASSBUS disk, if you will.  Enabling
+  Enable+ Unibus mapping registers.  An ersatz MASSBUS disk, if you will.  Enabling
   22-bit addressing on the Unibus without the Enable+ is currently undefined. \\
 
   13 & Extended & Enables extended disk packs.  This breaks compatibility with
@@ -71,7 +71,7 @@ to the beginning of this block of RP11-D configuration.
   driver. \\
 
   00-12 & Base Address & The base address of the RP11-D's registers in the I/O page
-  on the QBUS or Unibus. \\
+  on the QBUS or Unibus.  The default for the first RP11 is $776700_8$.\\
 
 \end{bittable}
 
@@ -84,8 +84,8 @@ to the beginning of this block of RP11-D configuration.
 \end{register16}
 
 \begin{bittable}
-  09-10 & INT PRI & The interrupt priority.\newline
-  {\tt
+  09-10 & INT PRI & The interrupt priority.  The default is interrupt priority
+  5. \newline {\tt
     \begin{tabular}{ll}
       Priority 4 & 00 \\
       Priority 5 & 01 \\
@@ -93,7 +93,8 @@ to the beginning of this block of RP11-D configuration.
       Priority 7 & 11 \\
   \end{tabular}} \\
 
-  00-08 & Interrupt Vector & The interrupt vector to use. \\
+  00-08 & Interrupt Vector & The interrupt vector to use.  The default for the first
+  RP11 is $254_8$. \\
 \end{bittable}
 
 \subsection{Load Table}
@@ -123,31 +124,34 @@ entry is four consecutive configuration words.
 \end{register16}
 
 \begin{bittable}
-  15 & ENA & This pack is enabled. \\
+  15 & ENA & This pack is enabled.  Whether the pack shows as loaded depends on both
+  this bit and whether the associated storage device is active. \\
 
-  14 & EXT & This is an extended disk pack.  Only allowed if the RP11-D is configured to allow
-  extended packs. \\
+  14 & EXT & This is an extended disk pack.  Only allowed if the RP11-D is configured
+  to allow extended packs.\footnote{Considering using the File Unsafe error (RPDS bit
+    09) to indicate that an extended pack was configured on a non-extended RP11-D.} \\
 
   13 & RP03 & If this is not an extended disk pack, this specifies an RP03 disk (406
-  cylinders, \verb|~|40MB) as opposed to an RP02 disk (203 cylinders, \verb|~|20MB). \\
+  cylinders, \verb|~|40MB) otherwise an RP02 disk (203 cylinders, \verb|~|20MB). \\
 
   00-02 & SD & The Storage Device the pack lives on.  See the table at
-  \S\ref{storagedevice}. \\
+  \S\ref{storagedevice}, page \pageref{storagedevice}. \\
 
    & Offset & The offset, in blocks, of the pack from the beginning of its Storage
   Device. \\
 
    & Size & For extended disk packs, this is the largest cylinder number (one less than the
   number of cylinders).  It is set to 0 for legacy RP02 or RP03 disk packs, allowing for a
-  mix of legacy and extended disk packs on the same RP11-D controller.
-
-  On extended disk packs, the RP11-D has 4 bits to specify the sector address and 8 bits for
-  the track.  All values are used (16 sectors per track and 256 tracks) so there are
-  $2^{12}$ or 4,096 blocks per cylinder.
-
-  The smallest disk supported is 4~MiB with 2 cylinders (since a size of 0 specifies
-  a legacy disk pack) while the largest is 65,536 cylinders or 128~GiB.  \\
+  mix of legacy and extended disk packs on the same RP11-D controller. \\
 \end{bittable}
+
+On extended disk packs, the RP11-D has 4 bits to specify the sector address and 8
+bits for the track.  All values are used (16 sectors per track and 256 tracks per
+cylinder) so there are $2^{12}$ or 4,096 sectors per cylinder.
+
+The smallest disk supported is 4~MiB with 2 cylinders (since a size of 0, 1 cylinder,
+specifies a legacy disk pack) while the largest is 65,536 cylinders or 128~GiB.
+
 
 \section{Programming}
 
