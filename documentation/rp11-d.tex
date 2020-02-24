@@ -21,15 +21,14 @@ the original RP11-C hardware actually responds from $776700_8$ up to
 $776736_8$, but there are no actual registers from $776700_8$ to
 $776706_8$, so we can put any additional registers needed in that range.
 
-We've also extended it further to allow for much larger disks. This is done
-by the simple expedient of extending the track and cylinder fields into all
-the adjacent unused bits, and allowing the sector, head, and cylinder fields
-of the disk address to take on any value that fits. (These bits are not
-enabled unless the RP11-D is configured for extended packs.) The result is 28
-bits of linear block address, or a maximum disk size of $2^{37}$ bytes or
-128GiBytes. (Obviously you'll need the ability to modify your disk driver to
-take advantage of this.) Another added register allows the device driver to
-see the configured pack size of each disk pack.
+We've also extended it further to allow for much larger disks. This is done by the
+simple expedient of extending the track and cylinder fields into all the adjacent
+unused bits, and allowing the sector, head, and cylinder fields of the disk address
+to take on any value that fits. (These bits are not enabled unless the RP11-D is
+configured for extended packs.) The result is 28~bits of linear block address, or a
+maximum disk size of $2^{37}$ bytes or 128~GiBytes.  Obviously you'll need the
+ability to modify your disk driver to take advantage of this.  Another added register
+allows the device driver to see the configured pack size of each disk pack.
 
 \section{Configuration}
 
@@ -145,12 +144,12 @@ entry is four consecutive configuration words.
   mix of legacy and extended disk packs on the same RP11-D controller. \\
 \end{bittable}
 
-On extended disk packs, the RP11-D has 4 bits to specify the sector address and 8
-bits for the track.  All values are used (16 sectors per track and 256 tracks per
-cylinder) so there are $2^{12}$ or 4,096 sectors per cylinder.
+On extended disk packs, the RP11-D has 4~bits to specify the sector address and
+8~bits for the track.  All values are used (16 sectors per track and 256~tracks per
+cylinder) so there are $2^{12}$ or 4,096~sectors per cylinder.
 
 The smallest disk supported is 4~MiB with 2 cylinders (since a size of 0, 1 cylinder,
-specifies a legacy disk pack) while the largest is 65,536 cylinders or 128~GiB.
+specifies a legacy disk pack) while the largest is 65,536~cylinders or 128~GiB.
 
 
 \section{Programming}
