@@ -1,4 +1,4 @@
-% -*- LaTeX -*-
+% -*- mode: LaTeX; fill-column: 96 -*-
 %
 % RP11-D Programming Manual for the QSIC/USIC
 
@@ -55,7 +55,12 @@ shown here are relative to the beginning of this block of RP11-D configuration.
 \end{register16}
 
 \begin{bittable}
-  15 & Enable & Enables this RP11-D. \\
+  00-12 & Base Address & The base address of the RP11-D's registers in the I/O page
+  on the QBUS or Unibus.  The default for the first RP11 is $776700_8$.\\
+
+  13 & Extended & Enables extended disk packs.  This breaks compatibility with
+  previous RP11s but allows for much larger disks if you're able to modify your disk
+  driver. \\
 
   14 & Q22 & Enables 22-bit operation, otherwise the RP11-D acts as an 18-bit device.
   On the QBUS, Q22 would be normal while on the Unibus, 18-bits would be normal.
@@ -65,13 +70,7 @@ shown here are relative to the beginning of this block of RP11-D configuration.
   Enable+ Unibus mapping registers.  An ersatz MASSBUS disk, if you will.  Enabling
   22-bit addressing on the Unibus without the Enable+ is currently undefined. \\
 
-  13 & Extended & Enables extended disk packs.  This breaks compatibility with
-  previous RP11s but allows for much larger disks if you're able to modify your disk
-  driver. \\
-
-  00-12 & Base Address & The base address of the RP11-D's registers in the I/O page
-  on the QBUS or Unibus.  The default for the first RP11 is $776700_8$.\\
-
+  15 & Enable & Enables this RP11-D. \\
 \end{bittable}
 
 \regaddr{Start+1}
@@ -83,6 +82,9 @@ shown here are relative to the beginning of this block of RP11-D configuration.
 \end{register16}
 
 \begin{bittable}
+  00-08 & Interrupt Vector & The interrupt vector to use.  The default for the first
+  RP11 is $254_8$. \\
+
   09-10 & INT PRI & The interrupt priority.  The default is interrupt priority
   5. \newline {\tt
     \begin{tabular}{ll}
@@ -91,9 +93,6 @@ shown here are relative to the beginning of this block of RP11-D configuration.
       Priority 6 & 10 \\
       Priority 7 & 11 \\
   \end{tabular}} \\
-
-  00-08 & Interrupt Vector & The interrupt vector to use.  The default for the first
-  RP11 is $254_8$. \\
 \end{bittable}
 
 \subsection{Load Table}
@@ -123,18 +122,18 @@ entry is four consecutive configuration words.
 \end{register16}
 
 \begin{bittable}
-  15 & ENA & This pack is enabled.  Whether the pack shows as loaded depends on both
-  this bit and whether the associated storage device is active. \\
+  00-02 & SD & The Storage Device the pack lives on.  See the table at
+  \S\ref{storagedevice}, page \pageref{storagedevice}. \\
+
+  13 & RP03 & If this is not an extended disk pack, this specifies an RP03 disk (406
+  cylinders, \verb|~|40MB) otherwise an RP02 disk (203 cylinders, \verb|~|20MB). \\
 
   14 & EXT & This is an extended disk pack.  Only allowed if the RP11-D is configured
   to allow extended packs.\footnote{Considering using the File Unsafe error (RPDS bit
     09) to indicate that an extended pack was configured on a non-extended RP11-D.} \\
 
-  13 & RP03 & If this is not an extended disk pack, this specifies an RP03 disk (406
-  cylinders, \verb|~|40MB) otherwise an RP02 disk (203 cylinders, \verb|~|20MB). \\
-
-  00-02 & SD & The Storage Device the pack lives on.  See the table at
-  \S\ref{storagedevice}, page \pageref{storagedevice}. \\
+  15 & ENA & This pack is enabled.  Whether the pack shows as loaded depends on both
+  this bit and whether the associated storage device is active. \\
 
    & Offset & The offset, in blocks, of the pack from the beginning of its Storage
   Device. \\

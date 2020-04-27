@@ -1,4 +1,4 @@
-% -*- LaTeX -*-
+% -*- mode: LaTeX; fill-column: 96 -*-
 %
 % QSIC/USIC Programming and Configuration
 
@@ -119,25 +119,25 @@ the configuration for the rest of the devices.
 \regaddr{0}
 
 \begin{bittable}
+  0-3 & Conf Vers & Version of the configuration format.  This
+  document describes version 0. \\
+
+  11 & Save & Set this bit to cause the current configuration to be
+  saved to flash memory.  While saving, this bit will read as 1.
+  Do not modify the configuration while saving is in progress. \\
+
+  12 & Soft Dev & The Software version shown is under development.  This
+  bit will be cleared when it is a released version. \\
+
+  13 & FPGA Dev & The FPGA version shown is under development.  This
+  bit will be cleared when it is a released version. \\
+
   14-15 & Type & Type of board.\newline
   {\tt
     \begin{tabular}{rl}
       USIC & 00 \\
       QSIC & 01 \\
   \end{tabular}} \\
-
-  13 & FPGA Dev & The FPGA version shown is under development.  This
-  bit will be cleared when it is a released version. \\
-
-  12 & Soft Dev & The Software version shown is under development.  This
-  bit will be cleared when it is a released version. \\
-
-  11 & Save & Set this bit to cause the current configuration to be
-  saved to flash memory.  While saving, this bit will read as 1.
-  Do not modify the configuration while saving is in progress. \\
-
-  0-3 & Conf Vers & Version of the configuration format.  This
-  document describes version 0. \\
 \end{bittable}
 
 \begin{register16}
@@ -159,11 +159,11 @@ the configuration for the rest of the devices.
 \regaddr{3}
 
 \begin{bittable}
+  0-7 & Storage Device Count & A count of how many entries are in the
+  storage devices table that follows the controller table. \\
+
   8-15 & Controller Count & A count of how many entries are in the
   controller table that follows. \\
-
-  0-7 & Storage Device Count & A count of how many entries are in the
-  storage devices table that follows the controller table.
 \end{bittable}
 
 Beginning at word 4, there is a table of Controllers followed by a
@@ -175,6 +175,9 @@ table of Storage Devices.  Each entry in the tables is one word long.
 \end{register16}
 
 \begin{bittable}
+  0-10 & Index & The start address of the configuration block for the
+  specified device. \\
+
   11-15 & Type & The type of device referenced.  For controllers,
   types are:\newline
   {\tt
@@ -193,9 +196,6 @@ table of Storage Devices.  Each entry in the tables is one word long.
       RAM Disk & 1 \\
       USB & 2 \\
   \end{tabular}}\\
-
-  0-10 & Index & The start address of the configuration block for the
-  specified device.
 \end{bittable}
 
 
@@ -218,17 +218,17 @@ configuration system as a way of reporting status and diagnostics.
 \end{register16}
 
 \begin{bittable}
-  15 & CD & Card Detect \\
-  14 & V2 & SD Version 2 \\
-  13 & HC & High Capacity \\
-  12 & RDY & The device is ready. \\
-  11 & RD & The card is in the middle of a read operation. \\
-  10 & WR & The card is in the middle of a write operation. \\
+  0-5 & Size & The $\log_2$ of the size of the SD Card in 512~byte
+  blocks. \\
   6-9 & Error Code & If non-zero, the SD card controller is indicating an
   error.\footnote{Will fill out a table of error codes once they're
     set in the code.} \\
-  0-5 & Size & The $log_2$ of the size of the SD Card in 512~byte
-  blocks.
+  10 & WR & The card is in the middle of a write operation. \\
+  11 & RD & The card is in the middle of a read operation. \\
+  12 & RDY & The device is ready. \\
+  13 & HC & High Capacity \\
+  14 & V2 & SD Version 2 \\
+  15 & CD & Card Detect \\
 \end{bittable}
 
 \subsubsection{RAM Disk}
@@ -239,8 +239,9 @@ configuration system as a way of reporting status and diagnostics.
 \end{register16}
 
 \begin{bittable}
-  0-5 & Size & The $log_2$ of the size of memory in 512~byte blocks.
-  Zero (0) indicates there is no RAM available.
+  0-5 & Size & The $\log_2$ of the size of memory in 512~byte blocks.
+  Zero (0) indicates there is no RAM available.\footnote{Current value
+    is 19.  256~MiBytes = $2^{28}$~Bytes = $2^{19}$~blocks.}
 \end{bittable}
 
 \subsubsection{USB Device}
@@ -256,10 +257,11 @@ implement USB devices.
 \end{register16}
 
 \begin{bittable}
-  15 & ACT & This USB device is active. \\
+  0-5 & Size & The $\log_2$ of the size of the USB device in 512~byte
+  blocks. \\
   6-9 & Error Code & If non-zero, the USB Controller is indicating an
   error. \\
-  0-5 & Size & The $log_2$ of the size of the USB device in 512~byte blocks.
+  15 & ACT & This USB device is active. \\
 \end{bittable}
 
 \subsubsection{Load Tables}
@@ -418,7 +420,7 @@ allows for up to seven but that maximum has not yet been tested.
 \begin{bittable}
   & Count & How many panels are active.\\
 
-  & Panel \# & The type of each panel.  That is, what to display.
+  & Panel N & The type of each panel.  That is, what to display.
   Panel 1 is first in the chain. \newline
   {\tt \begin{tabular}{rll}
       lamptest & 0 & All lights on \\
