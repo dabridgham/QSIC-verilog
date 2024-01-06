@@ -35,7 +35,7 @@ Other QSIC-related repositories.
 
 [horizontal]
 https://github.com/dabridgham/QSIC[QSIC]:: The QSIC board
-https://github.com/dabridgham/QSIC[USIC]:: The USIC board
+https://github.com/dabridgham/USIC[USIC]:: The USIC board
 http://github.com/dabridgham/Indicator-Panel[Indicator Panel]:: Indicator Panel PCBs and graphics inlays
 Software:: The software that runs on the embedded soft processor in
 the QSIC/USIC (not yet started)
