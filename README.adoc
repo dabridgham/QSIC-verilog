@@ -31,7 +31,7 @@ board-smt:: KiCad design where I've been experimenting with discrete bus drivers
 indicator-panel:: This directory is obsolete as the indicator panel has
 		  been moved to its own project
 
-Other QSIC-related repositories
+Other QSIC-related repositories.
 
 [horizontal]
 QSIC:: The QSIC board
