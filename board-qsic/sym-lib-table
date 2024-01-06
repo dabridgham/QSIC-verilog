@@ -1,3 +1,5 @@
 (sym_lib_table
   (lib (name DEC)(type Legacy)(uri ${KIPRJMOD}/DEC.lib)(options "")(descr ""))
+  (lib (name qsic-rescue)(type Legacy)(uri ${KIPRJMOD}/qsic-rescue.lib)(options "")(descr ""))
+  (lib (name q2-rescue)(type Legacy)(uri ${KIPRJMOD}/q2-rescue.lib)(options "")(descr ""))
 )

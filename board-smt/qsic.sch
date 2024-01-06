@@ -1,10 +1,9 @@
 EESchema Schematic File Version 4
-LIBS:qsic-cache
 EELAYER 30 0
 EELAYER END
 $Descr A 11000 8500
 encoding utf-8
-Sheet 1 7
+Sheet 1 8
 Title "QBUS Interface"
 Date "2017-10-31"
 Rev "0.1"

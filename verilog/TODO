@@ -16,3 +16,5 @@
  o Figure out how to disable the bus drivers until the FPGA is configured and running
  o look into using the Xilinx AXI crossbar between controllers and storage devices
  o remove FIFO from most storage devices, only SD writes need it.  redesign flow control
+ o Make the RP11 detect that an extended disk pack is loaded when the controller isn't extended and
+   flag that disk as unavailable.

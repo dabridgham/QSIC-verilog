@@ -1,8 +1,8 @@
-% -*- LaTeX -*-
+% -*- mode: LaTeX; fill-column: 96 -*-
 %
 % QSIC/USIC Programming and Configuration
 
-\chapter{QBUS/UNIBUS Storage and Input/Output Card}
+\chapter[QBUS/UNIBUS Storage and I/O Card]{QBUS/UNIBUS Storage and Input/Output Card}
 \section{Introduction}
 
 The QSIC and USIC are cards which provide emulation of various QBUS and
@@ -26,12 +26,12 @@ performance obtainable. (It is possible some systems that will not work
 without better emulation of such delays; if so, an option could be added to
 better emulate them.)
 
-The QSIC is a dual-height QBUS card; it can hold two $\mu$SD cards,
+The QSIC is a dual-height QBUS card; it can hold two microSD cards,
 allowing direct card-\textgreater card backup. The controllers are
 denominated as the RKV11-F and RPV11-D; the extension is allowing DMA
 to the entire $2^{22}$ byte QBUS address space.
 
-The USIC is the same functionality, in a quad-height SPC card for the UNIBUS.
+The USIC is the same functionality in a quad-height SPC card for the UNIBUS.
 The USIC will optionally adds the Able ENABLE functionality, which allows
 processors with only 18-bit addressing to have access to $2^{22}$ bytes of
 memory.
@@ -49,20 +49,20 @@ debugging from time to time!
 
 \section{Basic operation}
 
-The space on the $\mu$SD cards (`storage devices') is divided into `packs',
+The space on the microSD cards (`storage devices') is divided into `packs',
 described by a `pack table' on the card (because it applies only to that
 card), which gives their location and size. Packs can be `loaded' on
 `drives'; in other words, everything works much like the original hardware.
 
 (The term `mount' is reserved for the operation of letting the operating
-system add a pack to the visible file system - again, like the existing UNIX,
+system add a pack to the visible file system -- again, like the existing UNIX,
 etc, terminology.)
 
 There are also `load tables', which record which packs are loaded on which
 drives; a non-volatile instance of these allows a system to be cold-booted
 without going through a pack loading phase.
 
-A storage device is `inserted' into a $\mu$SD slot; removing one without
+A storage device is `inserted' into a microSD slot; removing one without
 previously un-mounting (and un-loading) the packs is an error which can
 damage storage contents, just as switching a physical pack without
 un-mounting it would have on the original hardware.
@@ -81,26 +81,27 @@ simultaneous access to more packs/drives be needed.
 
 The QSIC and USIC contain, potentially, a multitude of devices all of
 which need configuration.  If we did it in the traditional manner with
-jumpers and DIP switches, it would be a mess indeed.  Therefore,
+jumpers and DIP switches, the boards would be a mess of DIP switches
+and difficult to change as we update the FPGA load.  Therefore,
 configuration of these devices is handled through two I/O registers
 which give access to a series of internal configuration registers
 inside each of the emulated devices.
 
 This configuration may be saved to internal flash memory where it will
 be restored at startup.  Some configuration information is more
-dynamic, namely the disk pack load tables, and needs to be re-computed
-at each boot.\footnote{Still to be designed.}
+dynamic, such as the disk pack load tables, and needs to be
+re-computed at each boot.\footnote{Still to be designed.}
 
-\subsection{Registers}
+\subsection{Bus Registers}
 
 Access to the internal configuration registers is through two I/O
 registers on the UNIBUS or QBUS located at $777720_8$ and $777722_8$.
 The first register is the address register.  Setting this selects
-which internal configuration register you're accessing.  Reading or
-writing the second bus register then accesses the specified
+which internal configuration register the second register accesses.
+Reading or writing the second bus register then accesses the specified
 configuration register.
 
-\subsection{Top-Level}
+\subsection{Top-Level Configuration Table}
 
 The internal configuration begins at fixed location 0.  It gives some
 information about the USIC or QSIC and then indexes all of the rest of
@@ -118,25 +119,25 @@ the configuration for the rest of the devices.
 \regaddr{0}
 
 \begin{bittable}
+  0-3 & Conf Vers & Version of the configuration format.  This
+  document describes version 0. \\
+
+  11 & Save & Set this bit to cause the current configuration to be
+  saved to flash memory.  While saving, this bit will read as 1.
+  Do not modify the configuration while saving is in progress. \\
+
+  12 & Soft Dev & The Software version shown is under development.  This
+  bit will be cleared when it is a released version. \\
+
+  13 & FPGA Dev & The FPGA version shown is under development.  This
+  bit will be cleared when it is a released version. \\
+
   14-15 & Type & Type of board.\newline
   {\tt
     \begin{tabular}{rl}
       USIC & 00 \\
       QSIC & 01 \\
   \end{tabular}} \\
-
-  13 & FPGA Dev & The FPGA version shown is under development.  This
-  bit will be cleared when it's a released version. \\
-
-  12 & Soft Dev & The Software version shown is under development.  This
-  bit will be cleared when it's a released version. \\
-
-  11 & Save & Set this bit to cause the current configuration to be
-  saved to flash memory.  While saving, this bit will read as 1.
-  Don't modify the configuration while saving is in progress. \\
-
-  0-3 & Conf Vers & Version of the configuration format.  This
-  document describes version 0. \\
 \end{bittable}
 
 \begin{register16}
@@ -158,11 +159,11 @@ the configuration for the rest of the devices.
 \regaddr{3}
 
 \begin{bittable}
+  0-7 & Storage Device Count & A count of how many entries are in the
+  storage devices table that follows the controller table. \\
+
   8-15 & Controller Count & A count of how many entries are in the
   controller table that follows. \\
-
-  0-7 & Storage Device Count & A count of how many entries are in the
-  storage devices table that follows the controller table.
 \end{bittable}
 
 Beginning at word 4, there is a table of Controllers followed by a
@@ -174,6 +175,9 @@ table of Storage Devices.  Each entry in the tables is one word long.
 \end{register16}
 
 \begin{bittable}
+  0-10 & Index & The start address of the configuration block for the
+  specified device. \\
+
   11-15 & Type & The type of device referenced.  For controllers,
   types are:\newline
   {\tt
@@ -192,61 +196,126 @@ table of Storage Devices.  Each entry in the tables is one word long.
       RAM Disk & 1 \\
       USB & 2 \\
   \end{tabular}}\\
-
-  0-10 & Index & The start address of the configuration block for the
-  specified device.
 \end{bittable}
 
 
 \subsection{Storage Devices}
+
+The storage devices have no configuration but they show up in the
+configuration system as a way of reporting status and diagnostics.
+
+\subsubsection{SD Card}
+
+\begin{register16}
+  \bit{15}{CD}
+  \bit{14}{V2}
+  \bit{13}{HC}
+  \bit{12}{RDY}
+  \bit{11}{RD}
+  \bit{10}{WR}
+  \bits{6}{9}{Error Code}
+  \bits{0}{5}{Size}
+\end{register16}
+
+\begin{bittable}
+  0-5 & Size & The $\log_2$ of the size of the SD Card in 512~byte
+  blocks. \\
+  6-9 & Error Code & If non-zero, the SD card controller is indicating an
+  error.\footnote{Will fill out a table of error codes once they're
+    set in the code.} \\
+  10 & WR & The card is in the middle of a write operation. \\
+  11 & RD & The card is in the middle of a read operation. \\
+  12 & RDY & The device is ready. \\
+  13 & HC & High Capacity \\
+  14 & V2 & SD Version 2 \\
+  15 & CD & Card Detect \\
+\end{bittable}
+
+\subsubsection{RAM Disk}
+
+\begin{register16}
+  \bits{6}{15}{---}
+  \bits{0}{5}{Memory Size}
+\end{register16}
+
+\begin{bittable}
+  0-5 & Size & The $\log_2$ of the size of memory in 512~byte blocks.\footnote{Current value is
+    19.  256~MiBytes = $2^{28}$~Bytes = $2^{19}$~blocks.}  Zero (0) indicates there is no RAM
+  available.\footnote{Wait, if there's no RAM then would we even have an entry for the
+    memory?}
+\end{bittable}
+
+\subsubsection{USB Device}
+
+This is mostly a placeholder for now, since we have not even begun to implement USB devices.
+I'm expecting to have some small, fixed number of USB devices in the FPGA that get mapped to
+actual USB storage devices as they're plugged in.
+
+\begin{register16}
+  \bit{15}{ACT}
+  \bits{10}{14}{---}
+  \bits{6}{9}{Error Code}
+  \bits{0}{5}{Size}
+\end{register16}
+
+\begin{bittable}
+  0-5 & Size & The $\log_2$ of the size of the USB device in 512~byte
+  blocks. \\
+  6-9 & Error Code & If non-zero, the USB Controller is indicating an
+  error. \\
+  15 & ACT & This USB device is active. \\
+\end{bittable}
+
+\subsubsection{Load Tables}
 \label{storagedevice}
 
-The values that go into load tables of disk controllers specifying on
-which storage device a disk pack resides.  Note that the SD Cards are
-physical locations while the different USB devices are logical.
-\bigskip
+The load tables in each disk controller need to specify the storage device on which a disk pack
+resides.  These are the values that are used.  Note that the SD Cards are physical locations
+(there are two SD card slots, SD 0 and SD 1) while the different USB devices are logical (the
+QSIC/USIC only has a single USB port but that may connect to a USB hub and there is no
+particular mapping from physical USB port to the USB device number here).
 
 {\tt
   \begin{tabular}{rl}
-    SD Card 0 & 000 \\
-    SD Card 1 & 001 \\
-    RAM Disk & 010 \\
-    USB 0 & 011 \\
-    USB 1 & 100 \\
-    USB 2 & 101 \\
-    USB 3 & 110 \\
-    USB 4 & 111 \\
+    SD Card 0 & 0 \\
+    SD Card 1 & 1 \\
+    RAM Disk & 2 \\
+    USB 0 & 3 \\
+    USB 1 & 4 \\
+    USB 2 & 5 \\
+    USB 3 & 6 \\
+    USB 4 & 7 \\
 \end{tabular}} \\
 
 
 \section{RAM disks}
 
 In addition to storing pack images on removable media, the QSIC/USIC also
-supports `RAM drives' - packs which are kept in on-board RAM on the card. The
+supports `RAM drives' -- packs which are kept in on-board RAM on the card. The
 contents do not survive power cycles, but RAM drives are desirable for uses
 which do a lot of writing, none of which needs to survive a system re-boot,
 e.g. swapping and paging.
 
-The reason is that $\mu$SD cards (unlike the original magnetic media) cannot
+The reason is that microSD cards (unlike the original magnetic media) cannot
 perform un-limited write cycles; they wear out after a finite number of
 writes. So, if there is no need to keep writes over re-boots (e.g. swapping
 or paging data), those operations should be assigned to a RAM disk for
 long-term use. On most operating systems, it is fairly easy to configure them
 to do swapping/paging to particular devices.
 
-\subsection{uSD card selection}
+\subsection{microSD card selection}
 
-There have been reports of cheap commodity $\mu$SD cards failing after relatively
+There have been reports of cheap commodity microSD cards failing after relatively
 small numbers of writes. So, these should be avoided; also, backups of the
-data on $\mu$SD cards should be kept fairly meticulously. There are ``industrial
-grade'' $\mu$SD cards available, which are more robust than good consumer-grade
+data on microSD cards should be kept fairly meticulously. There are ``industrial
+grade'' microSD cards available, which are more robust than good consumer-grade
 cards, so those are perhaps worth using.
 
 \subsection{UNIX pipes}
 
 The UNIX pipe device can also generate lots of ``temporary'' writes.
 Unfortunately, on the early versions of UNIX, pipes are created on the root
-device - probably the last place you want them, if there are $\mu$SD card issues!
+device~-- probably the last place you want them, if there are microSD card issues!
 
 This is simple to fix, though; in pipe(), in pipe.c, change the line:
 
@@ -272,14 +341,14 @@ set `pipedev' is available for V6.
 The devices on QSIC, and USIC with Enable+ on, can do DMA to all 22 bits of
 address space, but are program compatible for 18 bits (i.e. existing software
 will run, but can only use the low $2^{18}$ bytes of memory). To use more
-than $2^{18}$ bytes - generally only needed to use the QSIC/USIC devices for
-swapping/paging - the device driver will have to be fixed - not too
+than $2^{18}$ bytes -- generally only needed to use the QSIC/USIC devices for
+swapping/paging -- the device driver will have to be fixed -- not too
 complicated, but only if one has the capability!
 
 The 18-bit program compatability is, however, useful for extending operating
 systems to use the 22-bit capability. (For systems like UNIX, which restrict
 block device I/O to buffers in the low $2^{16}$ bytes of memory, the
-22-capability is not needed if they are not being used for swapping/paging.)
+22-bit capability is not needed if they are not being used for swapping/paging.)
 Just simply boot the OS with only $2^{18}$ bytes of memory; modify the device
 driver to be able to use the 22-bit addressing capability; and restart. (This
 technique was used to give Unix V6 access to the 22-bit capability.)
@@ -289,11 +358,12 @@ NOTE: On OSs that auto-size memory, if you boot the system with more than
 driver, either i) the system will crash if it knows that RK11's and/or RP11's
 are 18-bit only (well, technically, RKV11-D's are actually only 16 bits), or
 ii) the transfer will go someplace else in memory from where the OS thought
-it was going to go. (E.g. UNIX V6 would do this - although the address in the
+it was going to go. (E.g. UNIX V6 would do this -- although the address in the
 I/O request is 22 bits long, the existing RK11/RP11 drivers only look at the
 low 18.) The solution is to boot the system with only 256KB of memory
 installed; then update the driver to be able to do 22 bit DMA; then the rest
 of the memory can be added back.
+
 
 \chapter{Indicator Panels}
 
@@ -311,7 +381,7 @@ to the rack with a pair of brackets, and the lamp PCB mounts to that.
 Although the new panels are mechanically compatible with the originals (so
 that original bezels, inlays, etc can be used, and vice versa), the hardware
 interface to the lamp PCB is totally different (bit-serial via a 4-wire
-interface - data, clock, latch and ground), rather than `wire per bulb', as
+interface -- data, clock, latch and ground), rather than `wire per bulb', as
 in the originals. As a result, the PCBs are also completely different. The
 new PCBs are limited in size (for ease of fabrication); each only holds 12
 columns of lamps, and a set of 3 plug together to make the full 36-wide array
@@ -329,7 +399,7 @@ The configuration registers allow the user to set how many indicator
 panels are attached and what should be displayed on them.
 
 All the indicator panels are driven by a single, differential serial
-line running at approximately 100kHz.  This serial line is
+line running at approximately 100~kHz.  This serial line is
 daisy-chained from one panel to the next.  The more indicator panels
 you configure, the slower their update.  The current configuration
 allows for up to seven but that maximum has not yet been tested.
@@ -353,17 +423,20 @@ allows for up to seven but that maximum has not yet been tested.
 \begin{bittable}
   & Count & How many panels are active.\\
 
-  & Panel \# & The type of each panel.  That is, what to display.
-  Panel 1 is first in the chain. \newline
+  & Panel N & The type of each panel.  That is, what to display.
+  Panel 1 is first in the chain (that is, closest to the QSIC or USIC). \newline
   {\tt \begin{tabular}{rll}
       lamptest & 0 & All lights on \\
-      Bus Monitor & 1 \\
+      Bus Monitor & 1 & Unibus or QBUS\footnote{Also includes some SD Card and USB
+      status lights.} \\
       RK11 \#0 & 2 \\
       RK11 \#1 & 3 \\
       RP11 \#0 & 4 \\
       RP11 \#1 & 5 \\
       Enable+ & 6 \\
-      Interlan & 7 & (is this useful?) \\
+      Interlan & 7\footnote{Do we even want a full indicator panel for
+        the Interlan Ethernet board?  Maybe just grab two or three
+        lights off the bus monitor display.} \\
       debugging & 15 \\
   \end{tabular}} \\
 \end{bittable}

@@ -5,14 +5,37 @@ controllers and drives.  A companion
 http://github.com/dabridgham/Indicator-Panel[indicator panel] is also
 available for those who want the blinkenlights.
 
+This project has been split into separate repositories so that it
+works better with git.  This repository primarily holds the Verilog
+code that runs on the FPGAs.  It also holds the documentation and the
+paper I wrote on bus arbitration.  Finally, just because there's no
+more work being done on it, I've left the KiCad schematic for the
+wire-wrapped prototype here as well.
+
+So, directories you might care about are:
+
+[horizontal]
+board-wirewrap:: KiCad design for the wire-wrap prototype board
+documentation:: Programming Manual for the QSIC/USIC
+papers:: A paper on QBUS and Unibus arbitration
+verilog:: The FPGA code to implement the QSIC
+
+These directories, I'll probably make go away at some point but, for
+now, I'll leave them be.
+
 [horizontal]
 board-prototype:: KiCad design for a prototype board with 8641 bus
 		  transceivers (old idea)
 board-qsic:: KiCad design for the QSIC hardware
 board-smt:: KiCad design where I've been experimenting with discrete bus drivers
-board-wirewrap:: KiCad design for the wire-wrap prototype board
-documentation:: Programming Manual for the QSIC/USIC
 indicator-panel:: This directory is obsolete as the indicator panel has
 		  been moved to its own project
-papers:: A paper on QBUS and Unibus arbitration
-verilog:: The FPGA code to implement the QSIC
+
+Other QSIC-related repositories.
+
+[horizontal]
+https://github.com/dabridgham/QSIC[QSIC]:: The QSIC board
+https://github.com/dabridgham/USIC[USIC]:: The USIC board
+http://github.com/dabridgham/Indicator-Panel[Indicator Panel]:: Indicator Panel PCBs and graphics inlays
+Software:: The software that runs on the embedded soft processor in
+the QSIC/USIC (not yet started)

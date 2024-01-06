@@ -7,6 +7,7 @@
 *.bak
 *-bak
 *.kicad_pcb-bak
+*.kicad_prl
 *.net
 *.jpg
 *.png
@@ -36,3 +37,5 @@ vivado_pid*.zip
 /jnc
 /xilinx
 /bus-xcvr
+/qsic
+/usic

@@ -4,11 +4,16 @@
 // module.  The prototype board uses Am2908s for bus transceiver for all the Data/Address lines
 // so there's a level of buffering there that needs to be considered.
 //
-// Copyright 2016-2018 Noel Chiappa and David Bridgham
+// Copyright 2016-2020 Noel Chiappa and David Bridgham
 
 `timescale 1 ns / 1 ns
 
 `include "qsic.vh"
+
+`define FPGA_MAJOR 8'd0		// Major Version number for the FPGA load
+`define FPGA_MINOR 8'd0		// Minor Version number for the FPGA load
+`define FPGA_DEV 1'b1		// set to 1 if this is development code, 0 for release
+`define SOFT_DEV 1'b1		// set to 1 if this is development code, 0 for release (set by the Soft-11 !!!)
 
 module pmo
   (
@@ -57,7 +62,7 @@ module pmo
    output 	 TSYNC,
    output 	 TDIN,
    output 	 TDOUT,
-   output reg 	 TRPLY,
+   output 	 TRPLY,
    output 	 TREF,
    output 	 TIRQ4,
    output 	 TIRQ5,
@@ -90,16 +95,18 @@ module pmo
    );
 
 
+   // all the QBUS signals that I'm not driving (yet)
+   assign TREF = 0;		// will drive when we implement memory !!!
+
+
    //
    // Clocking
    //
 
    wire 	pll_fb, clk200, clk400, clk48, clk20;
    
-   BUFG fxclk_buf (
-		   .I(clk48_in),
- 		   .O(clk48) 
-		   );
+   BUFG fxclk_buf (.I(clk48_in),
+ 		   .O(clk48));
    
    PLLE2_BASE #(.BANDWIDTH("LOW"),
 		.CLKFBOUT_MULT(25), // f_VCO = 1200 MHz (valid: 800 .. 1600 MHz)
@@ -152,8 +159,9 @@ module pmo
    always @(posedge clk20)
      count = count + 1;
         
-   assign led_3_2 = mmcm_locked; // count[21];
-   assign led_3_4 = ui_clk; // rk_match;
+   assign led_3_2 = count[21];
+   assign led_3_4 = count[22];
+   
 //   assign led_3_6 = 0;
 //   assign led_3_8 = TSYNC;
    assign led_3_9 = count[21]; // sRDIN;
@@ -163,95 +171,88 @@ module pmo
 
    //  get an approx 100kHz clock for the indicator panels
    wire 	clk100k = count[7];
+
+
+   // The main RESET signal
+   wire 	reset = RINIT || !RDCOK;
    
-   // The direction of the bi-directional lines are controlled with DALtx
-   // -- moved to below
-   assign ZDAL = DALtx ? TDAL : 22'bZ;
-   assign ZBS7 = DALtx ? 0 : 1'bZ;
-   assign ZWTBT = DALtx ? rk_wtbt : 1'bZ;
+   // Need to be declared early
+   wire [21:0] 	reg_addr;	// bus address
+   wire 	reg_bs7;	// I/O page
+   wire [15:0] 	reg_wdata;	// write data to bus registers
+   wire 	reg_write;	// write strobe for writing data to bus registers
+   wire 	conf_write;	// write strobe for writing data to conf registers
 
-   // all the QBUS signals that I'm not driving (yet)
-   assign TREF = 0;
+   // Wire in an RP11-D
+   wire [15:0] 	rp0_caddr, rp0_crdata, rp0_rdata;
+   wire 	rp0_caddr_match;
+   wire 	rp0_ip_clk, rp0_ip_latch, rp0_ip_out;
+   wire 	rp0_irq;
+   wire [1:0] 	rp0_int_pri;
+ 	
+   rp11d #(.ENABLED(1), .Q22(1), .CONF_ADDR(20), .UNIT(0), 
+	   .ADDR_BASE('o17_700), .INT_PRI(`INTP_5), .INT_VEC('o254))
+   rp0 (.clk(clk20), .reset(reset),
+	// Config Bus
+	.c_addr(rp0_caddr), .c_wdata(reg_wdata), .c_rdata(rp0_crdata), .c_addr_match(rp0_caddr_match), 
+	.c_write(conf_write), .c_int_pri(rp0_int_pri),
+	// the Bus
+	.b_addr(reg_addr[12:0]), .b_iopag(reg_bs7), .b_wdata(reg_wdata), .b_rdata(rp0_rdata),
+	
+	// control lines
+	.addr_match(addr_match), .assert_vector(assert_vector), .write_pulse(write_pulse), .dma_read_pulse(dma_read_pulse),
+	.dma_read_req(dma_read_req), .dma_write_req(dma_write_req), .dma_bus_master(dma_bus_master),
+	.dma_complete(dma_complete), .dma_nxm(dma_nxm), .interrupt_request(rp0_irq), 
 
-   // Grab the addressing information when it comes by
-   reg [21:0] 	addr_reg = 0;
-   reg 		bs7_reg = 0;
-   reg 		read_cycle = 0;
-   always @(posedge RSYNC) begin
-      addr_reg <= ZDAL;
-      bs7_reg <= ZBS7;
-      read_cycle <= ~ZWTBT;
-   end
+	// indicator panel
+	.ip_clk(rp0_ip_clk), .ip_latch(rp0_ip_latch), .ip_out(rp0_ip_out), 
+
+	// connection to the storage device
+	// All this is slated to change !!!
+	.sd_loaded(sd_loaded), .sd_write_protect(sd_write_protect), .sd_dev_sel(sd_dev_sel), .sd_lba(sd_lba), .sd_read(sd_read),
+	.sd_write(sd_write), .sd_ready_u(sd_ready_u), .sd_write_data(sd_write_data), .sd_write_enable(sd_write_enable),
+	.sd_write_full(sd_write_full), .sd_read_data(sd_read_data), .sd_read_enable(sd_read_enable), .sd_read_empty(sd_read_empty),
+	.sd_fifo_rst(sd_fifo_rst));
+
+
+   // The Configuration Registers Controler
+   wire 	reg_read_cycle;
+   wire [15:0] 	cr_rdata, conf_addr;
+   reg 		tl_match, ip_caddr_match;
+   reg [15:0] 	tl_rdata, ip_crdata;
+   conf #(.ADDR_BASE(`CONF_REG_ADDR_BASE))
+   conf (.clk(clk20),
+	 // to the register controller
+	 .reg_addr(reg_addr[12:0]), .reg_bs7(reg_bs7), .reg_addr_match(cr_match),
+	 .reg_rdata(cr_rdata), .reg_wdata(reg_wdata), .reg_write(reg_write),
+	 // to the configuration bus
+	 .conf_addr(conf_addr), .conf_write(conf_write),
+	 // to configuration sources
+	 .tl_match(tl_match), .tl_rdata(tl_rdata),
+	 .dev0_match(ip_caddr_match), .dev0_rdata(ip_crdata), // Indicator Panel config
+	 .dev1_match(rp0_caddr_match), .dev1_rdata(rp0_crdata),	// RP0 config
+	 .dev2_match(0), .dev2_rdata(0), // add more devices here !!!
+	 .dev3_match(0), .dev3_rdata(0));
    
+   // The Bus Register Controller
+   wire 	reg_addr_match;
+   wire [15:0] 	reg_rdata;
+   rctrl rctrl(.reg_addr_match(reg_addr_match), .reg_rdata(reg_rdata),
+	       .c_match(cr_match), .c_rdata(cr_rdata), // configuration bus control registers
+	       .dev0_match(rp0_addr_match), .dev0_rdata(rp0_brdata), // RP0
+	       .dev1_match(0), .dev1_rdata(0), // add more devices here !!!
+	       .dev2_match(0), .dev2_rdata(0),
+	       .dev3_match(0), .dev3_rdata(0));
 
+   // The QBUS Controller
+   qctl_2908 qctl(.clk(clk20), .reset(reset),
+		  .DALbe_L(DALbe_L), .DALtx(DALtx), .DALst(DALst), .ZDAL(ZDAL), .ZBS7(ZBS7), .ZWTBT(ZWTBT),
+		  .RSYNC(RSYNC), .RDIN(RDIN), .RDOUT(RDOUT), .TRPLY(TRPLY),
+ 		  .dma_assert_dal(dma_assert_dal), .dma_dal(dma_dal), .dma_dalbe(dma_dalbe), 
+		  .dma_daltx(dma_daltx), .dma_dalst(dma_dalst), .int_assert_vector(int_assert_vector),
+		  .reg_addr(reg_addr), .reg_bs7(reg_bs7), .reg_read_cycle(reg_read_cycle), 
+		  .reg_addr_match(reg_addr_match), .reg_rdata(reg_rdata), .reg_wdata(reg_wdata), .reg_write(reg_write) );
 
-   //
-   // Convert to synchronous to do register operations
-   //
-  
-   // synchronize addr_match, extra bits here for sequencing the Am2908s
-   reg [1:0]   addr_match_ra = 0;
-   always @(posedge clk20) addr_match_ra <= { addr_match_ra[0], addr_match };
-   wire        saddr_match = addr_match_ra[1];
-
-   // synchronize assert_vector
-   reg [3:0]   assert_vector_ra = 0;
-   always @(posedge clk20) assert_vector_ra <= { assert_vector_ra[2:0], assert_vector };
-   wire        sassert_vector = assert_vector_ra[1];
-
-   // synchronize RDOUT
-   reg [2:0]   RDOUTra = 0;
-   always @(posedge clk20) RDOUTra <= { RDOUTra[1:0], RDOUT };
-   wire        sRDOUT = RDOUTra[1];
-   wire        sRDOUTpulse = RDOUTra[2:1] == 2'b01;
-   
-   // synchronize RDIN
-   reg [3:0]   RDINra = 0;
-   always @(posedge clk20) RDINra <= { RDINra[2:0], RDIN };
-   wire        sRDIN = RDINra[1];
-   wire        sRDINpulse = RDINra[2:1] == 2'b01;
-
-   // implement reads or writes to registers
-   reg 	       rwDALbe = 0;	// local control of these signals
-   reg 	       rwDALst = 0;
-   reg 	       rwDALtx = 0;
-   always @(posedge clk20) begin
-      // bus is idle by default
-      TRPLY <= 0;
-      rwDALst <= 0;
-      rwDALbe <= 0;
-      rwDALtx <= 0;
-      
-      if (saddr_match) begin	// if we're in a slave cycle for me
-	 if (sRDIN) begin
-	    rwDALtx <= 1;
-
-	    // this is running off RDINra[3] to delay it by an extra clock cycle to let the
-	    // signals in the ribbon cable settle down a bit.  when we get rid of the ribbon
-	    // cable, I'm assuming we can drop back to RDINra[2].
-	    if (RDINra[3]) begin
-	       // This may look like it's asserting TRPLY too soon but the QBUS spec allows up
-	       // to 125ns from asserting TRPLY until the data on the bus must be valid, so we
-	       // could probably assert it even earlier
-	       TRPLY <= 1;
-	       rwDALbe <= 1;
-	       rwDALst <= 1;
-	    end
-	 end else if (sRDOUT) begin
-	    TRPLY <= 1;
-	 end
-      end else if (sassert_vector) begin // if we're reading an interrupt vector
-	 rwDALtx <= 1;			 // start the data towards the Am2908s
-
-	 // like above with RDIN, wait until assert_vector_ra[3] to give time for the signals in
-	 // the ribbon cable to settle down
-	 if (assert_vector_ra[3]) begin
-	    TRPLY <= 1;		// should be able to assert TRPLY sooner than this !!!
-	    rwDALbe <= 1;
-	    rwDALst <= 1;
-	 end
-      end
-   end // always @ (posedge clk20)
 
 
 
@@ -270,10 +271,11 @@ module pmo
 
    reg 	       assert_vector = 0;
 
-   // include these devices
+   // Which devices to include
 //`define SW_REG 1
-`define RKV11 1
-`define SD0 1
+`define RP0 1			// doesn't do anything yet!!!
+//`define RKV11 1
+//`define SD0 1
 //`define SD1 1
 `define RAM_DISK 1
 `define SDRAM 1
@@ -288,516 +290,51 @@ module pmo
 		     sr_addr, sr_match, assert_vector, sRDOUTpulse);
 `endif
 
-`ifdef RKV11
-   wire        rk_match, rk_dma_read, rk_dma_write, rk_assert_addr, rk_assert_data, rk_read_pulse;
-   wire        rk_bus_master, rk_dma_complete, rk_DALst, rk_DALbe, rk_nxm;
-   wire        rk_wtbt, rk_irq, rk_assert_vector;
-   wire [15:0] rk_tdl;
-   wire [21:0] rk_tal;
-   wire        rk_ip_clk;
-   wire        rk_ip_latch;
-   wire        rk_ip_out;
 
-   // connection to the storage device
-   wire [15:0] rk0_disk_cylinders;    // number of cylinders for this disk from the load table
-   wire [7:0]  rk0_loaded;	      // "disk" loaded and ready
-   reg [7:0]   rk0_write_protect = 0; // the "disk" is write protected
-   wire [2:0]  rk0_dev_sel;	     // "disk" drive select
-   wire [12:0] rk0_lba;		     // linear block address
-   wire        rk0_read;	     // initiate a block read
-   wire        rk0_write;	     // initiate a block write
-   wire        rk0_cmd_ready;	     // selected disk is ready for a command
-   wire [15:0] rk0_write_data;
-   wire        rk0_write_enable;    // enables writing data to the write FIFO
-   wire        rk0_write_fifo_full; // write FIFO is full
-   wire [15:0] rk0_read_data;
-   wire        rk0_read_enable;	    // enables reading data from the read FIFO
-   wire        rk0_read_fifo_empty; // no data in the read FIFO
-   wire        rk0_fifo_rst;	    // reset command to the FIFOs
+   // These are declared here just to stub them out for now !!!
+   reg	       sd0_cd = 0;
+   reg	       sd0_v2 = 0;
+   reg	       sd0_HC = 0;
+   reg [5:0]   sd0_size = 0;
+   wire	       sd0_rdy, sd0_rd, sd0_wr;
+   wire [3:0]  sd0_err;
    
-   qmaster2908 
-     rk_master(clk20, RSYNC, RRPLY, RDMR, RSACK, RINIT, RDMGI, sRDMGI, RREF,
-	       TSYNC, rk_wtbt, TDIN, TDOUT, TDMR, TSACK, TDMGO,
-	       rk_dma_read, rk_dma_write, rk_assert_addr, rk_assert_data, rk_read_pulse,
-	       rk_bus_master, rk_dma_complete, rk_DALst, rk_DALbe, rk_nxm);
-
-   qint rk_int(`INTP_4, RINIT, RDIN, 
- 	       { RIRQ4, RIRQ5, RIRQ6, RIRQ7 }, RIAKI,
- 	       { TIRQ4, TIRQ5, TIRQ6, TIRQ7 }, TIAKO,
-	       rk_irq, rk_assert_vector);
-
-   rkv11 rkv11(clk20, addr_reg[12:0], bs7_reg, rk_tal, RDL, rk_tdl, RINIT,
-	       rk_match, rk_assert_vector, sRDOUTpulse, rk_read_pulse,
-	       rk_dma_read, rk_dma_write, rk_bus_master, rk_dma_complete, rk_nxm, 
-	       rk_irq, rk_ip_clk, rk_ip_latch, rk_ip_out, rk0_disk_cylinders,
-	       rk0_loaded, rk0_write_protect, rk0_dev_sel, rk0_lba, rk0_read, rk0_write, 
-	       rk0_cmd_ready,
-	       rk0_write_data, rk0_write_enable, rk0_write_fifo_full,
-	       rk0_read_data, rk0_read_enable, rk0_read_fifo_empty, rk0_fifo_rst);
-
-   // The FIFOs between RK0 and the Storage Devices
-   wire [15:0] sd_write_data;
-   wire [15:0] sd_read_data;
-   wire        rk0_write_data_enable;
-   wire        rk0_read_data_enable;
-   wire        rk0_fifo_clk;
-   wire        rk0_read_fifo_full, rk0_write_fifo_empty; // ignore
-   fifo_generator_1 rk0_read_fifo
-     (.rst(RINIT|rk0_fifo_rst),
-      .wr_clk(rk0_fifo_clk),
-      .rd_clk(clk20),
-      .din(sd_read_data),
-      .wr_en(rk0_read_data_enable),
-      .rd_en(rk0_read_enable),
-      .dout(rk0_read_data),
-      .full(rk0_read_fifo_full),
-      .empty(rk0_read_fifo_empty));
-
-   fifo_generator_1 rk0_write_fifo
-     (.rst(RINIT|rk0_fifo_rst),
-      .wr_clk(clk20),
-      .rd_clk(rk0_fifo_clk),
-      .din(rk0_write_data),
-      .wr_en(rk0_write_enable),
-      .rd_en(rk0_write_data_enable),
-      .dout(sd_write_data),
-      .full(rk0_write_fifo_full),
-      .empty(rk0_write_fifo_empty));
-
-`endif
-
-`define CONFIG_REG 1
-`ifdef CONFIG_REG
-   wire        conf_match = (bs7_reg && (addr_reg[12:0] == 13'o17720));
-   always @(posedge clk20)
-     if (sRDOUTpulse && conf_match) begin
-	ip_list[0] <= RDL[1:0];
-	ip_list[1] <= RDL[4:3];
-	ip_list[2] <= RDL[7:6];
-	ip_list[3] <= RDL[10:9];
-	ip_count <= RDL[13:12];
-     end
-`endif
-   
-
-   // mix the control signals from the DMA controller(s) and the register controller
-   assign DALbe_L = ~rwDALbe & ~rk_DALbe;  // ~(rwDALbe | rk_DALbe);
-   assign DALst = rwDALst | rk_DALst;
-   assign DALtx = rwDALtx | rk_assert_addr | rk_assert_data;
-
-   // MUX for the data/address lines
-   reg 	       addr_match;
-   always @(*) begin
-      addr_match = 0;
-      assert_vector = 0;
-      TDAL = 0;
-      
-      case (1'b1)
-`ifdef RKV11
-	rk_assert_data: TDAL = { 6'b0, rk_tdl };
-	rk_assert_addr: TDAL = rk_tal;
-`endif
-	default:
-	  // if RSYNC then we're doing a DATI or DATO cycle
-	  if (RSYNC)
-	    case (1'b1)
-`ifdef CONFIG_REG
-	      conf_match: begin
-		 addr_match = 1;
-		 TDAL = { 6'b0, 2'b0, ip_count, 1'b0, ip_list[3], 1'b0, ip_list[2], 1'b0, ip_list[1], 1'b0, ip_list[0] };
-	      end
-`endif
-`ifdef SW_REG
-	      sr_match: { addr_match, TDAL } = { 1'b1, 6'b0, sr_tdl };
-`endif
-`ifdef RKV11
-	      rk_match: { addr_match, TDAL } = { 1'b1, 6'b0, rk_tdl };
-`endif
-	      default: 
-		addr_match = 0;
-	    endcase
-	// with no RSYNC, look for a interrupt vector read
-	  else
-	    case (1'b1)
-`ifdef RKV11
-	      rk_assert_vector: { assert_vector, TDAL } = { 1'b1, 6'b0, rk_tdl };
-`endif
-	      default: assert_vector = 0;
-	    endcase
-      endcase
-
-   end
-
-
-   //
-   // Interface an SD Card
-   //
-   wire [31:0] LBA;		// Linear Block Address
-
-`ifdef SD0
-   wire        sd0_read, sd0_write;
-   wire [31:0] sd0_lba = LBA;
-   wire        sd0_write_data_enable;
-   wire        sd0_dev_ready, sd0_cmd_ready, sd0_cd, sd0_v1, sd0_v2, sd0_SC, sd0_HC;
-   wire [7:0]  sd0_err;
-   wire [15:0] sd0_read_data;
-   wire        sd0_read_data_enable;
-   wire        sd0_fifo_clk;
-   wire [7:0]  sd0_d8;
-   SD_spi SD0(.clk(clk20), .reset(0), .device_ready(sd0_dev_ready), .cmd_ready(sd0_cmd_ready),
-	      .read_cmd(sd0_read), .write_cmd(sd0_write),
-	      .block_address(sd0_lba),
-    	      .fifo_clk(sd0_fifo_clk),
-	      .write_data(sd_write_data),
-	      .write_data_enable(sd0_write_data_enable),
-	      .read_data(sd0_read_data),
-	      .read_data_enable(sd0_read_data_enable),
- 	      .sd_clk(sd0_sdclk), .sd_cmd(sd0_sdcmd), .sd_dat(sd0_sddat),
- 	      .ip_cd(sd0_cd), .ip_v1(sd0_v1), .ip_v2(sd0_v2), .ip_SC(sd0_SC),
-    	      .ip_HC(sd0_HC), .ip_err(sd0_err),
-	      .ip_d8(sd0_d8));
-`else
-   reg 	       sd0_dev_ready = 0;
-   reg 	       sd0_cmd_ready = 0;
-   reg 	       sd0_fifo_clk = 0;
-   reg 	       sd0_write_data_enable = 0;
-   reg 	       sd0_read_data_enable = 0;
-   reg [15:0]  sd0_read_data = 0;
-   wire        sd0_read, sd0_write;
-
-   reg 	       sd0_cd = 0;	// for the indicator panel
-   reg 	       sd0_v1 = 0;
-   reg 	       sd0_v2 = 0;
-   reg 	       sd0_SC = 0;
-   reg 	       sd0_HC = 0;
-   reg [7:0]   sd0_err = 0;
-`endif   
-
-   
-   
-   //
-   // Interface a Block RAM RAMdisk
-   //
-`ifdef RAM_DISK
- `ifdef SDRAM
-   wire [3:0]  s_axi_awid;
-   wire [27:0] s_axi_awaddr;
-   wire [7:0]  s_axi_awlen;
-   wire [2:0]  s_axi_awsize;
-   wire [1:0]  s_axi_awburst;
-   wire [0:0]  s_axi_awlock;
-   wire [3:0]  s_axi_awcache;
-   wire [2:0]  s_axi_awprot;
-   wire [3:0]  s_axi_awqos;
-   wire        s_axi_awvalid;
-   wire        s_axi_awready;
-   wire [31:0] s_axi_wdata;
-   wire [3:0]  s_axi_wstrb;
-   wire        s_axi_wlast;
-   wire        s_axi_wvalid;
-   wire        s_axi_wready;
-   wire [3:0]  s_axi_bid;
-   wire [1:0]  s_axi_bresp;
-   wire        s_axi_bvalid;
-   wire        s_axi_bready;
-   wire [3:0]  s_axi_arid;
-   wire [27:0] s_axi_araddr;
-   wire [7:0]  s_axi_arlen;
-   wire [2:0]  s_axi_arsize;
-   wire [1:0]  s_axi_arburst;
-   wire [0:0]  s_axi_arlock;
-   wire [3:0]  s_axi_arcache;
-   wire [2:0]  s_axi_arprot;
-   wire [3:0]  s_axi_arqos;
-   wire        s_axi_arvalid;
-   wire        s_axi_arready;
-   wire [3:0]  s_axi_rid;
-   wire [31:0] s_axi_rdata;
-   wire [1:0]  s_axi_rresp;
-   wire        s_axi_rlast;
-   wire        s_axi_rvalid;
-   wire        s_axi_rready;
-   wire        ui_clk, ui_clk_sync_rst;
-   wire        mmcm_locked;
-
-   ztex_sdram u_ztex_sdram
-     (
-      // Memory interface ports
-      .ddr3_addr                      (ddr3_addr),     // output [13:0]	ddr3_addr
-      .ddr3_ba                        (ddr3_ba),       // output [2:0]	ddr3_ba
-      .ddr3_cas_n                     (ddr3_cas_n),    // output	ddr3_cas_n
-      .ddr3_ck_n                      (ddr3_ck_n),     // output [0:0]	ddr3_ck_n
-      .ddr3_ck_p                      (ddr3_ck_p),     // output [0:0]	ddr3_ck_p
-      .ddr3_cke                       (ddr3_cke),      // output [0:0]	ddr3_cke
-      .ddr3_ras_n                     (ddr3_ras_n),    // output	ddr3_ras_n
-      .ddr3_reset_n                   (ddr3_reset_n),  // output	ddr3_reset_n
-      .ddr3_we_n                      (ddr3_we_n),     // output	ddr3_we_n
-      .ddr3_dq                        (ddr3_dq),       // inout [15:0]	ddr3_dq
-      .ddr3_dqs_n                     (ddr3_dqs_n),    // inout [1:0]	ddr3_dqs_n
-      .ddr3_dqs_p                     (ddr3_dqs_p),    // inout [1:0]	ddr3_dqs_p
-      .init_calib_complete            (),	       // output	init_calib_complete
-      .ddr3_dm                        (ddr3_dm),       // output [1:0]	ddr3_dm
-      .ddr3_odt                       (ddr3_odt),      // output [0:0]	ddr3_odt
-      // Application interface ports
-      .ui_clk                         (ui_clk),	       // output	ui_clk
-      .ui_clk_sync_rst                (ui_clk_sync_rst), // output	ui_clk_sync_rst
-      .mmcm_locked                    (mmcm_locked),   // output	mmcm_locked
-      .aresetn                        (1),	       // input		aresetn
-      .app_sr_req                     (0),	       // input		app_sr_req
-      .app_ref_req                    (0),	       // input		app_ref_req
-      .app_zq_req                     (0),	       // input		app_zq_req
-      .app_sr_active                  (),	       // output	app_sr_active
-      .app_ref_ack                    (),	       // output	app_ref_ack
-      .app_zq_ack                     (),	       // output	app_zq_ack
-      // Slave Interface Write Address Ports
-      .s_axi_awid                     (s_axi_awid),    // input [3:0]	s_axi_awid
-      .s_axi_awaddr                   (s_axi_awaddr),  // input [27:0]	s_axi_awaddr
-      .s_axi_awlen                    (s_axi_awlen),   // input [7:0]	s_axi_awlen
-      .s_axi_awsize                   (s_axi_awsize),  // input [2:0]	s_axi_awsize
-      .s_axi_awburst                  (s_axi_awburst), // input [1:0]	s_axi_awburst
-      .s_axi_awlock                   (s_axi_awlock),  // input [0:0]	s_axi_awlock
-      .s_axi_awcache                  (s_axi_awcache), // input [3:0]	s_axi_awcache
-      .s_axi_awprot                   (s_axi_awprot),  // input [2:0]	s_axi_awprot
-      .s_axi_awqos                    (s_axi_awqos),   // input [3:0]	s_axi_awqos
-      .s_axi_awvalid                  (s_axi_awvalid), // input		s_axi_awvalid
-      .s_axi_awready                  (s_axi_awready), // output	s_axi_awready
-      // Slave Interface Write Data Ports
-      .s_axi_wdata                    (s_axi_wdata),   // input [31:0]	s_axi_wdata
-      .s_axi_wstrb                    (s_axi_wstrb),   // input [3:0]	s_axi_wstrb
-      .s_axi_wlast                    (s_axi_wlast),   // input		s_axi_wlast
-      .s_axi_wvalid                   (s_axi_wvalid),  // input		s_axi_wvalid
-      .s_axi_wready                   (s_axi_wready),  // output	s_axi_wready
-      // Slave Interface Write Response Ports
-      .s_axi_bid                      (s_axi_bid),     // output [3:0]	s_axi_bid
-      .s_axi_bresp                    (s_axi_bresp),   // output [1:0]	s_axi_bresp
-      .s_axi_bvalid                   (s_axi_bvalid),  // output	s_axi_bvalid
-      .s_axi_bready                   (s_axi_bready),  // input		s_axi_bready
-      // Slave Interface Read Address Ports
-      .s_axi_arid                     (s_axi_arid),    // input [3:0]	s_axi_arid
-      .s_axi_araddr                   (s_axi_araddr),  // input [27:0]	s_axi_araddr
-      .s_axi_arlen                    (s_axi_arlen),   // input [7:0]	s_axi_arlen
-      .s_axi_arsize                   (s_axi_arsize),  // input [2:0]	s_axi_arsize
-      .s_axi_arburst                  (s_axi_arburst), // input [1:0]	s_axi_arburst
-      .s_axi_arlock                   (s_axi_arlock),  // input [0:0]	s_axi_arlock
-      .s_axi_arcache                  (s_axi_arcache), // input [3:0]	s_axi_arcache
-      .s_axi_arprot                   (s_axi_arprot),  // input [2:0]	s_axi_arprot
-      .s_axi_arqos                    (s_axi_arqos),   // input [3:0]	s_axi_arqos
-      .s_axi_arvalid                  (s_axi_arvalid), // input		s_axi_arvalid
-      .s_axi_arready                  (s_axi_arready), // output	s_axi_arready
-      // Slave Interface Read Data Ports
-      .s_axi_rid                      (s_axi_rid),    // output [3:0]	s_axi_rid
-      .s_axi_rdata                    (s_axi_rdata),  // output [31:0]	s_axi_rdata
-      .s_axi_rresp                    (s_axi_rresp),  // output [1:0]	s_axi_rresp
-      .s_axi_rlast                    (s_axi_rlast),  // output		s_axi_rlast
-      .s_axi_rvalid                   (s_axi_rvalid), // output		s_axi_rvalid
-      .s_axi_rready                   (s_axi_rready), // input		s_axi_rready
-      // System Clock Ports
-      .sys_clk_i                      (clk400),
-      // Reference Clock Ports
-      .clk_ref_i                      (clk200),
-      .sys_rst                        (~RINIT), // input sys_rst
-      .device_temp		      ()
-      );
-
-   wire       rd_dev_ready = mmcm_locked; // make this be mmcm_locked? !!!
-   wire       rd_read, rd_write, rd_cmd_ready;
-   wire [31:0] rd_lba = LBA;
-   wire [15:0] rd_read_data;
-   wire        rd_write_data_enable;
-   wire        rd_read_data_enable;
-   wire        rd_fifo_clk;
-   wire [9:0]  rd_debug;
-
-   ramdisk_sdram ramdisk
-     (// AXI4 connection to the SDRAM
-      // user interface signals
-      .ui_clk(ui_clk),
-      .ui_clk_sync_rst(ui_clk_sync_rst),
-      .mmcm_locked(mmcm_locked),
-      .s_axi_awid(s_axi_awid),
-      .s_axi_awaddr(s_axi_awaddr),
-      .s_axi_awlen(s_axi_awlen),
-      .s_axi_awsize(s_axi_awsize),
-      .s_axi_awburst(s_axi_awburst),
-      .s_axi_awlock(s_axi_awlock),
-      .s_axi_awcache(s_axi_awcache),
-      .s_axi_awprot(s_axi_awprot),
-      .s_axi_awqos(s_axi_awqos),
-      .s_axi_awvalid(s_axi_awvalid),
-      .s_axi_awready(s_axi_awready),
-      .s_axi_wdata(s_axi_wdata),
-      .s_axi_wstrb(s_axi_wstrb),
-      .s_axi_wlast(s_axi_wlast),
-      .s_axi_wvalid(s_axi_wvalid),
-      .s_axi_wready(s_axi_wready),
-      .s_axi_bready(s_axi_bready),
-      .s_axi_bid(s_axi_bid),
-      .s_axi_bresp(s_axi_bresp),
-      .s_axi_bvalid(s_axi_bvalid),
-      .s_axi_arid(s_axi_arid),
-      .s_axi_araddr(s_axi_araddr),
-      .s_axi_arlen(s_axi_arlen),
-      .s_axi_arsize(s_axi_arsize),
-      .s_axi_arburst(s_axi_arburst),
-      .s_axi_arlock(s_axi_arlock),
-      .s_axi_arcache(s_axi_arcache),
-      .s_axi_arprot(s_axi_arprot),
-      .s_axi_arqos(s_axi_arqos),
-      .s_axi_arvalid(s_axi_arvalid),
-      .s_axi_arready(s_axi_arready),
-      .s_axi_rready(s_axi_rready),
-      .s_axi_rid(s_axi_rid),
-      .s_axi_rdata(s_axi_rdata),
-      .s_axi_rresp(s_axi_rresp),
-      .s_axi_rlast(s_axi_rlast),
-      .s_axi_rvalid(s_axi_rvalid),
-
-      // connection from the disk controller
-      .command_ready(rd_cmd_ready),
-      .read_cmd(rd_read),
-      .write_cmd(rd_write),
-      .block_address(rd_lba),
-      .fifo_clk(rd_fifo_clk), 
-      .write_data(sd_write_data),
-      .write_data_enable(rd_write_data_enable),
-      .read_data(rd_read_data),
-      .read_data_enable(rd_read_data_enable),
-      .debug_output(rd_debug));
-
-
-
-
- `else
-   reg 	       rd_dev_ready = 1;
-   wire        rd_read, rd_write, rd_cmd_ready;
-   wire [31:0] rd_lba = LBA;
-   wire [15:0] rd_read_data;
-   wire        rd_write_data_enable;
-   wire        rd_read_data_enable;
-   wire        rd_fifo_clk;
-   ramdisk_block #(.BLOCKS(2 * 12 * 32)) // 32 cylinders uses up most of the Block RAM I have
-   RD (.clk(clk20), .reset(RINIT), .command_ready(rd_cmd_ready),
-       .read_cmd(rd_read), .write_cmd(rd_write),
-       .block_address(rd_lba),
-       .fifo_clk(rd_fifo_clk),
-       .write_data(sd_write_data),
-       .write_data_enable(rd_write_data_enable),
-       .read_data(rd_read_data),
-       .read_data_enable(rd_read_data_enable));
- `endif
-`else // !`ifdef RAM_DISK
-   reg 	       rd_dev_ready = 0;
-   reg 	       rd_cmd_ready = 0;
-   reg 	       rd_fifo_clk = 0;
-   reg 	       rd_write_data_enable = 0;
-   reg 	       rd_read_data_enable = 0;
-   reg [15:0]  rd_read_data = 0;
-   wire        rd_read, rd_write;
-`endif
-   
-   // SD1 and USB devices aren't implemented yet so just stub out the signals
-   reg 	       sd1_dev_ready = 0;
-   reg 	       sd1_cmd_ready = 0;
-   reg 	       sd1_fifo_clk = 0;
-   reg 	       sd1_write_data_enable = 0;
-   reg 	       sd1_read_data_enable = 0;
-   reg [15:0]  sd1_read_data = 0;
-   wire        sd1_read, sd1_write;
-
-   reg 	       usb_dev_ready = 0;
-   reg 	       usb_cmd_ready = 0;
-   reg 	       usb_fifo_clk = 0;
-   reg 	       usb_write_data_enable = 0;
-   reg 	       usb_read_data_enable = 0;
-   reg [15:0]  usb_read_data = 0;
-   wire        usb_read, usb_write;
-   
-
-
-   //
-   // Load Table - Just a start for now and needs to be configurable at runtime !!!
-   //
-
-   // Sizes, in blocks, of Storage Devices:
-   //  8GB: h0100_0000
-   // 16GB: h0200_0000
-   // 32GB: h0400_0000
-   //
-   // Disk Pack Sizes:
-   // RK05: h1308 == d4872 blocks (about 2.5MB)
-`define pack_enable 1'b1
-`define pack_disable 1'b0
-`define pack_sd0 2'o0
-`define pack_sd1 2'o1
-`define pack_ramdisk 2'o2
-`define pack_usb 2'o3
-   // { Enable, Cylinders, Storage Device, LBA Offset }
-   // Eventually this load table will be initialized entirely from the soft-11 and not
-   // statically like this !!!
-   reg [50:0]  rk0_load_table [0:7];
-   initial begin
-      rk0_load_table[0] = { `pack_enable, 16'd203, `pack_sd0, 32'h0002_0000 };
-      rk0_load_table[1] = { `pack_enable, 16'd203, `pack_ramdisk, 32'h0000_0000 };
-      rk0_load_table[2] = { `pack_enable, 16'd203, `pack_sd0, 32'h0002_4000 };
-      rk0_load_table[3] = { `pack_enable, 16'd203, `pack_sd0, 32'h0002_6000 };
-      rk0_load_table[4] = { `pack_enable, 16'd203, `pack_sd0, 32'h0002_8000 };
-      rk0_load_table[5] = { `pack_disable, 16'd203, `pack_sd0, 32'h0002_a000 };
-      rk0_load_table[6] = { `pack_disable, 16'd203, `pack_sd0, 32'h0002_c000 };
-      rk0_load_table[7] = { `pack_enable, 16'd203, `pack_ramdisk, 32'h0000_2000 };
-   end
-
-   wire        pack_enable = rk0_load_table[rk0_dev_sel][50];
-   assign rk0_disk_cylinders = rk0_load_table[rk0_dev_sel][49:34];
-   wire [1:0]  pack_sd_select = rk0_load_table[rk0_dev_sel][33:32];
-   wire [31:0] pack_offset = rk0_load_table[rk0_dev_sel][31:0];
-   
-   assign LBA = { 19'b0, rk0_lba } + pack_offset; // offset into the selected disk pack
-
-   // Build the Loaded table - if a pack is loaded and the associated device is ready
-   wire [0:3]   sd_ready = { sd0_dev_ready, sd0_dev_ready, rd_dev_ready, usb_dev_ready };
-   genvar      i;
-   for (i=0; i<8; i=i+1)
-     assign rk0_loaded[i] = rk0_load_table[i][50] & sd_ready[rk0_load_table[i][33:32]];
-
-
-   //
-   // Link the Disk Controller to the Storage Devices
-   //
-
-   sdmux rk0_sdmux(.command_ready(rk0_cmd_ready),
-    		   .read_cmd(rk0_read),
-		   .write_cmd(rk0_write),
-		   .fifo_clk(rk0_fifo_clk), 
-		   .write_data_enable(rk0_write_data_enable),
-		   .read_data(sd_read_data),
-		   .read_data_enable(rk0_read_data_enable),
-		   .sd_select(pack_sd_select), // selects which Storage Device to use
-		   // Storage Devices
-    		   .sd_command_ready({ sd0_cmd_ready, sd1_cmd_ready, rd_cmd_ready, usb_cmd_ready }),
-		   .sd_read_cmd({ sd0_read, sd1_read, rd_read, usb_read }),
-		   .sd_write_cmd({ sd0_write, sd1_write, rd_write, usb_write }),
- 		   .sd_fifo_clk({ sd0_fifo_clk, sd1_fifo_clk, rd_fifo_clk, usb_fifo_clk }),
-		   .sd_write_data_enable({ sd0_write_data_enable, sd1_write_data_enable,
-					   rd_write_data_enable, usb_write_data_enable }),
-		   .sd_read_data_enable({ sd0_read_data_enable, sd1_read_data_enable,
-					  rd_read_data_enable, usb_read_data_enable }),
-		   // read data lines
-		   .sd0_read_data(sd0_read_data),
-		   .sd1_read_data(sd1_read_data),
-		   .sd2_read_data(rd_read_data),
-		   .sd3_read_data(usb_read_data));
 
 
    //
    // Indicator Panels
    //
 
+   // IP Config
+   reg [3:0] ip_count;			  // How many indicator panels are active
+   reg [3:0] ip1, ip2, ip3, ip4, ip5, ip6, ip7; // the type of each indicator panel
+
+   // Read the IP Config registers
+   localparam IP_CONF_ADDR = 11'd18;
+   always @(*) begin
+      ip_caddr_match = 1;
+      ip_crdata = 16'bx;
+      case (conf_addr)
+	IP_CONF_ADDR: ip_crdata = { ip_count, ip1, ip2, ip3 };
+	IP_CONF_ADDR+1: ip_crdata = { ip4, ip5, ip6, ip7 };
+	default: ip_caddr_match = 0;
+      endcase // case (conf_addr)
+   end
+
+   // Write the IP Config registers
+   always @(posedge clk20)
+     if (ip_caddr_match && conf_write)
+       case (conf_addr)
+	 IP_CONF_ADDR: { ip_count, ip1, ip2, ip3 } <= reg_wdata;
+	 IP_CONF_ADDR+1: { ip4, ip5, ip6, ip7 } <= reg_wdata;
+       endcase // case (conf_addr)
+
    // QSIC/QBUS Indicator Panel
    wire qsic_latch, qsic_clk, qsic_out;
    indicator
      qsic_ip(qsic_clk, qsic_latch, qsic_out,
 	     { DALtx, 1'b0, ZDAL, 3'b0,
-	       sd0_cd, sd0_v1, sd0_v2, sd0_SC, sd0_HC, sd0_dev_ready, sd0_read, sd0_write, 1'b0 },
+	       sd0_cd, sd0_v1, sd0_v2, sd0_SC, sd0_HC, sd0_rdy, sd0_rd, sd0_wr, 1'b0 },
 	     { read_cycle, bs7_reg, addr_reg, 3'b0, 6'b0, rk_dma_read, rk_dma_write, 1'b0 },
 	     { ZWTBT, ZBS7, RSYNC, RDIN, RDOUT, RRPLY, RREF, 1'b0, RIAKI, RIRQ7, RIRQ6, RIRQ5, RIRQ4,
 	       1'b0, RSACK, RDMGI, RDMR, 1'b0, RINIT, 1'b0, RDCOK, RPOK, 14'b0 },
@@ -814,102 +351,47 @@ module pmo
 	      { 36'o777_777_777_777 },
 	      { 36'o777_777_777_777 });
 
-//`define NXM_CATCHER 1
- `ifdef NXM_CATCHER
-   // !!! An experimental Indicator Panel for debugging the NXM problem !!!
-   wire ip3_clk, ip3_latch, ip3_out;
 
-   reg 	nxm_DALtx, nxm_read_cycle, nxm_bs7_reg;
-   reg 	nxm_ZWTBT, nxm_ZBS7, nxm_RSYNC, nxm_RDIN, nxm_RDOUT, nxm_RRPLY, nxm_RREF;
-   reg 	nxm_RIAKI, nxm_RIRQ7, nxm_RIRQ6, nxm_RIRQ5, nxm_RIRQ4;
-   reg 	nxm_RSACK, nxm_RDMGI, nxm_RDMR, nxm_RINIT, nxm_RDCOK, nxm_RPOK;
-   reg [21:0] nxm_ZDAL;
-   reg [21:0] nxm_addr_reg;
-   
-   always @(posedge clk20)
-     if (RINIT) begin
- 	nxm_DALtx = 0;
-	nxm_read_cycle = 0;
-	nxm_bs7_reg = 0;
- 	nxm_ZWTBT = 0;
-	nxm_ZBS7 = 0;
-	nxm_RSYNC = 0;
-	nxm_RDIN = 0;
-	nxm_RDOUT = 0;
-	nxm_RRPLY = 0;
-	nxm_RREF = 0;
- 	nxm_RIAKI = 0;
-	nxm_RIRQ7 = 0;
-	nxm_RIRQ6 = 0;
-	nxm_RIRQ5 = 0;
-	nxm_RIRQ4 = 0;
- 	nxm_RSACK = 0;
-	nxm_RDMGI = 0;
-	nxm_RDMR = 0;
-	nxm_RINIT = 0;
-	nxm_RDCOK = 0;
-	nxm_RPOK = 0;
-	nxm_ZDAL = 0;
-	nxm_addr_reg = 0;
-     end else if (rk_nxm) begin
- 	nxm_DALtx = DALtx;
-	nxm_read_cycle = read_cycle;
-	nxm_bs7_reg = bs7_reg;
- 	nxm_ZWTBT = ZWTBT;
-	nxm_ZBS7 = ZBS7;
-	nxm_RSYNC = RSYNC;
-	nxm_RDIN = RDIN;
-	nxm_RDOUT = RDOUT;
-	nxm_RRPLY = RRPLY;
-	nxm_RREF = RREF;
- 	nxm_RIAKI = RIAKI;
-	nxm_RIRQ7 = RIRQ7;
-	nxm_RIRQ6 = RIRQ6;
-	nxm_RIRQ5 = RIRQ5;
-	nxm_RIRQ4 = RIRQ4;
- 	nxm_RSACK = RSACK;
-	nxm_RDMGI = RDMGI;
-	nxm_RDMR = RDMR;
-	nxm_RINIT = RINIT;
-	nxm_RDCOK = RDCOK;
-	nxm_RPOK = RPOK;
-	nxm_ZDAL = ZDAL;
-	nxm_addr_reg = rk_tal;
-     end // if (rk_nxm)
-
+   // Debugging Indicator Panel - gets changed as I feel like it for debugging
+   wire db_latch, db_clk, db_out;
    indicator
-     nxm_catch(ip3_clk, ip3_latch, ip3_out,
-	       { nxm_DALtx, 1'b0, nxm_ZDAL, 3'b0,
-		 sd0_cd, sd0_v1, sd0_v2, sd0_SC, sd0_HC, sd0_dev_ready, sd0_read, sd0_write, 1'b0 },
-	       { nxm_read_cycle, nxm_bs7_reg, nxm_addr_reg, 3'b0, 6'b0, rk_dma_read, rk_dma_write, 1'b0 },
-	       { nxm_ZWTBT, nxm_ZBS7, nxm_RSYNC, nxm_RDIN, nxm_RDOUT, nxm_RRPLY, nxm_RREF, 1'b0, nxm_RIAKI, nxm_RIRQ7, nxm_RIRQ6, nxm_RIRQ5, nxm_RIRQ4,
-		 1'b0, nxm_RSACK, nxm_RDMGI, nxm_RDMR, 1'b0, nxm_RINIT, 1'b0, nxm_RDCOK, nxm_RPOK, 14'b0 },
-	       { DALtx & ZWTBT, DALtx & ZBS7, TSYNC, TDIN, TDOUT, TRPLY, TREF, 1'b0,
-		 TIAKO, TIRQ7, TIRQ6, TIRQ5, TIRQ4, 1'b0, TSACK, TDMGO, TDMR,
-		 10'b0, sd0_err, 1'b0 });
- `else // !`ifdef NXM_CATCHER
-   wire ip3_clk = lt_clk;
-   wire ip3_latch = lt_latch;
-   wire ip3_out = lt_out;
- `endif // !`ifdef NXM_CATCHER
-   
+     debug_ip(db_clk, db_latch, db_out,
+	      { 36'o623_623_623_623 },
+	      { 36'o623_623_623_623 },
+	      { 36'o623_623_623_623 },
+	      { 36'o623_623_623_623 });
 
-
-   // The configuration for what indicator panels to display
-   reg [1:0] ip_count = 2;
-   reg [1:0] ip_list [0:3];
-   // eventually this table will be initilized by the soft-11 rather than statically !!!
+   // eventually these will be initilized by the soft-11 rather than statically !!!
    initial begin
-      ip_list[0] = 2;
-      ip_list[1] = 1;
-      ip_list[2] = 0;
-      ip_list[3] = 1;
+      ip_count = 2;
+      ip1 = 4;
+      ip2 = 1;
+      ip3 = 0;
+      ip4 = 1;
+      ip5 = 0;
+      ip6 = 0;
+      ip7 = 0;
    end
-   wire [1:0] ip_step;
+   reg [3:0] ip_sel;		// width here is SEL_WIDTH-1 for ip_mux()
+   wire [3:0] ip_step;
+   // ip_sel selects which indicator panel we're viewing
+   always @(*) begin
+      case (ip_step)
+	0: ip_sel = ip1;
+	1: ip_sel = ip2;
+	2: ip_sel = ip3;
+	3: ip_sel = ip4;
+	4: ip_sel = ip5;
+	5: ip_sel = ip6;
+	6: ip_sel = ip7;
+	default: ip_sel = 0;	// lamptest is as good as any
+      endcase // case (ip_step)
+   end // always @ (*)
+   
    wire ip_enable;		// this will get wired to an output pin once I make the move to
 				// the v2 indicator panels !!!
    wire ip_clk, ip_out, ip_latch;
-   ip_mux #(.SEL_WIDTH(2), .COUNT_WIDTH(3))
+   ip_mux #(.SEL_WIDTH(4), .COUNT_WIDTH(3))
    ip_mux (.clk_in(clk100k),
 	   // connect to the external indicator panels
     	   .clk_out(ip_clk),
@@ -919,19 +401,65 @@ module pmo
 	   // connect to the config registers
 	   .ip_count(ip_count),
 	   .ip_step(ip_step),
-	   .ip_sel(ip_list[ip_step]),
+	   .ip_sel(ip_sel),
 	   // connections to the internal indicator panels
 	   // 0 = lamptest
 	   // 1 = QBUS monitor
-	   // 2 = RK11 #1
-	   // 3 = testing
-	   .ip_clk({ lt_clk, qsic_clk, rk_ip_clk, ip3_clk }),
-	   .ip_latch({ lt_latch, qsic_latch, rk_ip_latch, ip3_latch }),
-	   .ip_data({ lt_out, qsic_out, rk_ip_out, ip3_out }));
+	   // 2 = RK11 #0
+	   // 3 = RK11 #1
+	   // 4 = RP11 #0
+	   // 5 = RP11 #1
+	   // 6 = Enable+
+	   // 7 = Interlan 1010
+	   // 15 = debugging
+	   .ip_clk({ lt_clk, qsic_clk, lt_clk, lt_clk, rp0_ip_clk, lt_clk, lt_clk, lt_clk,
+		     lt_clk, lt_clk, lt_clk, lt_clk, lt_clk, lt_clk, lt_clk, db_clk }),
+	   .ip_latch({ lt_latch, qsic_latch, lt_latch, lt_latch, rp0_ip_latch, lt_latch, lt_latch, lt_latch,
+		       lt_latch, lt_latch, lt_latch, lt_latch, lt_latch, lt_latch, lt_latch, db_latch }),
+	   .ip_data({ lt_out, qsic_out, lt_out, lt_out, rp0_ip_out, lt_out, lt_out, lt_out,
+		      lt_out, lt_out, lt_out, lt_out, lt_out, lt_out, lt_out, db_out }));
 
    // not entirely sure why these have to be inverted.  I must have wired the PMo wrong. !!!
    assign ip_clk_pin = ~ip_clk;
    assign ip_out_pin = ~ip_out;
    assign ip_latch_pin = ~ip_latch;
+
+
+   //
+   // Top-Level Configuration Table
+   //
+
+   // Read Mux
+   // The Soft-11 version number and the `SOFT_DEV bit want to be set by the Soft-11 itself. !!!
+   always @(*) begin
+      tl_match = 1;
+      tl_rdata = 16'bx;
+      case (conf_addr)
+	0: tl_rdata = { `TYPE_QSIC, `FPGA_DEV, `SOFT_DEV, 8'b0, `CONF_VERSION };
+	1: tl_rdata = { `FPGA_MAJOR, `FPGA_MINOR }; // FPGA Version
+	2: tl_rdata = { 8'd0, 8'd0 };		    // Soft-11 Software Version
+	3: tl_rdata = { 8'd2, 8'd2 };		    // Controller Count ,, Storage Device Count
+	// Controller Table
+	4: tl_rdata = { `CTR_IP, IP_CONF_ADDR };
+	5: tl_rdata = { `CTR_RP, 11'd20 };
+	// Storage Device Table
+	6: tl_rdata = { `SD_SD, 11'd10 };
+	7: tl_rdata = { `SD_RAM, 11'd11 };
+	// Storage Devices
+	10: tl_rdata = { sd0_cd, sd0_v2, sd0_HC, sd0_rdy, sd0_rd, sd0_wr, sd0_err, sd0_size }; // SD0 -- need size!!!
+	11: tl_rdata = 19;	// RAM Disk -- 256MB = 2^28 bytes = 2^19 blocks
+
+	default: tl_match = 0;
+      endcase // case (conf_addr)
+   end // always @ (*)
+   
+   // Writing Configuration -- Nothing is writable yet in the top-level configuration.  The only
+   // thing that's going to be writable is the SAVE bit in location 0 that kicks the soft-11 to
+   // save the current configuration in flash. !!!
+   reg conf_save = 0;
+   always @(posedge clk20)
+     if ((conf_addr == 0) && conf_write)
+       conf_save <= reg_wdata[11];
+
 
 endmodule // pmo
