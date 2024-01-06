@@ -34,8 +34,8 @@ indicator-panel:: This directory is obsolete as the indicator panel has
 Other QSIC-related repositories.
 
 [horizontal]
-QSIC:: The QSIC board
-USIC:: The USIC board
+https://github.com/dabridgham/QSIC[QSIC]:: The QSIC board
+https://github.com/dabridgham/QSIC[USIC]:: The USIC board
 http://github.com/dabridgham/Indicator-Panel[Indicator Panel]:: Indicator Panel PCBs and graphics inlays
 Software:: The software that runs on the embedded soft processor in
 the QSIC/USIC (not yet started)
