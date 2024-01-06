@@ -36,6 +36,6 @@ Other QSIC-related repositories
 [horizontal]
 QSIC:: The QSIC board
 USIC:: The USIC board
-Indicator Panels:: Indicator Panel PCBs and graphics inlays
+Indicator Panel:: Indicator Panel PCBs and graphics inlays
 Software:: The software that runs on the embedded soft processor in
 the QSIC/USIC (not yet started)
