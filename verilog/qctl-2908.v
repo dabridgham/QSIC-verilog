@@ -1,7 +1,7 @@
 //	-*- mode: Verilog; fill-column: 96 -*-
 //
 // QBUS Control - Handles the QBUS signals and divies them up between the DMA controller, the
-// interrupt controller, and regular I/O registers.  Eventually I'll have to add memory as well.
+// interrupt controller, and regular I/O registers or memory.
 //
 // This is for the PMo with the Ztex FPGA module where we use Am2908s for the Data/Address
 // lines.  This saves us some FPGA pins but adds an extra layer of buffering that needs to be
@@ -14,68 +14,43 @@
 
 `include "qsic.vh"
 
-module qbus_ctl_2908
+module qctl_2908
   (
-   input 	 clk, // 20 MHz clock
-   input 	 reset,
+   input	 clk, // 20 MHz clock
+   input	 reset,
 
    // The QBUS signals as seen by the FPGA
-   output 	 DALbe_L, // Enable transmitting on BDAL (active low)
-   output 	 DALtx, // set level-shifters to output and disable input from Am2908s
-   output 	 DALst, // latch the BDAL output
-   inout [21:0]  ZDAL,
-   inout 	 ZBS7,
-   inout 	 ZWTBT,
+   output	 DALbe_L, // Enable transmitting on BDAL (active low)
+   output	 DALtx, // set level-shifters to output and disable input from Am2908s
+   output	 DALst, // latch the BDAL output
+   inout [21:0]	 ZDAL,
+   inout	 ZBS7,
+   inout	 ZWTBT,
 
-   input 	 RSYNC,
-   input 	 RDIN,
-   input 	 RDOUT,
-   input 	 RRPLY,
-   input 	 RREF, // option for DMA block-mode when acting as memory
-   input 	 RIRQ4,
-   input 	 RIRQ5,
-   input 	 RIRQ6,
-   input 	 RIRQ7,
-   input 	 RDMR,
-   input 	 RSACK,
-   input 	 RINIT,
-   input 	 RIAKI,
-   input 	 RDMGI,
-   input 	 RDCOK,
-   input 	 RPOK,
-
-   output 	 TSYNC,
-   output 	 TDIN,
-   output 	 TDOUT,
-   output reg 	 TRPLY,
-   output 	 TREF,
-   output 	 TIRQ4,
-   output 	 TIRQ5,
-   output 	 TIRQ6,
-   output 	 TIRQ7,
-   output 	 TDMR,
-   output 	 TSACK,
-   output 	 TIAKO,
-   output 	 TDMGO
+   input	 RSYNC,
+   input	 RDIN,
+   input	 RDOUT,
+   output	 TRPLY,
 
    // DMA Controller
-   input 	 dma_assert_dal,
-   input [21:0]  dma_dal,
-   input 	 dma_dalbe,
-   input 	 dma_daltx,
-   input 	 dma_dalst,
+   input	 dma_assert_dal,
+   input [21:0]	 dma_dal,
+   input	 dma_twtbt, 
+   input	 dma_dalbe,
+   input	 dma_daltx,
+   input	 dma_dalst,
 
    // Interrupt Control
-   input 	 int_assert_vector,
+   input	 int_assert_vector,
 
    // Register Control
    output [21:0] reg_addr,
-   output 	 reg_bs7,
-   output 	 reg_read_cycle,
-   input 	 reg_addr_match,
-   input [15:0]  reg_rdata,
+   output	 reg_bs7,
+   output	 reg_read_cycle,
+   input	 reg_addr_match,
+   input [15:0]	 reg_rdata,
    output [15:0] reg_wdata,
-   output 	 reg_write
+   output	 reg_write
    );
 
    // Receive side of the tri-state signals
@@ -86,12 +61,8 @@ module qbus_ctl_2908
    // The direction of the bi-directional lines are controlled with DALtx
    reg [21:0] 	TDAL;		// Transmit Data/Address Lines
    assign ZDAL = DALtx ? TDAL : 22'bZ;
-   assign ZBS7 = DALtx ? 0 : 1'bZ;
-   assign ZWTBT = DALtx ? rk_wtbt : 1'bZ;
-
-   // Not yet driving TREF.  Will be used in the future for block-mode DMA.  Should just pass
-   // this through to the DMA controller. !!!
-   assign TREF = 0;
+   assign ZBS7 = DALtx ? 0 : 1'bZ; // the DMA controller will need to hook in here !!!
+   assign ZWTBT = DALtx ? dma_twtbt : 1'bZ;
 
    // Grab the addressing information when it comes by
    reg [21:0] 	addr_reg = 0;
@@ -102,7 +73,7 @@ module qbus_ctl_2908
       bs7_reg <= RBS7;
       read_cycle <= ~RWTBT;
    end
-   assign reg_addr = addr_reg;	// pass the latched address on to the register controller
+   assign reg_addr = addr_reg; // pass the latched address on to the register controller
    assign reg_bs7 = bs7_reg;
    assign reg_read_cycle = read_cycle;
    assign reg_wdata = RDAL[15:0];
@@ -136,24 +107,24 @@ module qbus_ctl_2908
   
    // synchronize addr_match
    reg [1:0]   addr_match_ra = 0;
-   always @(posedge clk20) addr_match_ra <= { addr_match_ra[0], addr_match };
+   always @(posedge clk) addr_match_ra <= { addr_match_ra[0], addr_match };
    wire        saddr_match = addr_match_ra[1];
 
    // synchronize assert_vector
    reg [3:0]   assert_vector_ra = 0;
-   always @(posedge clk20) assert_vector_ra <= { assert_vector_ra[2:0], assert_vector };
+   always @(posedge clk) assert_vector_ra <= { assert_vector_ra[2:0], assert_vector };
    wire        sassert_vector = assert_vector_ra[1];
 
    // synchronize RDOUT
    reg [2:0]   RDOUTra = 0;
-   always @(posedge clk20) RDOUTra <= { RDOUTra[1:0], RDOUT };
+   always @(posedge clk) RDOUTra <= { RDOUTra[1:0], RDOUT };
    wire        sRDOUT = RDOUTra[1];
    wire        sRDOUTpulse = RDOUTra[2:1] == 2'b01;
-   assign reg_write = s_RDOUTpulse;
+   assign reg_write = sRDOUTpulse;
    
    // synchronize RDIN
    reg [3:0]   RDINra = 0;
-   always @(posedge clk20) RDINra <= { RDINra[2:0], RDIN };
+   always @(posedge clk) RDINra <= { RDINra[2:0], RDIN };
    wire        sRDIN = RDINra[1];
    wire        sRDINpulse = RDINra[2:1] == 2'b01;
 
@@ -161,9 +132,10 @@ module qbus_ctl_2908
    reg 	       rwDALbe = 0;	// local control of these signals
    reg 	       rwDALst = 0;
    reg 	       rwDALtx = 0;
-   always @(posedge clk20) begin
+   reg 	       rwTRPLY = 0;
+   always @(posedge clk) begin
       // bus is idle by default
-      TRPLY <= 0;
+      rwTRPLY <= 0;
       rwDALst <= 0;
       rwDALbe <= 0;
       rwDALtx <= 0;
@@ -179,12 +151,12 @@ module qbus_ctl_2908
 	       // This may look like it's asserting TRPLY too soon but the QBUS spec allows up
 	       // to 125ns from asserting TRPLY until the data on the bus must be valid, so we
 	       // could probably assert it even earlier
-	       TRPLY <= 1;
+	       rwTRPLY <= 1;
 	       rwDALbe <= 1;
 	       rwDALst <= 1;
 	    end
 	 end else if (sRDOUT) begin
-	    TRPLY <= 1;
+	    rwTRPLY <= 1;
 	 end
       end else if (sassert_vector) begin // if we're reading an interrupt vector
 	 rwDALtx <= 1;			 // start the data towards the Am2908s
@@ -192,17 +164,18 @@ module qbus_ctl_2908
 	 // like above with RDIN, wait until assert_vector_ra[3] to give time for the signals in
 	 // the ribbon cable to settle down
 	 if (assert_vector_ra[3]) begin
-	    TRPLY <= 1;		// should be able to assert TRPLY sooner than this !!!
+	    rwTRPLY <= 1;	// should be able to assert TRPLY sooner than this !!!
 	    rwDALbe <= 1;
 	    rwDALst <= 1;
 	 end
       end
-   end // always @ (posedge clk20)
+   end // always @ (posedge clk)
 
    // mix the control signals from the DMA controller and the register controller
    assign DALbe_L = ~(rwDALbe | dma_dalbe);
    assign DALst = rwDALst | dma_dalst;
    assign DALtx = rwDALtx | dma_assert_dal;
+   assign TRPLY = rwTRPLY;
 
+endmodule // qctl_2908
 
-endmodule // qbus_ctl_2908

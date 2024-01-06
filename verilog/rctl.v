@@ -9,28 +9,28 @@
 module rctrl
   (
    // Register Control
-   output 	 reg_addr_match,
-   output [15:0] reg_rdata,
+   output	     reg_addr_match,
+   output reg [15:0] reg_rdata,
 
    // conf
-   input 	 c_match,
-   input [15:0]  c_rdata,
+   input	     c_match,
+   input [15:0]	     c_rdata,
 
    // dev0
-   input 	 dev0_match,
-   input [15:0]  dev0_rdata,
+   input	     dev0_match,
+   input [15:0]	     dev0_rdata,
    
    // dev1
-   input 	 dev1_match,
-   input [15:0]  dev1_rdata,
+   input	     dev1_match,
+   input [15:0]	     dev1_rdata,
    
    // dev2
-   input 	 dev2_match,
-   input [15:0]  dev2_rdata,
+   input	     dev2_match,
+   input [15:0]	     dev2_rdata,
    
    // dev3
-   input 	 dev3_match,
-   input [15:0]  dev3_rdata   
+   input	     dev3_match,
+   input [15:0]	     dev3_rdata   
    );
 
    assign reg_addr_match = c_match | dev0_match | dev1_match | dev2_match | dev3_match;

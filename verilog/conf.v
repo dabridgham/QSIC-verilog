@@ -9,39 +9,37 @@
 `include "qsic.vh"
 
 module conf
-  #(parameter ADDR_BASE)
+  #(parameter ADDR_BASE = `CONF_REG_ADDR_BASE)
   (input 	     clk,
    
    // Register Control
-   input [12:0]      reg_addr,
-   input 	     reg_bs7,
-   output 	     reg_addr_match,
+   input [12:0]	     reg_addr,
+   input	     reg_bs7,
+   output	     reg_addr_match,
    output reg [15:0] reg_rdata,
-   input reg [15:0]  reg_wdata,
-   input 	     reg_write,
+   input [15:0]	     reg_wdata,
+   input	     reg_write,
 
    // Configuration Bus
-   output reg [15:0] conf_addr;
-   input 	     conf_match,
-   input [15:0]      conf_rdata,
-   output 	     conf_write,
+   output reg [15:0] conf_addr = 0,
+   output	     conf_write,
 
    // various configuration sources
-   input 	     c_match, // top-level
-   input [15:0]      c_rdata,
-   input 	     dev0_match, // dev0
-   input [15:0]      dev0_rdata,
-   input 	     dev1_match, // dev1
-   input [15:0]      dev1_rdata,
-   input 	     dev2_match, // dev2
-   input [15:0]      dev2_rdata,
-   input 	     dev3_match, // dev3
-   input [15:0]      dev3_rdata   
+   input	     tl_match, // top-level conf table
+   input [15:0]	     tl_rdata,
+   input	     dev0_match, // dev0
+   input [15:0]	     dev0_rdata,
+   input	     dev1_match, // dev1
+   input [15:0]	     dev1_rdata,
+   input	     dev2_match, // dev2
+   input [15:0]	     dev2_rdata,
+   input	     dev3_match, // dev3
+   input [15:0]	     dev3_rdata   
    );
 
    localparam
      CONF_REG_ADDR = ADDR_BASE,
-     CONF_REG_ADDR = ADDR_BASE + 2;
+     CONF_REG_DATA = ADDR_BASE + 2;
 
    // The Bus Registers
    assign reg_addr_match = (reg_bs7 && 
@@ -57,7 +55,7 @@ module conf
        default: reg_rdata = 16'bx;
      endcase // case (reg_addr)
 
-   // Only write to conf_addr.  Writes to conf_data is just passed through.
+   // Only write to conf_addr.  Writes to conf_data are just passed through.
    always @(posedge clk)
      if (reg_addr_match && reg_write)
        if (reg_addr == CONF_REG_ADDR)
@@ -70,7 +68,7 @@ module conf
    // Read from the Configuration Registers
    always @(*)
      case (1'b1)
-       c_match: conf_data = c_rdata;
+       tl_match: conf_data = tl_rdata;
        dev0_match: conf_data = dev0_rdata;
        dev1_match: conf_data = dev1_rdata;
        dev2_match: conf_data = dev2_rdata;

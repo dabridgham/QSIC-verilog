@@ -14,6 +14,15 @@ ALL: tb_qbus.check
 lint:
 	verilator $(LINTOPTS) --top-module pmo qsic-pmo.v qinterrupt.v sd.v ramdisk-block.v sd-crc.v ramdisk-sdram.v $(STUBS)
 
+qdma2908.lint: qdma2908.v
+	verilator --lint-only -Wno-LITENDIAN qdma2908.v
+qdma2908.hex: qdma2908.asm qdma2908.def
+	uas qdma2908.def qdma2908.asm qdma2908.hex qdma2908.lst
+tb-qdma2908.vvp: tb-qdma2908.v qdma2908.v axi.vh
+	iverilog -o tb-qdma2908.vvp tb-qdma2908.v qdma2908.v
+test-qdma2908: tb-qdma2908.vvp qdma2908.hex
+	./tb-qdma2908.vvp $(SIMOPTS)
+
 tb_qbus.check: $(INCLUDES) $(QBUS_FILES)
 	iverilog -tnull $(ICOPTS) $(QBUS_FILES)
 
@@ -90,7 +99,7 @@ sd.vvp: Makefile sd.v sd.hex sd-crc.v
 	iverilog $(ICOPTS) -o sd.vvp sd.v sd-crc.v
 sd.check: sd.v sd-crc.v
 	iverilog -tnull $(ICOPTS) sd.v sd-crc.v
-sd.hex: sd.asm
+sd.hex: sd.asm sd-asm.def
 	uas sd-asm.def sd.asm sd.hex sd.lst
 
 test.rd: ramdisk-block.vvp

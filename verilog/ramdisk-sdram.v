@@ -6,82 +6,120 @@
 
 `timescale 1 ns / 1 ns
 
+`include "axi.vh"
+
 module ramdisk_sdram
   (
+   input 	     bus_clk, // Bus clock, 20MHz
+   input 	     reset, 
+
+   // from Disk Controller
+   input 	     c_read, // start a read operation
+   input 	     c_write, // start a write operation
+   input [21:0]      c_ba, // Bus Address
+   input [31:0]      c_lba, // Linear Block Address
+   input [15:0]      c_wc, // Word Count
+   input 	     c_iba, // Inhibit Incrementing Bus Address
+   input 	     c_q22, // use 22-bit addressing (otherwise it's 18-bits)
+   output 	     c_devrdy, // Device is ready
+   output 	     c_cmdrdy, // Device is ready for a command
+   output 	     c_word_st, // strobes once for each word moved
+   output 	     c_nxm, // hit non-existent memory
+   output 	     c_crcerr, // a CRC error
+
+   // AXI4(-like) interface to Host Bus
+   // Slave Interface Write Address Ports
+   output [3:0]      bus_awid,
+   output [27:0]     bus_awaddr,
+   output [7:0]      bus_awlen,
+   output [2:0]      bus_awsize,
+   output [1:0]      bus_awburst,
+   output [0:0]      bus_awlock,
+   output [3:0]      bus_awcache,
+   output [2:0]      bus_awprot,
+   output [3:0]      bus_awqos,
+   output reg 	     bus_awvalid,
+   input 	     bus_awready,
+   // Slave Interface Write Data Ports
+   output reg [31:0] bus_wdata,
+   output [3:0]      bus_wstrb,
+   output reg 	     bus_wlast,
+   output reg 	     bus_wvalid,
+   input 	     bus_wready,
+   // Slave Interface Write Response Ports
+   output 	     bus_bready,
+   input [3:0] 	     bus_bid,
+   input [1:0] 	     bus_bresp,
+   input 	     bus_bvalid,
+   // Slave Interface Read Address Ports
+   output [3:0]      bus_arid,
+   output [27:0]     bus_araddr,
+   output [7:0]      bus_arlen,
+   output [2:0]      bus_arsize,
+   output [1:0]      bus_arburst,
+   output [0:0]      bus_arlock,
+   output [3:0]      bus_arcache,
+   output [2:0]      bus_arprot,
+   output [3:0]      bus_arqos,
+   output reg 	     bus_arvalid,
+   input 	     bus_arready,
+   // Slave Interface Read Data Ports
+   output reg 	     bus_rready,
+   input [3:0] 	     bus_rid,
+   input [31:0]      bus_rdata,
+   input [1:0] 	     bus_rresp,
+   input 	     bus_rlast,
+   input 	     bus_rvalid,
+
    // AXI4 connection to the SDRAM
    // user interface signals
    input 	     ui_clk,
    input 	     ui_clk_sync_rst,
    input 	     mmcm_locked,
    // Slave Interface Write Address Ports
-   output [3:0]      s_axi_awid,
-   output [27:0]     s_axi_awaddr,
-   output [7:0]      s_axi_awlen,
-   output [2:0]      s_axi_awsize,
-   output [1:0]      s_axi_awburst,
-   output [0:0]      s_axi_awlock,
-   output [3:0]      s_axi_awcache,
-   output [2:0]      s_axi_awprot,
-   output [3:0]      s_axi_awqos,
-   output reg 	     s_axi_awvalid,
-   input 	     s_axi_awready,
+   output [3:0]      sd_awid,
+   output [27:0]     sd_awaddr,
+   output [7:0]      sd_awlen,
+   output [2:0]      sd_awsize,
+   output [1:0]      sd_awburst,
+   output [0:0]      sd_awlock,
+   output [3:0]      sd_awcache,
+   output [2:0]      sd_awprot,
+   output [3:0]      sd_awqos,
+   output reg 	     sd_awvalid,
+   input 	     sd_awready,
    // Slave Interface Write Data Ports
-   output reg [31:0] s_axi_wdata,
-   output [3:0]      s_axi_wstrb,
-   output reg 	     s_axi_wlast,
-   output reg 	     s_axi_wvalid,
-   input 	     s_axi_wready,
+   output reg [31:0] sd_wdata,
+   output [3:0]      sd_wstrb,
+   output reg 	     sd_wlast,
+   output reg 	     sd_wvalid,
+   input 	     sd_wready,
    // Slave Interface Write Response Ports
-   output 	     s_axi_bready,
-   input [3:0] 	     s_axi_bid,
-   input [1:0] 	     s_axi_bresp,
-   input 	     s_axi_bvalid,
+   output 	     sd_bready,
+   input [3:0] 	     sd_bid,
+   input [1:0] 	     sd_bresp,
+   input 	     sd_bvalid,
    // Slave Interface Read Address Ports
-   output [3:0]      s_axi_arid,
-   output [27:0]     s_axi_araddr,
-   output [7:0]      s_axi_arlen,
-   output [2:0]      s_axi_arsize,
-   output [1:0]      s_axi_arburst,
-   output [0:0]      s_axi_arlock,
-   output [3:0]      s_axi_arcache,
-   output [2:0]      s_axi_arprot,
-   output [3:0]      s_axi_arqos,
-   output reg 	     s_axi_arvalid,
-   input 	     s_axi_arready,
+   output [3:0]      sd_arid,
+   output [27:0]     sd_araddr,
+   output [7:0]      sd_arlen,
+   output [2:0]      sd_arsize,
+   output [1:0]      sd_arburst,
+   output [0:0]      sd_arlock,
+   output [3:0]      sd_arcache,
+   output [2:0]      sd_arprot,
+   output [3:0]      sd_arqos,
+   output reg 	     sd_arvalid,
+   input 	     sd_arready,
    // Slave Interface Read Data Ports
-   output reg 	     s_axi_rready,
-   input [3:0] 	     s_axi_rid,
-   input [31:0]      s_axi_rdata,
-   input [1:0] 	     s_axi_rresp,
-   input 	     s_axi_rlast,
-   input 	     s_axi_rvalid,
-
-   // connection from the disk controller
-   output 	     command_ready, // ready to accept a read or write command
-   input 	     read_cmd,
-   input 	     write_cmd,
-   input [31:0]      block_address,
-   output 	     fifo_clk, 
-   input [15:0]      write_data,
-   output reg 	     write_data_enable,
-   output reg [15:0] read_data,
-   output reg 	     read_data_enable,
-   output [9:0]      debug_output
+   output reg 	     sd_rready,
+   input [3:0] 	     sd_rid,
+   input [31:0]      sd_rdata,
+   input [1:0] 	     sd_rresp,
+   input 	     sd_rlast,
+   input 	     sd_rvalid
    );
 
-   wire 	     ramclk = ui_clk;
-   assign fifo_clk = ramclk;	// just pass the clock through to the FIFO
-   assign command_ready = ~reading & ~writing;
-
-   wire 	     reset;
-   assign reset = ui_clk_sync_rst;
-
-   // synchronize the command signals
-   reg [1:0] 	     rcra, wcra;
-   wire 	     s_read_cmd = rcra[1];
-   wire 	     s_write_cmd = wcra[1];
-   always @(posedge ramclk) rcra <= { rcra[0], read_cmd };
-   always @(posedge ramclk) wcra <= { wcra[0], write_cmd };
    
 
    // Read Address

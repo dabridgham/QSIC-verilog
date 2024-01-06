@@ -57,7 +57,7 @@ module qint
 	   end
 	 endcase // case (int_priority)
       end
-   end // always @ (irq_assert)
+   end // always @ (*)
 
    // figure out if anyone at a higher priority is requesting an interrupt
    always @(*) begin
