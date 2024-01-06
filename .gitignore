@@ -36,3 +36,5 @@ vivado_pid*.zip
 /jnc
 /xilinx
 /bus-xcvr
+/qsic
+/usic
